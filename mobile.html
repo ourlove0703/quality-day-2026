@@ -1710,6 +1710,7 @@ const DURI_ACTS=[
  modal.addEventListener('click',e=>{if(e.target===modal||e.target.closest('[data-x]'))closeModal();if(e.target.closest('[data-again]')){closeModal();setTimeout(()=>btn.click(),250)}});
  const CARDK='duri_roulette_cards_v1';let cards=[];try{cards=(JSON.parse(localStorage.getItem(CARDK)||'[]')||[]).filter(c=>c&&ACTS[c.i]&&c.f)}catch(e){}
  if(!cards.length){try{const d=JSON.parse(localStorage.getItem(DK)||'null');if(d&&ACTS[d.i]&&d.f)cards=[{i:d.i,f:d.f}]}catch(e){}}
+ if(spins>cards.length){spins=cards.length;try{localStorage.setItem(CK,spins)}catch(e){}}
  let cardIdx=0;
  function openCard(k){if(!cards.length)return;cardIdx=Math.max(0,Math.min(cards.length-1,k));const c=cards[cardIdx];openModal(c.i,c.f)}
  modal.addEventListener('click',e=>{const nv=e.target.closest('[data-nav]');if(nv){e.stopPropagation();openCard(cardIdx+Number(nv.dataset.nav))}});
@@ -1885,7 +1886,7 @@ showTab(mode,{noUrl:true});
  let W=0,H=0,dpr=1,run=false,raf=0,last=0,t=0,dist=0,speed=0,nextGap=0,obs=[],py=0,vy=0,buffer=0,frame=0;
  const GRAV=1000,PX=()=>Math.max(2.2,Math.min(3,H/30)),MW=()=>12*PX(),G=()=>H-10;
  function size(){const r=cv.getBoundingClientRect();if(!r.width)return;dpr=Math.min(2,devicePixelRatio||1);W=r.width;H=r.height;cv.width=W*dpr;cv.height=H*dpr;ctx.setTransform(dpr,0,0,dpr,0,0);ctx.imageSmoothingEnabled=false;draw()}
- const spd=d=>d<15?140:Math.min(600,150+(d-15)*0.9+Math.max(0,d-250)*0.8);   // 거리 기준: 15m까지 천천히 → 가속 → 300~400m부터 어렵게
+ const spd=d=>d<10?140:Math.min(660,165+(d-10)*1.12+Math.max(0,d-230)*1.0);   // 처음 약 3초(10m) 천천히 → 이전보다 20~30% 빠르게 가속 → 300m대부터 고난도
  let warned=false,warnT=0;function reset(){t=0;dist=0;speed=spd(0);obs=[];py=0;vy=0;buffer=0;nextGap=W*.75;warned=false;warnT=0;sc.textContent='0m'}
  function doJump(){vy=Math.sqrt(2*GRAV*Math.min(H*.76,MW()*2.1))}
  function jump(){if(!run)return;if(py<=0.5)doJump();else buffer=0.14}   // 착지 직전 터치도 인정
@@ -1908,7 +1909,7 @@ showTab(mode,{noUrl:true});
    else if(dist>=100&&r<(hard?.55:.4)){obs.push({x:W+4,px,t:rnd,st:2});extra=20}                                                   // 2층 불량: 높이 점프
    else if(dist>=40&&r<(hard?.8:.6)){obs.push({x:W+4,px,t:rnd});obs.push({x:W+4+px*8+px*3,px,t:OB[Math.floor(Math.random()*OB.length)]});extra=px*11} // 연속 불량
    else obs.push({x:W+4,px,t:rnd});
-   const air=2*Math.sqrt(2*GRAV*Math.min(H*.76,MW()*2.1))/GRAV;nextGap=speed*(air+(hard?0.22:0.3))+extra+Math.random()*speed*(dist<15?1.2:hard?.5:.75)+(dist<15?60:15)}
+   const air=2*Math.sqrt(2*GRAV*Math.min(H*.76,MW()*2.1))/GRAV;nextGap=speed*(air+(hard?0.22:0.3))+extra+Math.random()*speed*(dist<10?1.2:hard?.5:.75)+(dist<10?60:15)}
   for(const o of obs)o.x-=dx;obs=obs.filter(o=>o.x>-40);
   for(const o of obs){if(hit(o))return end()}
   sc.textContent=Math.floor(dist)+'m';draw();raf=requestAnimationFrame(loop)}
