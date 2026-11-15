@@ -884,6 +884,35 @@ html:has(#homeView:not(.hidden)),body:has(#homeView:not(.hidden)){background:#07
 .tabbar .tab+.tab::before{top:12px!important;bottom:12px!important;width:1.5px!important;background:#b9d2f2!important}
 .tabbar .tab.on{color:#123a73!important}
 .tabbar .tab.on .ti{background:#ffffff!important;box-shadow:0 2px 8px rgba(18,58,115,.18),inset 0 0 0 1.5px #9fc0ea}
+
+/* ===== V24 미니게임 + 홈 압축 ===== */
+.duri-game{position:relative;margin:8px 0 0!important;padding:0!important;height:78px;overflow:hidden;touch-action:manipulation;user-select:none;-webkit-user-select:none}
+#homeView .duri-game{background:linear-gradient(180deg,rgba(255,255,255,.07),rgba(255,255,255,.03))!important}
+.duri-game canvas{position:absolute;inset:22px 0 0 0;width:100%;height:calc(100% - 22px);display:block}
+.dg-hud{position:absolute;left:10px;right:10px;top:5px;display:flex;justify-content:space-between;align-items:center;pointer-events:none}
+.dg-title{font-size:11.5px;font-weight:900;color:#f5c451;letter-spacing:-.2px}
+.dg-score{display:flex;align-items:baseline;gap:6px;color:#fff}.dg-score b{font-size:14px}.dg-score small{font-size:10.5px;color:#a9bfdb}.dg-score em{font-style:normal;font-weight:900;color:#f5c451}
+.dg-over{position:absolute;inset:22px 0 0 0;display:flex;align-items:center;justify-content:center;gap:10px;padding:0 10px;background:rgba(7,19,39,.55);backdrop-filter:blur(1.5px)}
+.dg-over.hide{display:none}
+.dg-msg{flex:1;min-width:0;font-size:11.5px;line-height:1.35;color:#d7e4f5;font-weight:700}.dg-msg b{color:#f5c451;font-size:13px}
+#dgStart{flex:none;border:0;border-radius:10px;padding:9px 14px;font-weight:900;font-size:13px;color:#fff;background:#2f69e8;box-shadow:0 4px 12px rgba(47,105,232,.4);cursor:pointer}
+@media (max-height:820px){
+ .duri-banner img{height:clamp(62px,12.5vh,104px)!important}
+ #homeView .home-now{padding:7px 10px!important;margin-bottom:7px!important}
+ #homeView .home-now-top{font-size:10.5px}
+ #homeView .home-now-title{font-size:15px!important;margin-top:1px!important}
+ #homeView .home-now-btn{padding:8px 11px!important;font-size:12.5px!important;border-radius:10px!important}
+ #homeView .duri-roulette{padding:8px 11px 8px!important}
+ #homeView .roul-body{margin-top:2px}
+ #homeView .rw-stage{--S:min(43vw,29vh,186px)}
+ #homeView .home-order li{padding:3px 0}
+ #homeView .roul-result{margin-top:6px}
+}
+
+/* V25: 실천 도장 제거 · 룰렛 하루 1회 */
+.rw-stamps{display:none!important}
+.lk-btns.one{grid-template-columns:1fr}
+.rw-hub.done::after{animation:none;opacity:0}
 </style></head><body>
 
 <div id="homeView" class="hidden"><div class="wrap">
@@ -920,6 +949,11 @@ html:has(#homeView:not(.hidden)),body:has(#homeView:not(.hidden)){background:#07
     </div>
     <div class="roul-result" id="roulResult"><div class="roul-result-empty">가운데 <b>두리</b>를 누르면 오늘 실천할 행동과 <b>🍀 행운 메시지</b>가 나와요!</div></div>
     <canvas class="rw-confetti" id="rwConfetti" aria-hidden="true"></canvas>
+  </section>
+  <section class="card duri-game" id="duriGame" aria-label="두리 점프 미니게임">
+    <canvas id="dgCanvas" aria-hidden="true"></canvas>
+    <div class="dg-hud"><span class="dg-title">🎮 두리 점프 · 불량 피하기</span><span class="dg-score"><b id="dgScore">0</b><small>최고 <em id="dgBest">0</em></small></span></div>
+    <div class="dg-over" id="dgOver"><div class="dg-msg" id="dgMsg">화면을 톡! 누르면 점프해요</div><button type="button" id="dgStart">▶ 시작</button></div>
   </section>
 </div></div>
 
@@ -1639,15 +1673,15 @@ const DURI_ACTS=[
    <div class="lk-act"><span class="lk-e">${a.e}</span><div><small>오늘의 실천 ${a.n}</small><b>${a.t}</b><p>${a.msg}</p></div></div>
    <div class="lk-msg"><small>행운 메시지</small><p>${f.m}</p></div>
    <div class="lk-row"><div class="lk-meter"><small>품질 행운지수</small><div class="lk-bar"><i style="width:${f.p}%"></i></div><b>${f.p}%</b></div><div class="lk-item"><small>행운의 아이템</small><b>${f.it}</b></div></div>
-   ${full?'<div class="lk-full">🎉 실천 도장 7개 완성! 오늘부터 <b>품질 실천 마스터</b></div>':`<div class="lk-stamp">실천 도장 <b>${stamps.length}</b> / 7 · 다 모으면 <b>품질 실천 마스터</b>!</div>`}
-   <div class="lk-btns"><button type="button" data-again>한 번 더 돌리기</button><button type="button" class="ok" data-x>좋아요!</button></div>
+   <div class="lk-stamp">행운 카드는 하루에 한 장! 내일 또 뽑아 보세요 🍀</div>
+   <div class="lk-btns one"><button type="button" class="ok" data-x>좋아요!</button></div>
    <div class="lk-tip">📸 캡처해서 동료에게 자랑해 보세요</div></div>`;
   modal.classList.add('open')}
  let lastFortune=null;
  function show(i,fresh,f){const a=ACTS[i];lastFortune={i,f};
   out.innerHTML=`<button type="button" class="roul-pick roul-mini${fresh?' fresh':''}" style="--c:${a.c}"><span class="roul-pick-e">${a.e}</span><span class="roul-pick-txt"><span class="roul-pick-no">오늘의 실천 ${a.n}</span><span class="roul-pick-title">${a.t}</span></span><span class="roul-luck">🍀 행운 카드<br>보기 ›</span></button>`;
   out.querySelector('.roul-mini').onclick=()=>f&&openModal(i,f);
-  wheel.querySelectorAll('.rw-seg').forEach(el=>el.classList.toggle('win',Number(el.dataset.i)===i));wheel.classList.add('done');stage.style.setProperty('--win',a.c)}
+  wheel.querySelectorAll('.rw-seg').forEach(el=>el.classList.toggle('win',Number(el.dataset.i)===i));wheel.classList.add('done');stage.style.setProperty('--win',a.c);const hs=btn.querySelector('span');if(hs)hs.textContent='CARD';btn.classList.add('done')}
  try{const d=JSON.parse(localStorage.getItem(DK)||'null');if(d&&d.date===new Date().toDateString()&&ACTS[d.i]){setRot(-(d.i*SEG+SEG/2));show(d.i,false,d.f||null)}}catch(e){}
  // 꽃가루
  function confetti(color){if(RM||!cv)return;const card=cv.parentElement,r=card.getBoundingClientRect(),sr=stage.getBoundingClientRect(),dpr=Math.min(2,window.devicePixelRatio||1);
@@ -1658,7 +1692,8 @@ const DURI_ACTS=[
    ps.forEach(p=>{p.vy+=.22;p.vx*=.985;p.x+=p.vx;p.y+=p.vy;p.r+=p.vr;c.save();c.translate(p.x,p.y);c.rotate(p.r);c.fillStyle=p.c;c.fillRect(-p.s/2,-p.s/4,p.s,p.s/2);c.restore()});requestAnimationFrame(f)})(t0)}
  const buzz=p=>{try{navigator.vibrate&&navigator.vibrate(p)}catch(e){}};
  btn.addEventListener('click',()=>{
-  if(busy)return;busy=true;btn.disabled=true;wheel.classList.remove('done');stage.classList.add('spinning');
+  if(busy)return;
+  try{const d=JSON.parse(localStorage.getItem(DK)||'null');if(d&&d.date===new Date().toDateString()&&ACTS[d.i]&&d.f){openModal(d.i,d.f);return}}catch(e){}busy=true;btn.disabled=true;wheel.classList.remove('done');stage.classList.add('spinning');
   out.innerHTML='<div class="roul-result-empty">두리가 고르는 중… <b>두구두구</b></div>';
   const i=Math.floor(Math.random()*N),jit=(Math.random()-.5)*SEG*.62;
   const from=rot,base=from-(((from%360)+360)%360);
@@ -1768,5 +1803,45 @@ showTab(mode,{noUrl:true});
   const n=ta.value.trim().length;cnt.className='q-count'+(on?'':' hidden')+(n>=55?' great':n>=35?' good':n>=10?' ok':'');
   cnt.textContent=n>=55?`${n}자 · 구체성 만점 구간이에요 👍`:n>=35?`${n}자 · 좋아요! 55자 이상이면 더 좋아요`:n>=10?`${n}자 · 35자 이상을 권장해요`:`${n}자 · 10자 이상 써야 제출할 수 있어요`};
  ta.addEventListener('input',upd);new MutationObserver(upd).observe(ta,{attributes:true,attributeFilter:['class','disabled']});upd();})();
+</script>
+<script>
+/* V24: 두리 점프 미니게임 — [시작]을 눌러야만 동작, 순위 없음(내 최고 점수만) */
+(function(){
+ const box=document.getElementById('duriGame'),cv=document.getElementById('dgCanvas'),over=document.getElementById('dgOver'),btn=document.getElementById('dgStart'),msg=document.getElementById('dgMsg'),sc=document.getElementById('dgScore'),bestEl=document.getElementById('dgBest');
+ if(!cv)return;const ctx=cv.getContext('2d');
+ const face=new Image();face.src=(document.getElementById('roulSpin')?.querySelector('img')||{}).src||'';
+ const BK='duri_jump_best_v1';let best=0;try{best=Number(localStorage.getItem(BK))||0}catch(e){}bestEl.textContent=best;
+ const BAD=['🔥','💧','⚡','🧩'],MSG=['불량 발생! 초물 확인 잊지 마세요 😅','앗, 기포 불량! 다시 도전 💪','크랙 발생! 표준 준수로 재도전 🔧','미성형 발견! 한 번 더 가볼까요?'];
+ let W=0,H=0,dpr=1,run=false,raf=0,last=0,t=0,score=0,speed=0,spawn=0,obs=[],dur={y:0,vy:0};
+ const G=()=>H-12,SIZE=()=>Math.min(30,H*.42);
+ function size(){const r=cv.getBoundingClientRect();dpr=Math.min(2,devicePixelRatio||1);W=r.width;H=r.height;cv.width=W*dpr;cv.height=H*dpr;ctx.setTransform(dpr,0,0,dpr,0,0);draw()}
+ function reset(){t=0;score=0;speed=150;spawn=0.9;obs=[];dur={y:0,vy:0};sc.textContent='0'}
+ const GRAV=1500;function jump(){if(!run)return;if(dur.y<=0.5){dur.vy=Math.sqrt(2*GRAV*Math.max(20,H-SIZE()-14))}}
+ function draw(){ctx.clearRect(0,0,W,H);
+  // 땅
+  ctx.strokeStyle='rgba(245,196,81,.55)';ctx.lineWidth=1.5;ctx.beginPath();ctx.moveTo(0,G()+.5);ctx.lineTo(W,G()+.5);ctx.stroke();
+  ctx.fillStyle='rgba(255,255,255,.18)';for(let x=(-t*speed)%22;x<W;x+=22){ctx.fillRect(x<0?x+22:x,G()+4,8,1.5)}
+  // 두리
+  const s=SIZE(),x=26,y=G()-s-dur.y;ctx.save();ctx.beginPath();ctx.arc(x+s/2,y+s/2,s/2,0,Math.PI*2);ctx.closePath();ctx.fillStyle='#fff';ctx.fill();ctx.clip();
+  if(face.complete&&face.naturalWidth)ctx.drawImage(face,x,y,s,s);ctx.restore();ctx.strokeStyle='#f5c451';ctx.lineWidth=2;ctx.beginPath();ctx.arc(x+s/2,y+s/2,s/2,0,Math.PI*2);ctx.stroke();
+  // 장애물
+  ctx.textAlign='center';ctx.textBaseline='bottom';for(const o of obs){ctx.font=`${o.s}px system-ui,"Apple Color Emoji","Segoe UI Emoji"`;ctx.fillText(o.e,o.x+o.s/2,o.ok?G()-o.lift:G()+2)}
+ }
+ function hit(o){const s=SIZE()*.72,dx=26+SIZE()*.14,dy=G()-SIZE()*.86-dur.y;const ox=o.x+o.s*.18,ow=o.s*.64,oy=o.ok?G()-o.lift-o.s*.85:G()-o.s*.8,oh=o.s*.7;return dx<ox+ow&&dx+s>ox&&dy<oy+oh&&dy+s>oy}
+ function end(){run=false;cancelAnimationFrame(raf);const f=Math.floor(score);if(f>best){best=f;try{localStorage.setItem(BK,best)}catch(e){};bestEl.textContent=best}
+  msg.innerHTML=(f>=best&&f>0?'🎉 최고 기록! ':'')+MSG[Math.floor(Math.random()*MSG.length)]+`<br><b>${f}점</b>`;btn.textContent='▶ 다시 시작';over.classList.remove('hide');box.classList.remove('playing');try{navigator.vibrate&&navigator.vibrate(60)}catch(e){}}
+ function loop(ts){if(!run)return;const dt=Math.min(.033,(ts-last)/1000||0);last=ts;t+=dt;speed=150+t*9;score+=dt*10;
+  dur.vy-=GRAV*dt;dur.y=Math.max(0,dur.y+dur.vy*dt);if(dur.y===0&&dur.vy<0)dur.vy=0;
+  spawn-=dt;if(spawn<=0){const ok=Math.random()<.22;const sz=ok?18:Math.min(24,H*.36);obs.push({x:W+10,s:sz,e:ok?'✅':BAD[Math.floor(Math.random()*BAD.length)],ok,lift:ok?SIZE()*.9:0});spawn=Math.max(.55,1.25-t*.02)+Math.random()*.7}
+  for(const o of obs)o.x-=speed*dt;obs=obs.filter(o=>o.x>-40);
+  for(const o of obs){if(!o.got&&hit(o)){if(o.ok){o.got=true;o.x=-99;score+=15}else return end()}}
+  sc.textContent=Math.floor(score);draw();raf=requestAnimationFrame(loop)}
+ function start(){reset();run=true;over.classList.add('hide');box.classList.add('playing');last=performance.now();raf=requestAnimationFrame(loop)}
+ btn.addEventListener('click',e=>{e.stopPropagation();start()});
+ box.addEventListener('pointerdown',e=>{if(run){e.preventDefault();jump()}});
+ document.addEventListener('visibilitychange',()=>{if(document.hidden&&run)end()});
+ new MutationObserver(()=>{if(document.getElementById('homeView').classList.contains('hidden')&&run)end();else requestAnimationFrame(size)}).observe(document.getElementById('homeView'),{attributes:true,attributeFilter:['class']});
+ addEventListener('resize',size);face.onload=draw;requestAnimationFrame(size);
+})();
 </script>
 </body></html>
