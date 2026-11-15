@@ -952,6 +952,15 @@ html:has(#homeView:not(.hidden)),body:has(#homeView:not(.hidden)){background:#f3
 html.home-lock,html.home-lock body{overflow:hidden!important;overscroll-behavior:none!important;height:100%}
 html.game-lock,html.game-lock body{overflow:hidden!important;overscroll-behavior:none!important;height:100%}
 .duri-game{touch-action:none!important;-webkit-touch-callout:none}
+
+/* V31: 진행 순서 테두리 · 1KM 완주 연출 */
+#homeView .home-order{border:1.5px solid rgba(245,196,81,.45)!important;border-radius:14px;padding:7px 9px 5px!important;background:rgba(255,255,255,.05)}
+#homeView .home-order-label{text-align:center;margin-bottom:3px!important;padding-bottom:4px;border-bottom:1px dashed rgba(245,196,81,.35)}
+#homeView .home-order li b{font-weight:800}
+.duri-game.won{box-shadow:0 0 0 3px #f5c451,0 0 24px rgba(245,196,81,.6)!important}
+.duri-game.won::after{content:"🎺 빠바바밤~! 1KM 완주! 🎺";position:absolute;left:0;right:0;top:26px;text-align:center;font-size:15px;font-weight:900;color:#f5c451;text-shadow:0 2px 8px rgba(0,0,0,.6);animation:winPop .6s cubic-bezier(.2,1.6,.4,1)}
+@keyframes winPop{from{transform:scale(.4);opacity:0}to{transform:none;opacity:1}}
+.dg-win{font-size:13.5px;font-weight:900;color:#f5c451}
 </style></head><body>
 
 <div id="homeView" class="hidden"><div class="wrap">
@@ -991,7 +1000,7 @@ html.game-lock,html.game-lock body{overflow:hidden!important;overscroll-behavior
   </section>
   <section class="card duri-game" id="duriGame" aria-label="두리 점프 미니게임">
     <canvas id="dgCanvas" aria-hidden="true"></canvas>
-    <div class="dg-hud"><span class="dg-title">🎮 두더지 점프 · 불량 피하기</span><span class="dg-score"><b id="dgScore">0m</b><small>최고 <em id="dgBest">0m</em></small></span></div>
+    <div class="dg-hud"><span class="dg-title">🎮 두더지 점프 · 1KM 완주 도전</span><span class="dg-score"><b id="dgScore">0m</b><small>최고 <em id="dgBest">0m</em></small></span></div>
     <div class="dg-over" id="dgOver"><div class="dg-msg" id="dgMsg">화면을 <b>톡!</b> 누르면 점프<br><span class="dg-legend"><i style="background:#ff4d4f"></i>버 <i style="background:#2ea8ff"></i>기포 <i style="background:#ffb020"></i>크랙 <i style="background:#a259ff"></i>미성형 · <i style="background:#ffe14d"></i>공중 이물은 점프 금지</span></div><button type="button" id="dgStart">▶ 시작</button></div>
   </section>
 </div></div>
@@ -1912,9 +1921,17 @@ showTab(mode,{noUrl:true});
    const air=2*Math.sqrt(2*GRAV*Math.min(H*.76,MW()*2.1))/GRAV;nextGap=speed*(air+(hard?0.22:0.3))+extra+Math.random()*speed*(dist<10?1.2:hard?.5:.75)+(dist<10?60:15)}
   for(const o of obs)o.x-=dx;obs=obs.filter(o=>o.x>-40);
   for(const o of obs){if(hit(o))return end()}
+  if(dist>=1000){dist=1000;return win()}
   sc.textContent=Math.floor(dist)+'m';draw();raf=requestAnimationFrame(loop)}
- function start(){size();reset();run=true;over.classList.add('hide');box.classList.add('playing');last=performance.now();raf=requestAnimationFrame(loop)}
- if(window.__MOCK)window.__dg={st:()=>({obs:obs.map(o=>({x:o.x,l:o.lift||0,s:o.st||1})),py,run,W,H,speed,t,dist}),jump};
+ function win(){run=false;cancelAnimationFrame(raf);sc.textContent='1000m';best=1000;try{localStorage.setItem(BK,best)}catch(e){};bestEl.textContent='1000m';
+  box.classList.remove('playing');box.classList.add('won');try{navigator.vibrate&&navigator.vibrate([80,60,80,60,200])}catch(e){}
+  const cols=['#f5c451','#ff4d4f','#2ea8ff','#2fd47a','#a259ff','#fff'],ps=Array.from({length:120},()=>({x:W/2,y:H*.6,vx:(Math.random()-.5)*9,vy:-Math.random()*7-3,s:2+Math.random()*3,c:cols[Math.floor(Math.random()*cols.length)],r:Math.random()*6}));
+  const t0=performance.now();(function f(ts){const k=(ts-t0)/2600;ctx.clearRect(0,0,W,H);ctx.fillStyle='rgba(245,196,81,.75)';ctx.fillRect(0,G(),W,2);const px=PX();pix(MOLE,W/2-6*px,G()-10*px-Math.abs(Math.sin(k*18))*14,px);
+   ps.forEach(p=>{p.vy+=.18;p.x+=p.vx;p.y+=p.vy;p.r+=.2;ctx.save();ctx.translate(p.x,p.y);ctx.rotate(p.r);ctx.fillStyle=p.c;ctx.fillRect(-p.s/2,-p.s/2,p.s,p.s*1.6);ctx.restore()});
+   if(k<1)requestAnimationFrame(f);else{msg.innerHTML='<span class="dg-win">🏆 1KM 완주! 축하합니다!</span><br>당신은 진정한 <b>우수 품질 마스터</b> 🎉';btn.textContent='▶ 다시 도전';over.classList.remove('hide');box.classList.remove('won')}})(t0);
+ }
+ function start(){size();reset();box.classList.remove('won');run=true;over.classList.add('hide');box.classList.add('playing');last=performance.now();raf=requestAnimationFrame(loop)}
+ if(window.__MOCK)window.__dg={st:()=>({obs:obs.map(o=>({x:o.x,l:o.lift||0,s:o.st||1})),py,run,W,H,speed,t,dist}),jump,setD:v=>{dist=v}};
  btn.addEventListener('click',e=>{e.stopPropagation();start()});
  box.addEventListener('pointerdown',e=>{if(run){e.preventDefault();jump()}});
  document.addEventListener('visibilitychange',()=>{if(document.hidden&&run)end()});
