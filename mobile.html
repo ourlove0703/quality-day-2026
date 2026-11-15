@@ -825,6 +825,13 @@ body:has(#exhibitionView:not(.hidden)) #exhibitionView>.wrap,body:has(#participa
 .qw-rules b{display:block;font-size:17px;color:#fff;line-height:1.2}.qw-rules small{display:block;font-size:10.5px;color:#a9c6de;margin-top:2px}
 .qw-btn{width:100%;padding:12px!important;border-radius:12px!important;font-size:14px!important}
 @media(prefers-reduced-motion:reduce){.qw-badge,.qw-mark,.qw-dots i,.qw-tiles span,.img-hint{animation:none!important}}
+
+/* V20: 참가 접수 단계 */
+.qw-join{width:100%;margin:0 0 12px;padding:14px!important;border-radius:14px!important;font-size:17px!important;font-weight:900;color:#0a1c38!important;background:linear-gradient(145deg,#ffdf8a,#f5c451 55%,#d39b26)!important;box-shadow:0 8px 20px rgba(245,196,81,.35);animation:joinPulse 1.8s ease-in-out infinite}
+@keyframes joinPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.03)}}
+.qwait.reg .qw-badge{background:linear-gradient(145deg,#7ff0b2,#2fd47a)}
+.qwait.joined .qw-mark{background:#2fd47a;font-size:0}.qwait.joined .qw-mark::after{content:"✓";font-size:18px}
+.qwait.reg .qw-tiles,.qwait.reg .qw-btn{display:none}
 </style></head><body>
 
 <div id="homeView" class="hidden"><div class="wrap">
@@ -892,9 +899,9 @@ body:has(#exhibitionView:not(.hidden)) #exhibitionView>.wrap,body:has(#participa
     </div>
     <div id="quizWaitGate" class="card hidden qwait" role="status" aria-live="polite">
       <div class="qw-badge" aria-hidden="true"><span class="qw-q">Q</span><span class="qw-mark">?</span></div>
-      <div class="qw-kicker">QUALITY QUIZ · READY</div>
-      <h2 class="qw-title">퀴즈 시작 대기 중<span class="qw-dots" aria-hidden="true"><i></i><i></i><i></i></span></h2>
-      <p class="qw-desc">진행자가 시작하면 <b>문제가 자동으로 열려요.</b><br>이 화면을 켜 두고 기다려 주세요!</p>
+      <div class="qw-kicker" id="qwKicker">QUALITY QUIZ · READY</div>
+      <h2 class="qw-title"><span id="qwTitle">퀴즈 시작 대기 중</span><span class="qw-dots" aria-hidden="true"><i></i><i></i><i></i></span></h2>
+      <p class="qw-desc" id="qwDesc">진행자가 시작하면 <b>문제가 자동으로 열려요.</b><br>이 화면을 켜 두고 기다려 주세요!</p><button type="button" id="qwJoin" class="btn qw-join hidden">참가 등록하기</button>
       <div class="qw-tiles" aria-hidden="true"><span>Q1</span><span>Q2</span><span>Q3</span><span>Q4</span><span>Q5</span><span>Q6</span><span>Q7</span><span>Q8</span><span>Q9</span><span>Q10</span><span class="fin">품질 한마디</span></div>
       <div class="qw-rules"><div><b>10</b><small>개인전 문제</small></div><div><b>⚡</b><small>정답 + 속도</small></div><div><b>TOP5</b><small>문제별 시상</small></div></div>
       <button class="btn cyan qw-btn" type="button" onclick="showTab('exhibition')">기다리는 동안 제품 전시관 보기 ›</button>
@@ -1323,6 +1330,7 @@ function renderHome(s){
   const finished=Boolean(qs.showAll)||Number(qs.currentQuestion)===0;
   let step=2,label="퀴즈 시작 전",title="접수하고 기다려 주세요",desc="QUIZ 탭에서 이름·소속을 입력해 두면, 진행자가 시작할 때 문제가 자동으로 열립니다.",btn="접수하러 가기 ▶";
   if(finished){step=5;label="결과 발표";title="결과 · 시상";desc="개인전 순위와 품질 한마디 우수작이 발표됩니다.";btn="결과 확인하기 ▶"}
+  else if(ok&&qs.started===false){step=2;label="참가 접수 중 · LIVE";title="지금 참가 등록하세요";desc="이름·소속을 등록해 두면 퀴즈가 시작될 때 Q1이 자동으로 열립니다.";btn="참가 등록하기 ▶"}
   else if(ok&&cq>=1&&cq<=QUESTIONS.length){step=3;label="퀴즈 진행 중 · LIVE";title=`지금 Q${cq} 풀 수 있어요`;desc="QUIZ 탭에서 바로 응답하세요. 한국어 / English";btn=`Q${cq} 풀러 가기 ▶`}
   else if(ok&&cq===QUALITY_STAGE){step=4;label="품질 한마디 접수 중";title="내가 생각하는 품질은?";desc="한두 문장으로 적어 보내주세요. 우수작은 시상합니다.";btn="품질 한마디 쓰러 가기 ▶"}
   else if(!ok&&cq>1){step=3;label="접수 마감 · 잠시 대기";title=`Q${Math.min(cq,QUESTIONS.length)} 정답 확인 중`;desc="다음 문제가 열리면 자동으로 표시됩니다.";btn="QUIZ 탭으로 이동 ▶"}
@@ -1369,7 +1377,12 @@ function qHtml(s){
 
  function renderCurrent(){
    const t=I18N[lang],qs=getQuizState(lastState);syncIdentity();
-    const started=Boolean(lastState?.is_open);quizArea.classList.toggle("hidden",!started);quizWaitGate.classList.toggle("hidden",started);identityBox.classList.toggle("hidden",!started);if(!started){pStateBadge.textContent="퀴즈 대기";pStateBadge.className="badge closed";return;}
+    const open=Boolean(lastState?.is_open),reg=open&&qs.started===false,started=open&&!reg;quizArea.classList.toggle("hidden",!started);quizWaitGate.classList.toggle("hidden",started);identityBox.classList.toggle("hidden",!started&&!reg);
+     if(!started){const joined=(lastRaw||[]).some(r=>(safeJson(r.action)||{}).type==="join");quizWaitGate.classList.toggle("reg",reg);quizWaitGate.classList.toggle("joined",reg&&joined);
+       if(reg&&!joined){qwKicker.textContent="REGISTRATION · OPEN";qwTitle.textContent="참가 접수 중";qwDesc.innerHTML="위에 <b>이름 · 소속</b>을 입력하고<br>아래 버튼을 눌러 참가 등록해 주세요!";qwJoin.classList.remove("hidden");pStateBadge.textContent="접수 중";pStateBadge.className="badge"}
+       else if(reg&&joined){qwKicker.textContent="REGISTERED · READY";qwTitle.textContent="등록 완료! 퀴즈 시작 대기";qwDesc.innerHTML="<b>"+esc(pName.value.trim())+"</b>님, 참가 등록이 완료됐어요.<br>진행자가 시작하면 <b>Q1이 자동으로 열려요.</b>";qwJoin.classList.add("hidden");pStateBadge.textContent="등록 완료";pStateBadge.className="badge";idCollapsed=true;syncIdentity()}
+       else{qwKicker.textContent="QUALITY QUIZ · READY";qwTitle.textContent="퀴즈 시작 대기 중";qwDesc.innerHTML="진행자가 접수를 시작하면 <b>참가 등록</b>이 열려요.<br>이 화면을 켜 두고 기다려 주세요!";qwJoin.classList.add("hidden");pStateBadge.textContent="퀴즈 대기";pStateBadge.className="badge closed"}
+       return;}
    pStateBadge.textContent=lastState?.is_open?t.open:t.closed;pStateBadge.className="badge"+(lastState?.is_open?"":" closed");
 
    if(qs.showAll||qs.currentQuestion===0){
@@ -1410,6 +1423,14 @@ function qHtml(s){
    else{pNextCheck.classList.add("hidden");if(!lastState?.is_open)note(t.closed,"notice error")}
  }
 
+ qwJoin.addEventListener("click",async()=>{
+   const t=I18N[lang],name=pName.value.trim(),dept=pDept.value.trim();
+   if(!name||!dept){qwDesc.innerHTML="<b style='color:#ffd166'>이름과 소속을 먼저 입력해 주세요.</b>";pName.focus();return}
+   try{qwJoin.disabled=true;qwJoin.textContent="등록 중…";if(!testId){localStorage.setItem("qd_individual_name",name);localStorage.setItem("qd_individual_dept",dept)}
+     await submitResponse({name,dept,answer:JSON.stringify({type:"join"}),action:JSON.stringify({pid,lang,type:"join",version:QUIZ_VERSION})});await refresh()}
+   catch(e){qwDesc.textContent="등록 실패: "+e.message}
+   finally{qwJoin.disabled=false;qwJoin.textContent="참가 등록하기"}
+ });
  pSubmit.addEventListener("click",async()=>{
    const t=I18N[lang],name=pName.value.trim(),dept=pDept.value.trim();
    if(!name||!dept)return note(t.required,"notice error");
@@ -1653,7 +1674,7 @@ showTab(mode,{noUrl:true});
   const p=document.createElement('div');p.id='mockPanel';
   p.innerHTML=`<button type="button" id="mpToggle">MOCK ▾</button><div class="mp hidden" id="mpBody"><b>로컬 테스트 모드 · 서버 미연결</b>
   <div class="ms" style="margin-bottom:6px">PC <b style="display:inline;color:#10233f">index.html?mock=1</b> 을 같은 Chrome 다른 탭에 열면 PC 진행자 버튼으로 진행됩니다. 혼자 테스트할 때는 아래 버튼을 쓰세요.</div>
-  <div class="mr"><button data-a="open">접수 시작</button><button data-a="close">접수 마감</button><button data-a="reveal">정답 공개/숨김</button></div>
+  <div class="mr"><button data-a="open">① 접수 시작</button><button data-a="qstart">② 퀴즈 시작(Q1)</button><button data-a="reveal">정답 공개/숨김</button></div>
   <div class="mr"><button data-a="prev">◀ 이전 문제</button><button data-a="next">다음 문제 ▶</button><button data-a="voice">품질 한마디</button><button data-a="end">결과 · 종료</button></div>
   <div class="mr"><button data-a="reset">처음부터 다시 (Q1 · 응답 초기화)</button></div>
   <div class="ms" id="mpStatus"></div><div class="ms" style="margin-top:4px;color:#e8590c">※ 참가자 화면의 [다음 문제 확인 ▶]을 누르면 진행자 대신 다음 문제로 넘어갑니다</div></div>`;
@@ -1664,19 +1685,20 @@ showTab(mode,{noUrl:true});
   const show=()=>{const d=load(),q=getQS(d);const t=q.showAll?'결과 · 종료':Number(q.currentQuestion)===QS()?'품질 한마디':'Q'+q.currentQuestion;
    p.querySelector('#mpStatus').textContent=`현재: ${t} · ${d.open?'접수 중':'접수 마감'}${q.reveal?' · 정답 공개':''} · 저장된 응답 ${d.responses.length}건`};
   const act={
-   open:d=>{d.open=true;setQS(d,{showAll:false})},
+   open:d=>{d.open=true;setQS(d,{currentQuestion:1,started:false,reveal:false,showAll:false})},
+   qstart:d=>{d.open=true;setQS(d,{currentQuestion:1,started:true,reveal:false,showAll:false})},
    close:d=>{d.open=false},
    reveal:d=>{setQS(d,{reveal:!getQS(d).reveal})},
    prev:d=>{const q=Math.min(Number(getQS(d).currentQuestion)||1,QN());setQS(d,{currentQuestion:Math.max(1,q-1),reveal:false,showAll:false})},
    next:d=>{setQS(d,{currentQuestion:Math.min(QN(),(Number(getQS(d).currentQuestion)||1)+1),reveal:false,showAll:false})},
    voice:d=>{d.open=true;setQS(d,{currentQuestion:QS(),reveal:false,showAll:false})},
    end:d=>{setQS(d,{showAll:true,reveal:false})},
-   reset:d=>{d.responses=[];d.open=true;setQS(d,{currentQuestion:1,reveal:false,showAll:false,qualityWinners:[]});try{pMsg.textContent='';pMsg.className=''}catch(e){}}
+   reset:d=>{d.responses=[];d.open=true;setQS(d,{currentQuestion:1,started:false,reveal:false,showAll:false,qualityWinners:[]});try{pMsg.textContent='';pMsg.className=''}catch(e){}}
   };
   p.querySelectorAll('[data-a]').forEach(b=>b.onclick=()=>{if(b.dataset.a==='reset'&&!confirm('테스트 응답과 진행 상태를 처음으로 돌릴까요?'))return;const d=load();act[b.dataset.a](d);save(d);show();if(window.__pull)window.__pull()});
   window.__mockShow=show;show();window.addEventListener('storage',()=>{show();if(window.__pull)window.__pull()});
   document.addEventListener('click',e=>{if(!e.target.closest||!e.target.closest('#pNextCheck'))return;const d=load(),q=Number(getQS(d).currentQuestion)||1;
-   if(q<QN())setQS(d,{currentQuestion:q+1,reveal:false,showAll:false});else if(q===QN())setQS(d,{currentQuestion:QS(),reveal:false});d.open=true;save(d);show()},true);
+   if(getQS(d).started===false)setQS(d,{started:true});else if(q<QN())setQS(d,{currentQuestion:q+1,reveal:false,showAll:false});else if(q===QN())setQS(d,{currentQuestion:QS(),reveal:false});d.open=true;save(d);show()},true);
  }
  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',build);else build();
 })();
