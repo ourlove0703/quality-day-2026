@@ -1050,6 +1050,8 @@ async function api(path,options={}){
 }
 async function getState(){const d=await api("/rest/v1/quality_day_state?id=eq.1&select=*");return d?.[0]||{is_open:false,winners:[]}}
 async function getResponses(limit=1200){return await api("/rest/v1/quality_day_responses?select=*&order=created_at.asc&limit="+limit)}
+/* V19: 참가자 휴대폰은 "내 응답"만 받아옴 (전송량 절감 · 화면 동작 동일) */
+async function getMyResponses(pid){const key=encodeURIComponent('"pid":"'+pid+'"');return await api("/rest/v1/quality_day_responses?select=id,name,dept,answer,action,created_at&action=like.*"+key+"*&order=created_at.asc&limit=60")}
 async function submitResponse(data){return await api("/rest/v1/quality_day_responses",{method:"POST",headers:{Prefer:"return=representation"},body:JSON.stringify(data)})}
 async function adminAction(pin,action){return await api("/rest/v1/rpc/quality_day_admin_action",{method:"POST",body:JSON.stringify({p_pin:String(pin),p_action:action})})}
 async function setWinners(pin,winners){return await api("/rest/v1/rpc/quality_day_admin_set_winners",{method:"POST",body:JSON.stringify({p_pin:String(pin),p_winners:winners})})}
@@ -1431,7 +1433,7 @@ function qHtml(s){
 
  pNextCheck.addEventListener("click",async()=>{const before=getQuizState(lastState).currentQuestion;await refresh();const after=getQuizState(lastState).currentQuestion;if(after===before)note(lang==="en"?"The host has not opened the next stage yet.":"진행자가 아직 다음 문제를 열지 않았습니다. 열리면 자동으로 전환됩니다.","notice")});
 
- async function refresh(){try{const[s,r]=await Promise.all([getState(),getResponses()]);lastState=s;lastRaw=r;renderCurrent();renderHome(s)}catch(e){homeFail();pStateBadge.textContent="Error";pStateBadge.className="badge closed";note("Supabase: "+e.message,"notice error")}}
+ async function refresh(){try{const[s,r]=await Promise.all([getState(),getMyResponses(pid)]);lastState=s;lastRaw=r;renderCurrent();renderHome(s)}catch(e){homeFail();pStateBadge.textContent="Error";pStateBadge.className="badge closed";note("Supabase: "+e.message,"notice error")}}
  applyLang();refresh();window.__pull=refresh;setInterval(()=>{if(document.hidden)return;if(mode==="participant"||mode==="home")refresh()},1200)
 }
 
