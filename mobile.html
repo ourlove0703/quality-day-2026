@@ -947,6 +947,11 @@ html:has(#homeView:not(.hidden)),body:has(#homeView:not(.hidden)){background:#f3
 #homeView .card,#homeView .duri-roulette,#homeView .duri-game{background:linear-gradient(165deg,#12305c 0%,#0c2246 55%,#0a1c38 100%)!important;border:1px solid #1d3f73!important;box-shadow:0 10px 24px rgba(10,28,56,.22)!important}
 #homeView .home-now.live{background:linear-gradient(165deg,#0f5a3a 0%,#0b3f2a 100%)!important;border-color:#2fd47a!important}
 #homeView .duri-banner{border-color:#d9e3f1!important;box-shadow:0 8px 20px rgba(10,28,56,.15)!important}
+
+/* V30: 홈 화면 고정 (게임 중 화면 밀림 방지) */
+html.home-lock,html.home-lock body{overflow:hidden!important;overscroll-behavior:none!important;height:100%}
+html.game-lock,html.game-lock body{overflow:hidden!important;overscroll-behavior:none!important;height:100%}
+.duri-game{touch-action:none!important;-webkit-touch-callout:none}
 </style></head><body>
 
 <div id="homeView" class="hidden"><div class="wrap">
@@ -1914,6 +1919,16 @@ showTab(mode,{noUrl:true});
  document.addEventListener('visibilitychange',()=>{if(document.hidden&&run)end()});
  new MutationObserver(()=>{if(document.getElementById('homeView').classList.contains('hidden')){if(run)end()}else requestAnimationFrame(size)}).observe(document.getElementById('homeView'),{attributes:true,attributeFilter:['class']});
  addEventListener('resize',size);requestAnimationFrame(size);
+})();
+</script>
+<script>
+/* V30: 홈이 한 화면에 들어오면 스크롤·당겨서 새로고침 막기 / 게임 중에는 항상 막기 */
+(function(){const hv=document.getElementById('homeView'),game=document.getElementById('duriGame'),root=document.documentElement;if(!hv)return;
+ const sync=()=>{const on=!hv.classList.contains('hidden');let fits=false;if(on){root.classList.remove('home-lock');window.scrollTo(0,0);const tb=document.getElementById('tabBar').getBoundingClientRect().top,last=(game||hv).getBoundingClientRect().bottom;fits=last<=tb+4}root.classList.toggle('home-lock',on&&fits);root.classList.toggle('game-lock',on&&!!game&&game.classList.contains('playing'))};
+ new MutationObserver(sync).observe(hv,{attributes:true,attributeFilter:['class']});if(game)new MutationObserver(sync).observe(game,{attributes:true,attributeFilter:['class']});
+ addEventListener('resize',()=>setTimeout(sync,50));setTimeout(sync,300);
+ if(game){game.addEventListener('touchmove',e=>e.preventDefault(),{passive:false});game.addEventListener('dblclick',e=>e.preventDefault())}
+ document.addEventListener('touchmove',e=>{if(root.classList.contains('game-lock')||root.classList.contains('home-lock')){if(!e.target.closest('#luckModal'))e.preventDefault()}},{passive:false});
 })();
 </script>
 </body></html>
