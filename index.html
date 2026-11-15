@@ -2794,6 +2794,12 @@ async function exDelete(id){if(!exSession||!confirm('제품 '+id+'를 삭제하�
 if(mode==="live"){
  const fit=()=>{const v=document.getElementById("liveView"),k=Math.min(innerWidth/1920,innerHeight/1080);v.style.transform=`scale(${k})`;v.style.left=Math.max(0,(innerWidth-1920*k)/2)+"px";v.style.top=Math.max(0,(innerHeight-1080*k)/2)+"px"};
  fit();addEventListener("resize",fit);
+ /* V3: 오른쪽 위 메뉴(홈으로·라이브·제품전시관·관리자)가 참여 인원·접수 상태를 가리지 않도록 화면 크기에 맞춰 왼쪽으로 밀기 */
+ const clearNav=()=>{const head=document.querySelector(".live-head"),st=document.querySelector(".live-stats"),nav=document.getElementById("modeNav"),v=document.getElementById("liveView");
+  if(!head||!st||!nav||nav.classList.contains("hidden"))return;head.style.paddingRight="";
+  const k=v.getBoundingClientRect().width/1920||1,n=nav.getBoundingClientRect(),r=st.getBoundingClientRect();
+  if(r.top<n.bottom){const over=r.right-(n.left-14);if(over>0)head.style.paddingRight=(parseFloat(getComputedStyle(head).paddingRight)||0)+over/k+"px"}};
+ addEventListener("resize",()=>requestAnimationFrame(clearNav));setTimeout(clearNav,0);addEventListener("load",clearNav);
 }
 
 /* LIVE 문제 문구 자동 맞춤: 높이 150px 안에 들어오도록 글자 크기를 단계적으로 줄임 */
