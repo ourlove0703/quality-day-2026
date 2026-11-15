@@ -877,6 +877,13 @@ html:has(#homeView:not(.hidden)),body:has(#homeView:not(.hidden)){background:#07
 #homeView .roul-pick .roul-pick-no{color:#fff!important;opacity:.8}
 #homeView .roul-pick .roul-pick-title{color:#fff}
 #homeView .roul-luck{background:rgba(47,212,122,.15);border-color:rgba(47,212,122,.45);color:#7ff0b2}
+
+/* ===== V23 하단 탭바: 연한 스카이블루 + 뚜렷한 구분선 ===== */
+.tabbar{background:linear-gradient(180deg,#eaf3ff 0%,#dcebff 100%)!important;border-top:1.5px solid #b9d2f2!important;box-shadow:0 -6px 18px rgba(16,45,90,.14)!important;backdrop-filter:none!important}
+.tabbar .tab{color:#5b7699!important}
+.tabbar .tab+.tab::before{top:12px!important;bottom:12px!important;width:1.5px!important;background:#b9d2f2!important}
+.tabbar .tab.on{color:#123a73!important}
+.tabbar .tab.on .ti{background:#ffffff!important;box-shadow:0 2px 8px rgba(18,58,115,.18),inset 0 0 0 1.5px #9fc0ea}
 </style></head><body>
 
 <div id="homeView" class="hidden"><div class="wrap">
