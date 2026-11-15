@@ -668,6 +668,78 @@ body:has(#exhibitionView:not(.hidden)) #exhibitionView>.wrap,body:has(#participa
 .dn-done{max-height:0;overflow:hidden;opacity:0;transition:all .4s;text-align:center;font-size:13px;font-weight:900;color:#9a6b00;background:linear-gradient(135deg,#fff3c4,#ffe08a);border-radius:10px}
 .dn-done.show{max-height:60px;opacity:1;margin-top:10px;padding:9px}
 @media(prefers-reduced-motion:reduce){.talk-duri,.rw-bulbs i,.rw-hub::after,.talk-tap{animation:none!important}}
+
+/* ===== V16 화면 높이 최적화 (QR로 브라우저에서 열 때 · 주소창 포함 S23 기준 360×600) ===== */
+@media (max-height:820px){
+ .wrap{padding:10px 12px 12px!important}
+ /* 홈 */
+ .duri-banner{margin-bottom:8px!important;border-radius:14px}
+ .duri-banner img{height:clamp(70px,15vh,110px);object-fit:cover;object-position:50% 45%}
+ .home-now{padding:10px 12px!important;margin-bottom:8px!important;display:grid;grid-template-columns:1fr auto;align-items:center;column-gap:10px}
+ .home-now-top{grid-column:1;font-size:11px}
+ .home-now-title{grid-column:1;font-size:17px;margin:3px 0 0}
+ .home-now-desc{display:none}
+ .home-now-btn{grid-column:2;grid-row:1 / span 2;width:auto;margin:0;padding:11px 13px;font-size:13.5px;border-radius:12px;white-space:nowrap}
+ .duri-roulette{padding:10px 12px 10px!important}
+ .roul-kicker{font-size:10px}.roul-head h2{font-size:15.5px}
+ .rw-stamps{padding:4px 7px}
+ .roul-body{margin-top:4px}
+ .rw-stage{--S:min(45vw,31vh,186px)}
+ .home-order-label{margin-bottom:2px}
+ .home-order li{padding:4px 0}
+ .home-order li b{font-size:12.5px}
+ .roul-result{margin-top:8px}
+ .roul-result-empty{padding:6px 0 0}
+ .roul-pick{padding:7px 10px!important}
+ .roul-pick-e{width:32px;height:32px;font-size:17px;border-radius:10px}
+ .roul-pick .roul-pick-title{font-size:15px}
+ .roul-pick-msg{font-size:11.5px!important;margin-top:4px!important}
+ /* 퀴즈 */
+ .pbar{margin-bottom:8px!important}
+ .pcard{padding:12px!important;margin-bottom:0!important}
+ #idFields{display:grid;grid-template-columns:1fr 1fr;column-gap:8px;align-items:end}
+ #idFields label{margin:0 0 4px!important;font-size:12px}
+ #idFields #nameLabel{grid-column:1;grid-row:1}#idFields #deptLabel{grid-column:2;grid-row:1}
+ #idFields #pName{grid-column:1;grid-row:2}#idFields #pDept{grid-column:2;grid-row:2}
+ #idFields input,#idFields select{padding:9px 10px!important;font-size:14px!important;min-height:0;height:40px}
+ #idFields #idDone{grid-column:1 / -1;margin-top:6px;padding:8px}
+ #identityBox{margin-bottom:10px}
+ .id-chip{margin-bottom:8px!important;padding:7px 12px!important;font-size:14px!important}
+ .qhead{margin-bottom:8px!important;gap:10px!important}
+ .quiz-step{padding:5px 11px!important}.quiz-step .qn{font-size:24px!important}
+ .quiz-question{font-size:19px!important;line-height:1.35!important;margin-bottom:3px!important}
+ .quiz-question-en{font-size:12px!important;line-height:1.35!important;margin-bottom:9px!important}
+ .option-grid{gap:7px!important}
+ .option-btn{min-height:0!important;padding:8px 11px!important;border-radius:12px!important}
+ .option-main{font-size:15.5px!important}
+ .option-letter{width:27px!important;height:27px!important;margin-right:9px!important;font-size:13px!important}
+ .option-sub{margin:1px 0 0 36px!important;font-size:11px!important}
+ .option-grid.short{grid-template-columns:1fr 1fr!important}
+ html[lang=ko] .option-grid:not(.short) .option-sub{display:none}
+ html[lang=ko] .option-grid:not(.short) .option-btn{padding:10px 11px!important}
+ .quality-text{min-height:96px!important;font-size:15px!important}
+ .submit-dock{margin-top:6px!important;padding-top:8px!important}
+ #pSubmit{min-height:48px!important;font-size:17px!important;border-radius:14px!important}
+ .participant-next{margin-top:6px!important;padding:9px!important}
+ /* 마스코트 */
+ #mascotView .duri-home-poster{padding:10px!important;margin-bottom:8px!important}
+ #mascotView .duri-tag{display:none}
+ #mascotView .duri-home-poster-heading{margin-bottom:6px}
+ #mascotView .duri-home-poster-heading h2{margin:0!important;font-size:16px}
+ #mascotView .ex-slide-hint{margin-top:4px;font-size:11px}
+ .duri-talk{padding:9px 12px!important;margin-bottom:8px!important;gap:10px}
+ .talk-duri{width:62px;height:62px;border-width:2.5px}
+ .talk-tap{font-size:10px;padding:1px 6px}
+ .talk-bubble{padding:7px 10px}.talk-bubble small{font-size:10px;margin-bottom:2px}.talk-bubble b{font-size:13px;line-height:1.4}
+ .duri-name{padding:10px 12px!important}
+ .dn-head{margin-bottom:7px}.dn-head b{font-size:14.5px}.dn-head span{font-size:10.5px}
+ .dn-card{height:88px}
+ .dn-f b{font-size:30px}.dn-f small{font-size:9.5px;margin-top:4px}
+ .dn-b small{font-size:10px;line-height:1.3}.dn-b b{font-size:11px}.dn-b b.long{font-size:8.8px}
+ .dn-done.show{margin-top:7px;padding:6px;font-size:12px}
+ /* 전시관 */
+ #exHomePane .ex-company-overview{margin-bottom:8px}
+}
 </style></head><body>
 
 <div id="homeView" class="hidden"><div class="wrap">
@@ -1482,5 +1554,11 @@ showTab(mode,{noUrl:true});
  }
  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',build);else build();
 })();
+</script>
+<script>
+/* V16: 보기 문구가 모두 짧으면 2열 배치(화면 높이 절약) */
+(function(){const g=document.getElementById('pOptions');if(!g)return;
+ const f=()=>{const m=[...g.querySelectorAll('.option-main span:last-child')];g.classList.toggle('short',m.length===4&&m.every(x=>x.textContent.trim().length<=9))};
+ new MutationObserver(f).observe(g,{childList:true});f()})();
 </script>
 </body></html>
