@@ -589,6 +589,16 @@ body.live-body #lAllView .live-warm-en{grid-column:2;margin-top:2px!important;fo
 .aw-vrow .pt{font-size:calc(var(--k,1)*40px);font-weight:900;line-height:1;color:#1f55c8;white-space:nowrap}
 .aw-vrow .pt small{margin-left:2px;font-size:calc(var(--k,1)*16px);color:#546c88}
 .aw-empty{padding:16px 20px;border-radius:14px;background:rgba(255,255,255,.1);border:1px dashed rgba(255,255,255,.3);color:#d3e4f5;font-size:18px}
+
+/* V2: LIVE 진행 바 */
+.host-controls button.toggle{background:#1a7f4b;border-color:#2fbf72}
+.host-controls button.toggle.open{background:#9b2c2c;border-color:#e05252}
+.host-controls button:disabled{opacity:.55;cursor:default}
+.host-keys{font-size:11px;color:#7f9bb5;padding:0 4px 0 6px;white-space:nowrap;border-left:1px solid #2c4c69}
+.host-controls{transition:opacity .25s ease,transform .25s ease}
+.host-controls.auto{opacity:0;transform:translateY(14px);pointer-events:none}
+.host-controls.auto.show,.host-controls.auto:focus-within{opacity:1;transform:none;pointer-events:auto}
+@media(max-width:950px){.host-controls.auto{opacity:1;transform:none;pointer-events:auto}}
 </style></head><body>
 
 <div id="homeView" class="hidden"><div class="wrap">
@@ -2584,7 +2594,7 @@ if(mode==="live"){
  async function refreshLive(){
    try{
      const[s,raw]=await Promise.all([getState(),getResponses()]);liveState=s;liveRaw=raw;
-     const qr=quizRows(raw),quality=qualityRows(raw),qs=getQuizState(s);lCount.textContent=participantCount(raw);lState.textContent=s.is_open?"참여중":"마감";document.body.classList.toggle("live-waiting",!s.is_open);
+     const qr=quizRows(raw),quality=qualityRows(raw),qs=getQuizState(s);lCount.textContent=participantCount(raw);lState.textContent=s.is_open?"참여중":"마감";window.__syncToggle&&window.__syncToggle();document.body.classList.toggle("live-waiting",!s.is_open);
      if(qs.showAll||qs.currentQuestion===0){lSingleView.classList.add("hidden");lAllView.classList.remove("hidden");renderAll(qr,quality,qs);hostStatus.textContent="시상 · 전체 결과"}
      else{
        lAllView.classList.add("hidden");lSingleView.classList.remove("hidden");const cq=Number(qs.currentQuestion)||1;
@@ -2599,6 +2609,34 @@ if(mode==="live"){
    try{const current=getQuizState(liveState),qw=qualityWinners===null?current.qualityWinners:qualityWinners;await setWinners(p,makeQuizState(q,reveal,showAll,qw));await refreshLive()}
    catch(e){hostStatus.textContent="전환 실패: "+e.message;if(String(e.message).includes("INVALID_PIN"))sessionStorage.removeItem("qd_individual_host_pin")}
  }
+ /* V2: LIVE 진행 바 — 접수 시작/마감 · 자동 숨김 · 키보드 단축키 */
+ const hostToggle=document.createElement("button");hostToggle.type="button";hostToggle.id="hostToggle";hostToggle.className="toggle";hostToggle.textContent="▶ 접수 시작";
+ hostControls.insertBefore(hostToggle,hostPrev);
+ const hostKeys=document.createElement("span");hostKeys.className="host-keys";hostKeys.textContent="S 접수 · ← → 이동 · Space 정답";hostControls.appendChild(hostKeys);
+ window.__syncToggle=()=>{const open=!!(liveState&&liveState.is_open);hostToggle.textContent=open?"■ 접수 마감":"▶ 접수 시작";hostToggle.classList.toggle("open",open)};
+ hostToggle.addEventListener("click",async()=>{
+   const p=getHostPin();if(!p)return;const open=!!(liveState&&liveState.is_open);
+   try{hostToggle.disabled=true;
+     if(open){await adminAction(p,"CLOSE")}
+     else{await adminAction(p,"START");const has=Array.isArray(liveState?.winners)&&liveState.winners.some(v=>v&&v.kind==="warmup_state");if(!has)await setWinners(p,makeQuizState(1,false,false,[]))}
+     await refreshLive()}
+   catch(e){hostStatus.textContent="접수 전환 실패: "+e.message;if(String(e.message).includes("PIN"))sessionStorage.removeItem("qd_individual_host_pin")}
+   finally{hostToggle.disabled=false}
+ });
+ // 자동 숨김: 화면 아래쪽에 마우스를 가져가면 나타남
+ hostControls.classList.add("auto");let hostHideT=null;
+ const hostShow=(ms=2600)=>{hostControls.classList.add("show");clearTimeout(hostHideT);hostHideT=setTimeout(()=>{if(!hostControls.matches(":hover"))hostControls.classList.remove("show")},ms)};
+ document.addEventListener("mousemove",e=>{if(e.clientY>innerHeight-170)hostShow()});
+ hostControls.addEventListener("mouseleave",()=>hostShow(900));
+ // 단축키 (발표용 리모컨 PageUp/PageDown 포함)
+ document.addEventListener("keydown",e=>{
+   if(document.body.classList.contains("qd-gated"))return;
+   const t=e.target;if(t&&(t.tagName==="INPUT"||t.tagName==="TEXTAREA"||t.isContentEditable))return;
+   if(e.ctrlKey||e.altKey||e.metaKey)return;
+   const k=e.key;let b=null;
+   if(k==="ArrowRight"||k==="PageDown")b=hostNext;else if(k==="ArrowLeft"||k==="PageUp")b=hostPrev;else if(k===" "||k==="Spacebar")b=hostReveal;else if(k==="s"||k==="S"||k==="ㄴ")b=hostToggle;
+   if(!b)return;e.preventDefault();if(b.disabled)return;hostShow();b.click();
+ });
  hostPrev.addEventListener("click",()=>{const qs=getQuizState(liveState);if(qs.showAll||qs.currentQuestion===0)return hostSet(QUALITY_STAGE,false,false);const q=Number(qs.currentQuestion||1);hostSet(Math.max(1,q-1),false,false)});
  hostNext.addEventListener("click",()=>{const qs=getQuizState(liveState);if(qs.showAll||qs.currentQuestion===0)return;const q=Number(qs.currentQuestion||1);if(q>=QUALITY_STAGE)return hostSet(0,true,true);hostSet(q+1,false,false)});
  hostReveal.addEventListener("click",async()=>{const qs=getQuizState(liveState);if(qs.showAll||qs.currentQuestion===0)return;const q=Number(qs.currentQuestion||1);if(q===QUALITY_STAGE&&!qs.reveal){const quality=qualityRows(liveRaw);if(quality.length<5){hostStatus.textContent="TOP5 선정을 위해 최소 5개의 품질 한마디가 필요합니다.";return}return hostSet(QUALITY_STAGE,true,false,autoEvaluateQuality(quality))}hostSet(q,!qs.reveal,false)});
