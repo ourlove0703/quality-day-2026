@@ -1898,7 +1898,7 @@ showTab(mode,{noUrl:true});
   {n:'크랙',c:'#ffb020',m:["....XXX.","...XXX..","..XXX...",".XXXXXX.","...XXX..","..XXX...",".XXX....","XXX....."]},
   {n:'미성형',c:'#a259ff',m:["XXXXXXXX","XXXXXXXX","XXXX....","XXXX....","XXXXXX..","XXXXXX..","XXXXXXXX","XXXXXXXX"]}];
  function pix(map,x,y,px,col){for(let r=0;r<map.length;r++){const row=map[r];for(let c=0;c<row.length;c++){const ch=row[c];if(ch==='.')continue;ctx.fillStyle=col||PAL[ch];ctx.fillRect(Math.round(x+c*px),Math.round(y+r*px),Math.ceil(px),Math.ceil(px))}}}
- const SHOW=1000/700;   // 화면 표시 거리 = 실제 거리 × 1.43 → 실제 700m 지점에서 '1KM 완주'
+ const SHOW=1000/600;   // 화면 표시 거리 = 실제 거리 × 1.67 → 실제 600m 지점에서 '1KM 완주'
  const AIR={n:'공중 이물',c:'#ffe14d',m:["..XXXX..",".XXXXXX.","XX.XX.XX","XXXXXXXX","XXXXXXXX",".X.XX.X.","X..XX..X","........"]};
  const BK='duri_jump_best_m_v1';let best=0;try{best=Number(localStorage.getItem(BK))||0}catch(e){}bestEl.textContent=best+'m';
  const END=['불량 발생! 다시 도전 💪','앗, 불량에 걸렸어요! 한 번 더?','초물 확인처럼 집중! 다시 가볼까요?','아깝다! 조금만 더 가면 신기록?'];
