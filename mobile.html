@@ -929,6 +929,24 @@ html:has(#homeView:not(.hidden)),body:has(#homeView:not(.hidden)){background:#07
 .duri-game canvas{image-rendering:pixelated}
 .dg-legend{display:inline-flex;align-items:center;gap:3px;font-size:10.5px;color:#a9bfdb;margin-top:2px}
 .dg-legend i{display:inline-block;width:8px;height:8px;border-radius:2px;margin-left:3px}
+
+/* V27 */
+#homeView .roul-result-empty{white-space:nowrap;font-size:11.5px!important;overflow:hidden;text-overflow:ellipsis}
+.lk-nav{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:10px}
+.lk-nav button{width:40px;height:36px;border-radius:10px;border:1px solid #d5dfeb;background:#fff;color:#10233f;font-size:22px;font-weight:900;cursor:pointer}
+.lk-nav button:disabled{opacity:.3;cursor:default}
+.lk-nav span{flex:1;display:flex;align-items:center;justify-content:center;gap:5px;font-size:12px;color:#6a4fd1}
+.lk-nav span i{width:7px;height:7px;border-radius:50%;background:#d5dfeb}.lk-nav span i.on{width:18px;border-radius:7px;background:#6a4fd1}
+.lk-nav span b{margin-left:6px;font-size:12px}
+.dg-legend{flex-wrap:wrap}
+
+/* ===== V28 홈: 바깥 배경은 화이트, 안쪽 카드는 네이비 유지 ===== */
+html:has(#homeView:not(.hidden)),body:has(#homeView:not(.hidden)){background:#f3f6fb!important}
+#homeView{background:linear-gradient(180deg,#ffffff 0%,#f3f6fb 100%)!important}
+#homeView .wrap::before{display:none}
+#homeView .card,#homeView .duri-roulette,#homeView .duri-game{background:linear-gradient(165deg,#12305c 0%,#0c2246 55%,#0a1c38 100%)!important;border:1px solid #1d3f73!important;box-shadow:0 10px 24px rgba(10,28,56,.22)!important}
+#homeView .home-now.live{background:linear-gradient(165deg,#0f5a3a 0%,#0b3f2a 100%)!important;border-color:#2fd47a!important}
+#homeView .duri-banner{border-color:#d9e3f1!important;box-shadow:0 8px 20px rgba(10,28,56,.15)!important}
 </style></head><body>
 
 <div id="homeView" class="hidden"><div class="wrap">
@@ -963,13 +981,13 @@ html:has(#homeView:not(.hidden)),body:has(#homeView:not(.hidden)){background:#07
         </ol>
       </div>
     </div>
-    <div class="roul-result" id="roulResult"><div class="roul-result-empty">가운데 <b>두리</b>를 누르면 오늘 실천할 행동과 <b>🍀 행운 메시지</b>가 나와요!</div></div>
+    <div class="roul-result" id="roulResult"><div class="roul-result-empty">가운데 <b>두리</b>를 눌러 <b>🍀 행운 카드</b>를 뽑아요!</div></div>
     <canvas class="rw-confetti" id="rwConfetti" aria-hidden="true"></canvas>
   </section>
   <section class="card duri-game" id="duriGame" aria-label="두리 점프 미니게임">
     <canvas id="dgCanvas" aria-hidden="true"></canvas>
     <div class="dg-hud"><span class="dg-title">🎮 두더지 점프 · 불량 피하기</span><span class="dg-score"><b id="dgScore">0m</b><small>최고 <em id="dgBest">0m</em></small></span></div>
-    <div class="dg-over" id="dgOver"><div class="dg-msg" id="dgMsg">화면을 <b>톡!</b> 누르면 점프<br><span class="dg-legend"><i style="background:#ff4d4f"></i>버 <i style="background:#2ea8ff"></i>기포 <i style="background:#ffb020"></i>크랙 <i style="background:#a259ff"></i>미성형 피하기</span></div><button type="button" id="dgStart">▶ 시작</button></div>
+    <div class="dg-over" id="dgOver"><div class="dg-msg" id="dgMsg">화면을 <b>톡!</b> 누르면 점프<br><span class="dg-legend"><i style="background:#ff4d4f"></i>버 <i style="background:#2ea8ff"></i>기포 <i style="background:#ffb020"></i>크랙 <i style="background:#a259ff"></i>미성형 · <i style="background:#ffe14d"></i>공중 이물은 점프 금지</span></div><button type="button" id="dgStart">▶ 시작</button></div>
   </section>
 </div></div>
 
@@ -1685,20 +1703,26 @@ const DURI_ACTS=[
  const modal=document.createElement('div');modal.id='luckModal';modal.setAttribute('role','dialog');modal.setAttribute('aria-modal','true');document.body.appendChild(modal);
  const closeModal=()=>modal.classList.remove('open');
  modal.addEventListener('click',e=>{if(e.target===modal||e.target.closest('[data-x]'))closeModal();if(e.target.closest('[data-again]')){closeModal();setTimeout(()=>btn.click(),250)}});
+ const CARDK='duri_roulette_cards_v1';let cards=[];try{cards=(JSON.parse(localStorage.getItem(CARDK)||'[]')||[]).filter(c=>c&&ACTS[c.i]&&c.f)}catch(e){}
+ if(!cards.length){try{const d=JSON.parse(localStorage.getItem(DK)||'null');if(d&&ACTS[d.i]&&d.f)cards=[{i:d.i,f:d.f}]}catch(e){}}
+ let cardIdx=0;
+ function openCard(k){if(!cards.length)return;cardIdx=Math.max(0,Math.min(cards.length-1,k));const c=cards[cardIdx];openModal(c.i,c.f)}
+ modal.addEventListener('click',e=>{const nv=e.target.closest('[data-nav]');if(nv){e.stopPropagation();openCard(cardIdx+Number(nv.dataset.nav))}});
+ let tsx=null;modal.addEventListener('touchstart',e=>{tsx=e.touches[0].clientX},{passive:true});modal.addEventListener('touchend',e=>{if(tsx===null)return;const dx=e.changedTouches[0].clientX-tsx;tsx=null;if(Math.abs(dx)>50&&cards.length>1)openCard(cardIdx+(dx<0?1:-1))},{passive:true});
  function openModal(i,f){const a=ACTS[i],full=stamps.length===N;
   modal.innerHTML=`<div class="lk-card" style="--c:${a.c}"><button type="button" class="lk-x" data-x aria-label="닫기">✕</button>
-   <div class="lk-top"><img src="${btn.querySelector('img').src}" alt=""><div><small>🍀 오늘의 행운 카드</small><b>${new Date().toLocaleDateString('ko-KR',{month:'long',day:'numeric'})} · 두리가 뽑았어요</b></div></div>
+   <div class="lk-top"><img src="${btn.querySelector('img').src}" alt=""><div><small>🍀 오늘의 행운 카드</small><b>${cards.length?cardIdx+1:1}번째 행운 카드 · 두리가 뽑았어요</b></div></div>
    <div class="lk-act"><span class="lk-e">${a.e}</span><div><small>오늘의 실천 ${a.n}</small><b>${a.t}</b><p>${a.msg}</p></div></div>
    <div class="lk-msg"><small>행운 메시지</small><p>${f.m}</p></div>
    <div class="lk-row"><div class="lk-meter"><small>품질 행운지수</small><div class="lk-bar"><i style="width:${f.p}%"></i></div><b>${f.p}%</b></div><div class="lk-item"><small>행운의 아이템</small><b>${f.it}</b></div></div>
    <div class="lk-stamp">${spins>=MAXS?"🎉 행운 뽑기 3번 완성! 마지막 카드를 간직하세요":`행운 뽑기 ${spins} / ${MAXS} · 남은 기회 ${MAXS-spins}번`}</div>
-   <div class="lk-btns one"><button type="button" class="ok" data-x>좋아요!</button></div>
+   ${cards.length>1?`<div class="lk-nav"><button type="button" data-nav="-1" ${cardIdx===0?"disabled":""}>‹</button><span>${cards.map((_,k)=>`<i class="${k===cardIdx?"on":""}"></i>`).join("")}<b>${cardIdx+1} / ${cards.length}번째 카드</b></span><button type="button" data-nav="1" ${cardIdx===cards.length-1?"disabled":""}>›</button></div>`:""}<div class="lk-btns one"><button type="button" class="ok" data-x>좋아요!</button></div>
    <div class="lk-tip">📸 캡처해서 동료에게 자랑해 보세요</div></div>`;
   modal.classList.add('open')}
  let lastFortune=null;
  function show(i,fresh,f){const a=ACTS[i];lastFortune={i,f};
-  out.innerHTML=`<button type="button" class="roul-pick roul-mini${fresh?' fresh':''}" style="--c:${a.c}"><span class="roul-pick-e">${a.e}</span><span class="roul-pick-txt"><span class="roul-pick-no">오늘의 실천 ${a.n}</span><span class="roul-pick-title">${a.t}</span></span><span class="roul-luck">🍀 카드 ›</span></button>`;
-  out.querySelector('.roul-mini').onclick=()=>f&&openModal(i,f);
+  out.innerHTML=`<button type="button" class="roul-pick roul-mini${fresh?' fresh':''}" style="--c:${a.c}"><span class="roul-pick-e">${a.e}</span><span class="roul-pick-txt"><span class="roul-pick-no">오늘의 실천 ${a.n}</span><span class="roul-pick-title">${a.t}</span></span><span class="roul-luck">🍀 카드 ${Math.max(1,cards.length)}장 ›</span></button>`;
+  out.querySelector('.roul-mini').onclick=()=>openCard(cards.length-1);
   wheel.querySelectorAll('.rw-seg').forEach(el=>el.classList.toggle('win',Number(el.dataset.i)===i));wheel.classList.add('done');stage.style.setProperty('--win',a.c);if(typeof syncLeft==='function')syncLeft()}
  try{const d=JSON.parse(localStorage.getItem(DK)||'null');if(d&&ACTS[d.i]&&spins>0){setRot(-(d.i*SEG+SEG/2));show(d.i,false,d.f||null)}}catch(e){}syncLeft();
  // 꽃가루
@@ -1711,7 +1735,7 @@ const DURI_ACTS=[
  const buzz=p=>{try{navigator.vibrate&&navigator.vibrate(p)}catch(e){}};
  btn.addEventListener('click',()=>{
   if(busy)return;
-  if(spins>=MAXS){try{const d=JSON.parse(localStorage.getItem(DK)||'null');if(d&&ACTS[d.i]&&d.f)openModal(d.i,d.f)}catch(e){}return}busy=true;btn.disabled=true;wheel.classList.remove('done');stage.classList.add('spinning');
+  if(spins>=MAXS){openCard(cards.length-1);return}busy=true;btn.disabled=true;wheel.classList.remove('done');stage.classList.add('spinning');
   out.innerHTML='<div class="roul-result-empty">두리가 고르는 중… <b>두구두구</b></div>';
   const i=Math.floor(Math.random()*N),jit=(Math.random()-.5)*SEG*.62;
   const from=rot,base=from-(((from%360)+360)%360);
@@ -1722,8 +1746,8 @@ const DURI_ACTS=[
    if(k<1)return requestAnimationFrame(f);
    stage.classList.remove('spinning');
    const had=stamps.includes(i);if(!had){stamps.push(i);try{localStorage.setItem(SK,JSON.stringify(stamps))}catch(e){}}
-   drawStamps(had?null:i);const fo={m:pick(LUCK),it:pick(ITEMS),p:72+Math.floor(Math.random()*29)};show(i,true,fo);confetti(ACTS[i].c);buzz([25,40,60]);
-   setTimeout(()=>openModal(i,fo),650);
+   drawStamps(had?null:i);const fo={m:pick(LUCK),it:pick(ITEMS),p:72+Math.floor(Math.random()*29)};cards.push({i,f:fo});try{localStorage.setItem(CARDK,JSON.stringify(cards))}catch(e){}show(i,true,fo);confetti(ACTS[i].c);buzz([25,40,60]);
+   setTimeout(()=>openCard(cards.length-1),650);
    spins++;try{localStorage.setItem(CK,spins)}catch(e){}syncLeft();try{localStorage.setItem(DK,JSON.stringify({date:new Date().toDateString(),i,f:fo}))}catch(e){}
    busy=false;btn.disabled=false})(t0);
  });
@@ -1850,33 +1874,40 @@ showTab(mode,{noUrl:true});
   {n:'크랙',c:'#ffb020',m:["....XXX.","...XXX..","..XXX...",".XXXXXX.","...XXX..","..XXX...",".XXX....","XXX....."]},
   {n:'미성형',c:'#a259ff',m:["XXXXXXXX","XXXXXXXX","XXXX....","XXXX....","XXXXXX..","XXXXXX..","XXXXXXXX","XXXXXXXX"]}];
  function pix(map,x,y,px,col){for(let r=0;r<map.length;r++){const row=map[r];for(let c=0;c<row.length;c++){const ch=row[c];if(ch==='.')continue;ctx.fillStyle=col||PAL[ch];ctx.fillRect(Math.round(x+c*px),Math.round(y+r*px),Math.ceil(px),Math.ceil(px))}}}
+ const AIR={n:'공중 이물',c:'#ffe14d',m:["..XXXX..",".XXXXXX.","XX.XX.XX","XXXXXXXX","XXXXXXXX",".X.XX.X.","X..XX..X","........"]};
  const BK='duri_jump_best_m_v1';let best=0;try{best=Number(localStorage.getItem(BK))||0}catch(e){}bestEl.textContent=best+'m';
  const END=['불량 발생! 다시 도전 💪','앗, 불량에 걸렸어요! 한 번 더?','초물 확인처럼 집중! 다시 가볼까요?','아깝다! 조금만 더 가면 신기록?'];
  let W=0,H=0,dpr=1,run=false,raf=0,last=0,t=0,dist=0,speed=0,nextGap=0,obs=[],py=0,vy=0,buffer=0,frame=0;
  const GRAV=1000,PX=()=>Math.max(2.2,Math.min(3,H/30)),MW=()=>12*PX(),G=()=>H-10;
  function size(){const r=cv.getBoundingClientRect();if(!r.width)return;dpr=Math.min(2,devicePixelRatio||1);W=r.width;H=r.height;cv.width=W*dpr;cv.height=H*dpr;ctx.setTransform(dpr,0,0,dpr,0,0);ctx.imageSmoothingEnabled=false;draw()}
- const spd=t=>t<25?115+t*1.8:160+(t-25)*7+Math.pow(Math.max(0,t-40),1.35)*1.2;   // 처음 25초 완만 → 이후 가속
- function reset(){t=0;dist=0;speed=spd(0);obs=[];py=0;vy=0;buffer=0;nextGap=W*.75;sc.textContent='0m'}
- function doJump(){vy=Math.sqrt(2*GRAV*Math.min(H*.7,MW()*2))}
+ const spd=t=>t<5?140:150+(t-5)*7+Math.pow(Math.max(0,t-25),1.3)*1.6;   // 처음 5초 천천히 → 점점 가속
+ let warned=false,warnT=0;function reset(){t=0;dist=0;speed=spd(0);obs=[];py=0;vy=0;buffer=0;nextGap=W*.75;warned=false;warnT=0;sc.textContent='0m'}
+ function doJump(){vy=Math.sqrt(2*GRAV*Math.min(H*.76,MW()*2.1))}
  function jump(){if(!run)return;if(py<=0.5)doJump();else buffer=0.14}   // 착지 직전 터치도 인정
  function draw(){ctx.clearRect(0,0,W,H);
   ctx.fillStyle='rgba(245,196,81,.75)';ctx.fillRect(0,G(),W,2);
   ctx.fillStyle='rgba(255,255,255,.22)';const off=(dist*40)%26;for(let x=-off;x<W;x+=26)ctx.fillRect(x,G()+6,10,2);
   const px=PX();pix((run&&py<=0&&Math.floor(frame*8)%2)?MOLE2:MOLE,24,G()-12*px+2*px-py+px,px);
-  for(const o of obs)pix(o.t.m,o.x,G()-8*o.px,o.px,o.t.c);
+  for(const o of obs){for(let k=0;k<(o.st||1);k++)pix(o.t.m,o.x,G()-(o.lift||0)-8*o.px*(k+1),o.px,o.t.c)}
+  if(warnT>0){ctx.fillStyle='rgba(255,77,79,.9)';ctx.font='900 11px system-ui';ctx.textAlign='center';ctx.textBaseline='top';ctx.fillText('⚠ 노란 공중 이물은 점프 금지!',W/2,4)}
  }
- function hit(o){const px=PX(),mx=24+3*px,mw=6*px,my=G()-10*px-py+px,mh=8*px;const ox=o.x+o.px*2,ow=o.px*4,oy=G()-8*o.px+o.px*2.5,oh=o.px*5.5;return mx<ox+ow&&mx+mw>ox&&my<oy+oh&&my+mh>oy}
+ function hit(o){const px=PX(),mx=24+3*px,mw=6*px,my=G()-10*px-py+px,mh=8*px;const st=o.st||1,lf=o.lift||0;const ox=o.x+o.px*2,ow=o.px*4,top=(st>1?o.px*5:o.px*2.5),oy=G()-lf-8*o.px*st+top,oh=8*o.px*st-top-(lf?o.px*2.5:0);return mx<ox+ow&&mx+mw>ox&&my<oy+oh&&my+mh>oy}
  function end(){run=false;cancelAnimationFrame(raf);const m=Math.floor(dist);const nb=m>best;if(nb){best=m;try{localStorage.setItem(BK,best)}catch(e){};bestEl.textContent=best+'m'}
   msg.innerHTML=(nb&&m>0?'🎉 최고 기록! ':'')+END[Math.floor(Math.random()*END.length)]+`<br><b>${m}m</b> 달렸어요`;btn.textContent='▶ 다시 시작';over.classList.remove('hide');box.classList.remove('playing');try{navigator.vibrate&&navigator.vibrate(60)}catch(e){}}
  function loop(ts){if(!run)return;const dt=Math.min(.033,(ts-last)/1000||0);last=ts;t+=dt;frame+=dt;speed=Math.min(520,spd(t));const dx=speed*dt;dist+=dx/40;
   vy-=GRAV*dt;py=Math.max(0,py+vy*dt);if(py===0&&vy<0){vy=0;if(buffer>0){doJump();buffer=0}}if(buffer>0)buffer-=dt;
-  nextGap-=dx;if(nextGap<=0){const px=Math.max(2.2,Math.min(2.8,H/34));obs.push({x:W+4,px,t:OB[Math.floor(Math.random()*OB.length)]});
-   const air=2*Math.sqrt(2*GRAV*Math.min(H*.7,MW()*2))/GRAV;nextGap=speed*(air+0.35)+Math.random()*speed*(t<25?1.1:.8)+ (t<25?60:20)}
+  if(warnT>0)warnT-=dt;
+  nextGap-=dx;if(nextGap<=0){const px=Math.max(2.2,Math.min(2.8,H/34)),rnd=OB[Math.floor(Math.random()*OB.length)],r=Math.random();let extra=0;
+   if(t>=22&&r<.22){obs.push({x:W+4,px,t:AIR,lift:12*PX()+6});if(!warned){warned=true;warnT=2.2}extra=40}       // 공중 이물: 점프하면 부딪힘
+   else if(t>=15&&r<.42){obs.push({x:W+4,px,t:rnd,st:2});extra=20}                                                   // 2층 불량: 높이 점프
+   else if(t>=8&&r<.62){obs.push({x:W+4,px,t:rnd});obs.push({x:W+4+px*8+px*3,px,t:OB[Math.floor(Math.random()*OB.length)]});extra=px*11} // 연속 불량
+   else obs.push({x:W+4,px,t:rnd});
+   const air=2*Math.sqrt(2*GRAV*Math.min(H*.76,MW()*2.1))/GRAV;nextGap=speed*(air+0.3)+extra+Math.random()*speed*(t<5?1.2:.75)+(t<5?60:15)}
   for(const o of obs)o.x-=dx;obs=obs.filter(o=>o.x>-40);
   for(const o of obs){if(hit(o))return end()}
   sc.textContent=Math.floor(dist)+'m';draw();raf=requestAnimationFrame(loop)}
  function start(){size();reset();run=true;over.classList.add('hide');box.classList.add('playing');last=performance.now();raf=requestAnimationFrame(loop)}
- if(window.__MOCK)window.__dg={st:()=>({obs:obs.map(o=>o.x),py,run,W,H,speed,t,dist}),jump};
+ if(window.__MOCK)window.__dg={st:()=>({obs:obs.map(o=>({x:o.x,l:o.lift||0,s:o.st||1})),py,run,W,H,speed,t,dist}),jump};
  btn.addEventListener('click',e=>{e.stopPropagation();start()});
  box.addEventListener('pointerdown',e=>{if(run){e.preventDefault();jump()}});
  document.addEventListener('visibilitychange',()=>{if(document.hidden&&run)end()});
