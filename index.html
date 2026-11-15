@@ -2756,7 +2756,7 @@ if(mode==="live"){
  hostControls.insertBefore(hostToggle,hostPrev);
  const hostKeys=document.createElement("span");hostKeys.className="host-keys";hostKeys.textContent="S 접수 · ← → 이동 · Space 정답";hostControls.appendChild(hostKeys);
  window.__syncToggle=()=>{const open=!!(liveState&&liveState.is_open);hostToggle.textContent=open?"■ 접수 마감":"▶ 접수 시작";hostToggle.classList.toggle("open",open);
-   const fresh=!(Array.isArray(liveState?.winners)&&liveState.winners.some(v=>v&&v.kind==="warmup_state"));document.body.classList.toggle("live-fresh",fresh);
+   const qs0=getQuizState(liveState),fresh=!open&&!(liveRaw&&liveRaw.length)&&(Number(qs0.currentQuestion)||1)===1&&!qs0.reveal&&!qs0.showAll;document.body.classList.toggle("live-fresh",fresh);
    const sb=document.getElementById("lStateBox");if(sb)sb.dataset.s=open?"open":"closed"};
  /* V5: 포스터 아래 [퀴즈 시작] → 3·2·1 카운트다운 → 접수 시작 + Q1 */
  const liveStartBtn=document.getElementById("liveStartBtn"),cd=document.getElementById("liveCountdown"),cdNum=document.getElementById("lcNum");
