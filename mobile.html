@@ -740,6 +740,62 @@ body:has(#exhibitionView:not(.hidden)) #exhibitionView>.wrap,body:has(#participa
  /* 전시관 */
  #exHomePane .ex-company-overview{margin-bottom:8px}
 }
+
+/* ===== V17 ===== */
+/* 확대보기 좌우 넘기기 */
+#exLightbox .lb-nav{display:none;position:absolute;top:50%;transform:translateY(-50%);z-index:2;width:44px;height:44px;border-radius:50%;border:0;background:rgba(255,255,255,.88);color:#102a47;font-size:30px;line-height:1;font-weight:900;box-shadow:0 4px 14px rgba(0,0,0,.4);cursor:pointer}
+#exLightbox .lb-nav.prev{left:8px}#exLightbox .lb-nav.next{right:8px}
+#exLightbox.group .lb-nav{display:block}#exLightbox.group.zoom .lb-nav{display:none}
+#exLightbox .lb-dots{position:absolute;left:0;right:0;bottom:18px;display:flex;justify-content:center;gap:8px;pointer-events:none}
+#exLightbox .lb-dots i{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.35)}#exLightbox .lb-dots i.on{width:22px;border-radius:8px;background:#ffd166}
+#exLightbox .lb-scroll{align-items:center!important}
+#exLightbox .lb-bar>span:last-child{white-space:nowrap;flex:none}#exLightbox .lb-bar #lbTitle{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-right:8px}
+#exLightbox.group .lb-dots::after{content:"좌우로 넘겨 보세요";position:absolute;bottom:16px;left:0;right:0;text-align:center;color:#a9c6de;font-size:12px;font-weight:700}
+/* 클릭 유도 */
+.ex-cta{position:relative;overflow:visible;animation:ctaGlow 2.2s ease-in-out infinite}
+@keyframes ctaGlow{0%,100%{box-shadow:0 10px 24px rgba(16,45,90,.2),0 0 0 0 rgba(255,209,102,0)}50%{box-shadow:0 10px 24px rgba(16,45,90,.2),0 0 0 6px rgba(255,209,102,.45)}}
+.tap-hint{position:absolute;font-style:normal;font-weight:900;white-space:nowrap;pointer-events:none;z-index:3}
+.ex-cta .tap-hint{right:14px;top:-13px;background:#ffd166;color:#10233f;font-size:12px;padding:3px 9px;border-radius:999px;box-shadow:0 4px 10px rgba(0,0,0,.2);animation:tapBob 1s ease-in-out infinite}
+@keyframes tapBob{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+.dn-card{position:relative}
+.dn-hint{left:50%;bottom:-9px;transform:translateX(-50%);background:#ffd166;color:#10233f;font-size:10.5px;padding:2px 8px;border-radius:999px;box-shadow:0 3px 8px rgba(0,0,0,.2);animation:tapBob2 1s ease-in-out infinite;display:none}
+@keyframes tapBob2{0%,100%{transform:translate(-50%,0)}50%{transform:translate(-50%,-4px)}}
+.dn-cards:not(.touched) .dn-card:first-child .dn-hint{display:block}
+.dn-cards:not(.touched) .dn-card:not(.flip) .dn-f{animation:dnWiggle 2.4s ease-in-out infinite}
+.dn-cards:not(.touched) .dn-card:nth-child(2) .dn-f{animation-delay:.15s}.dn-cards:not(.touched) .dn-card:nth-child(3) .dn-f{animation-delay:.3s}.dn-cards:not(.touched) .dn-card:nth-child(4) .dn-f{animation-delay:.45s}
+@keyframes dnWiggle{0%,80%,100%{transform:rotate(0)}85%{transform:rotate(-4deg)}90%{transform:rotate(4deg)}95%{transform:rotate(-2deg)}}
+.dn-card.flip .dn-hint{display:none!important}
+/* 룰렛 결과 (한 줄) */
+.roul-mini{appearance:none;width:100%;display:flex!important;align-items:center;gap:10px;text-align:left;cursor:pointer;font:inherit}
+.roul-mini .roul-pick-txt{flex:1}
+.roul-luck{flex:none;font-size:11px;font-weight:900;color:#1a7f4b;background:#e9f9ef;border:1px solid #bfe8cf;border-radius:10px;padding:5px 8px;line-height:1.25;text-align:center}
+/* 행운 카드 */
+#luckModal{position:fixed;inset:0;z-index:400;display:none;align-items:center;justify-content:center;padding:16px;background:rgba(6,18,36,.62);backdrop-filter:blur(3px)}
+#luckModal.open{display:flex;animation:lkFade .25s ease-out}
+@keyframes lkFade{from{opacity:0}to{opacity:1}}
+.lk-card{position:relative;width:min(100%,360px);max-height:calc(100vh - 32px);overflow:auto;border-radius:22px;padding:16px 16px 12px;background:linear-gradient(170deg,#fffdf4 0%,#fff 45%);border:2px solid #ffd166;box-shadow:0 20px 50px rgba(0,0,0,.35);animation:lkPop .45s cubic-bezier(.2,1.5,.4,1)}
+@keyframes lkPop{from{transform:scale(.7) rotate(-3deg);opacity:0}to{transform:none;opacity:1}}
+.lk-x{position:absolute;right:10px;top:10px;width:30px;height:30px;border-radius:50%;border:0;background:#f1f4f9;color:#45597a;font-weight:900;cursor:pointer}
+.lk-top{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.lk-top img{width:46px;height:46px;border-radius:50%;border:2.5px solid #ffd166;object-fit:cover}
+.lk-top small{display:block;font-size:12px;font-weight:900;color:#1a7f4b}.lk-top b{display:block;font-size:13px;color:#45597a}
+.lk-act{display:flex;gap:10px;align-items:flex-start;padding:10px 12px;border-radius:14px;background:color-mix(in srgb,var(--c) 10%,#fff);border:1.5px solid color-mix(in srgb,var(--c) 40%,#fff)}
+.lk-e{flex:none;width:40px;height:40px;border-radius:12px;background:var(--c);display:flex;align-items:center;justify-content:center;font-size:21px}
+.lk-act small{display:block;font-size:10.5px;font-weight:900;color:var(--c)}.lk-act b{display:block;font-size:17px;color:#10233f}.lk-act p{margin:2px 0 0;font-size:12px;color:#4f6482;line-height:1.45}
+.lk-msg{margin-top:10px;padding:12px;border-radius:14px;background:linear-gradient(135deg,#eafaf0,#f6fff9);border:1.5px dashed #7fd3a2}
+.lk-msg small{display:block;font-size:11px;font-weight:900;color:#1a7f4b;margin-bottom:3px}.lk-msg p{margin:0;font-size:16px;font-weight:900;line-height:1.45;color:#10233f;word-break:keep-all}
+.lk-row{display:grid;grid-template-columns:1.1fr 1fr;gap:8px;margin-top:10px}
+.lk-row>div{padding:9px 10px;border-radius:12px;background:#f6f8fc;border:1px solid #e3e9f2}
+.lk-row small{display:block;font-size:10.5px;font-weight:900;color:#7f93ab;margin-bottom:4px}
+.lk-meter{display:grid;grid-template-columns:1fr auto;grid-template-rows:auto auto;column-gap:6px;align-items:center}.lk-meter small{grid-column:1 / -1}
+.lk-bar{height:8px;border-radius:8px;background:#e3e9f2;overflow:hidden}.lk-bar i{display:block;height:100%;border-radius:8px;background:linear-gradient(90deg,#36c8ff,#2fd47a)}
+.lk-meter b{font-size:15px;color:#1a7f4b}.lk-item b{font-size:14px;color:#10233f}
+.lk-stamp,.lk-full{margin-top:10px;text-align:center;font-size:12px;color:#6a4fd1;font-weight:700}.lk-full{color:#9a6b00;background:linear-gradient(135deg,#fff3c4,#ffe08a);border-radius:10px;padding:7px}
+.lk-btns{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
+.lk-btns button{border:1px solid #d5dfeb;background:#fff;color:#2b3f5c;border-radius:12px;padding:12px;font-weight:900;font-size:14px;cursor:pointer}
+.lk-btns button.ok{background:#10233f;border-color:#10233f;color:#ffd166}
+.lk-tip{text-align:center;font-size:11px;color:#8a9ab0;margin-top:8px}
+@media(prefers-reduced-motion:reduce){.ex-cta,.ex-cta .tap-hint,.dn-hint,.dn-f{animation:none!important}}
 </style></head><body>
 
 <div id="homeView" class="hidden"><div class="wrap">
@@ -755,7 +811,7 @@ body:has(#exhibitionView:not(.hidden)) #exhibitionView>.wrap,body:has(#participa
 
   <!-- 두리 룰렛 + 진행 순서 -->
   <section class="card duri-roulette" id="duriRoulette" aria-label="두리 룰렛과 행사 진행 순서">
-    <div class="roul-head"><div><div class="roul-kicker">DURI ROULETTE</div><h2>오늘의 실천행동 뽑기</h2></div><div class="rw-stamps" id="rwStamps" title="실천 도장"><small>실천 도장</small><span id="rwStampDots"></span></div></div>
+    <div class="roul-head"><div><div class="roul-kicker">DURI ROULETTE · 🍀 행운 뽑기</div><h2>오늘의 실천 + 행운 메시지</h2></div><div class="rw-stamps" id="rwStamps" title="실천 도장"><small>실천 도장</small><span id="rwStampDots"></span></div></div>
     <div class="roul-body">
       <div class="rw-stage" id="rwStage">
         <div class="rw-bulbs" id="rwBulbs" aria-hidden="true"></div>
@@ -774,7 +830,7 @@ body:has(#exhibitionView:not(.hidden)) #exhibitionView>.wrap,body:has(#participa
         </ol>
       </div>
     </div>
-    <div class="roul-result" id="roulResult"><div class="roul-result-empty">가운데 <b>두리</b>를 누르면 룰렛이 돌아가요</div></div>
+    <div class="roul-result" id="roulResult"><div class="roul-result-empty">가운데 <b>두리</b>를 누르면 오늘 실천할 행동과 <b>🍀 행운 메시지</b>가 나와요!</div></div>
     <canvas class="rw-confetti" id="rwConfetti" aria-hidden="true"></canvas>
   </section>
 </div></div>
@@ -832,7 +888,7 @@ body:has(#exhibitionView:not(.hidden)) #exhibitionView>.wrap,body:has(#participa
   </section>
   <section class="card duri-name" aria-label="DURI 이름의 비밀">
     <div class="dn-head"><b>DURI 이름의 비밀</b><span>카드를 눌러 뒤집어 보세요 · <em id="dnCount">0 / 4</em></span></div>
-    <div class="dn-cards"><button type="button" class="dn-card" aria-pressed="false" style="--c:#1c69b7"><span class="dn-in"><span class="dn-f"><b>D</b><small>눌러보기</small></span><span class="dn-b"><b>Data</b><small>데이터로 확인하고 근거로 판단한다</small></span></span></button><button type="button" class="dn-card" aria-pressed="false" style="--c:#2a9d4b"><span class="dn-in"><span class="dn-f"><b>U</b><small>눌러보기</small></span><span class="dn-b"><b>Unity</b><small>모두가 하나 되어 함께한다</small></span></span></button><button type="button" class="dn-card" aria-pressed="false" style="--c:#e58a1f"><span class="dn-in"><span class="dn-f"><b>R</b><small>눌러보기</small></span><span class="dn-b"><b class="long">Responsibility</b><small>내 공정은 내가 책임지고 지킨다</small></span></span></button><button type="button" class="dn-card" aria-pressed="false" style="--c:#6a4fd1"><span class="dn-in"><span class="dn-f"><b>I</b><small>눌러보기</small></span><span class="dn-b"><b class="long">Improvement</b><small>끊임없이 개선하여 성장한다</small></span></span></button></div>
+    <div class="dn-cards"><button type="button" class="dn-card" aria-pressed="false" style="--c:#1c69b7"><span class="dn-in"><span class="dn-f"><b>D</b><small>눌러보기</small></span><em class="tap-hint dn-hint" aria-hidden="true">👆 톡!</em><span class="dn-b"><b>Data</b><small>데이터로 확인하고 근거로 판단한다</small></span></span></button><button type="button" class="dn-card" aria-pressed="false" style="--c:#2a9d4b"><span class="dn-in"><span class="dn-f"><b>U</b><small>눌러보기</small></span><span class="dn-b"><b>Unity</b><small>모두가 하나 되어 함께한다</small></span></span></button><button type="button" class="dn-card" aria-pressed="false" style="--c:#e58a1f"><span class="dn-in"><span class="dn-f"><b>R</b><small>눌러보기</small></span><span class="dn-b"><b class="long">Responsibility</b><small>내 공정은 내가 책임지고 지킨다</small></span></span></button><button type="button" class="dn-card" aria-pressed="false" style="--c:#6a4fd1"><span class="dn-in"><span class="dn-f"><b>I</b><small>눌러보기</small></span><span class="dn-b"><b class="long">Improvement</b><small>끊임없이 개선하여 성장한다</small></span></span></button></div>
     <div class="dn-done" id="dnDone">🎉 DURI 완성! 데이터로 · 하나 되어 · 책임지고 · 개선해요</div>
   </section>
 </div></div>
@@ -859,7 +915,7 @@ body:has(#exhibitionView:not(.hidden)) #exhibitionView>.wrap,body:has(#participa
       <div class="ex-dots" id="exDots" aria-hidden="true"><i class="on"></i><i></i><i></i></div>
       <div class="ex-slide-hint">← 옆으로 넘겨 보세요 · 사진을 누르면 크게 볼 수 있어요 →</div>
     </section>
-    <button type="button" class="ex-cta" id="exOpenList"><span class="ex-cta-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 3 2.5 20h19L12 3z"/><path d="M12 10v4.5"/><circle cx="12" cy="17.3" r=".6" fill="currentColor"/></svg></span><span class="ex-cta-txt"><b>제품별 불량사례 · 품질 POINT</b><small>전시제품 <span id="exTotal">0</span>종 · 검색 · 사진 보기</small></span><i aria-hidden="true">›</i></button>
+    <button type="button" class="ex-cta" id="exOpenList"><span class="ex-cta-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 3 2.5 20h19L12 3z"/><path d="M12 10v4.5"/><circle cx="12" cy="17.3" r=".6" fill="currentColor"/></svg></span><span class="ex-cta-txt"><b>제품별 불량사례 · 품질 POINT</b><small>전시제품 <span id="exTotal">0</span>종 · 검색 · 사진 보기</small></span><i aria-hidden="true">›</i><span class="tap-hint" aria-hidden="true">👆 클릭!</span></button>
   </section>
   <section id="exListPane" class="hidden">
     <div class="ex-list-top"><button type="button" class="ex-back" id="exListBack">‹ 주요 생산품</button><b>불량사례 전시관</b></div>
@@ -1406,15 +1462,25 @@ window.__exInit=function(){exSearch.addEventListener('input',exRender);exGroup.a
  window.addEventListener('resize',()=>{sl.scrollLeft=cur*sl.clientWidth});
  setCur(0);
  // lightbox
- const lb=document.createElement('div');lb.id='exLightbox';lb.innerHTML='<div class="lb-bar"><span id="lbTitle"></span><span><button type="button" id="lbZoom">확대 / 축소</button> <button type="button" id="lbClose">닫기 ✕</button></span></div><div class="lb-scroll"><img id="lbImg" alt=""></div>';document.body.appendChild(lb);
+ const lb=document.createElement('div');lb.id='exLightbox';lb.innerHTML='<div class="lb-bar"><span id="lbTitle"></span><span><button type="button" id="lbZoom">확대 / 축소</button> <button type="button" id="lbClose">닫기 ✕</button></span></div><div class="lb-scroll"><img id="lbImg" alt=""></div><button type="button" class="lb-nav prev" id="lbPrev" aria-label="이전">‹</button><button type="button" class="lb-nav next" id="lbNext" aria-label="다음">›</button><div class="lb-dots" id="lbDots"></div>';document.body.appendChild(lb);
  const lbImg=lb.querySelector('#lbImg'),lbTitle=lb.querySelector('#lbTitle');
- window.__openLB=function(src,alt,title){lbImg.src=src;lbImg.alt=alt||'';lbTitle.textContent=title||'';lb.classList.add('open');document.body.style.overflow='hidden'};
- const close=()=>{lb.classList.remove('open','zoom');document.body.style.overflow=''};
+ let lbGroup=null,lbIdx=0;
+ const lbDots=lb.querySelector('#lbDots');
+ const lbShow=i=>{if(!lbGroup)return;lbIdx=(i+lbGroup.length)%lbGroup.length;const g=lbGroup[lbIdx];lbImg.src=g.src;lbImg.alt=g.alt||'';lbTitle.textContent=g.title||'';lb.querySelector('.lb-scroll').scrollTo(0,0);
+  lbDots.innerHTML=lbGroup.map((_,k)=>`<i class="${k===lbIdx?'on':''}"></i>`).join('');};
+ window.__openLB=function(src,alt,title){lbGroup=null;lb.classList.remove('group');lbDots.innerHTML='';lbImg.src=src;lbImg.alt=alt||'';lbTitle.textContent=title||'';lb.classList.add('open');document.body.style.overflow='hidden'};
+ const lbOpenGroup=(group,i)=>{lbGroup=group;lb.classList.add('open','group');document.body.style.overflow='hidden';lbShow(i)};
+ lb.querySelector('#lbPrev').onclick=()=>lbShow(lbIdx-1);lb.querySelector('#lbNext').onclick=()=>lbShow(lbIdx+1);
+ let tx=null,ty=0;
+ lb.addEventListener('touchstart',e=>{if(!lbGroup||lb.classList.contains('zoom')||e.touches.length>1){tx=null;return}tx=e.touches[0].clientX;ty=e.touches[0].clientY},{passive:true});
+ lb.addEventListener('touchend',e=>{if(tx===null)return;const dx=e.changedTouches[0].clientX-tx,dy=e.changedTouches[0].clientY-ty;tx=null;if(Math.abs(dx)>45&&Math.abs(dx)>Math.abs(dy)*1.3)lbShow(lbIdx+(dx<0?1:-1))},{passive:true});
+ document.addEventListener('keydown',e=>{if(!lb.classList.contains('open')||!lbGroup)return;if(e.key==='ArrowRight')lbShow(lbIdx+1);if(e.key==='ArrowLeft')lbShow(lbIdx-1)});
+ const close=()=>{const wasGroup=!!lbGroup;lb.classList.remove('open','zoom','group');document.body.style.overflow='';lbGroup=null;try{if(wasGroup&&typeof go==='function')go(Math.max(0,lbIdx))}catch(e){}};
  lb.querySelector('#lbClose').onclick=close;
  lb.querySelector('#lbZoom').onclick=()=>lb.classList.toggle('zoom');
  lbImg.addEventListener('dblclick',()=>lb.classList.toggle('zoom'));
  document.addEventListener('keydown',e=>{if(e.key==='Escape')close()});
- sl.querySelectorAll('img').forEach((im,i)=>im.addEventListener('click',()=>{lbImg.src=im.src;lbImg.alt=im.alt;lbTitle.textContent=tabs[i].textContent;lb.classList.add('open');document.body.style.overflow='hidden'}));
+ const slImgs=[...sl.querySelectorAll('img')];slImgs.forEach((im,i)=>im.addEventListener('click',()=>{lbIdx=i;lbOpenGroup(slImgs.map((x,k)=>({src:x.src,alt:x.alt,title:(tabs[k]?tabs[k].textContent:'')+` (${k+1}/${slImgs.length})`})),i)}));
 })();
 
 
@@ -1449,10 +1515,28 @@ const DURI_ACTS=[
  let rot=0,busy=false;
  const setRot=r=>{rot=r;rotor.style.transform=`rotate(${r}deg)`};
  const segAtPointer=r=>Math.floor((((-r)%360+360)%360)/SEG)%N;
- function show(i,fresh){const a=ACTS[i],full=stamps.length===N;
-  out.innerHTML=`<div class="roul-pick${fresh?' fresh':''}" style="--c:${a.c}"><div class="roul-pick-row"><span class="roul-pick-e">${a.e}</span><div class="roul-pick-txt"><span class="roul-pick-no">오늘의 실천 ${a.n}</span><span class="roul-pick-title">${a.t}</span></div></div><div class="roul-pick-msg">${full?'🎉 실천 도장 7개 완성! 오늘부터 <b>품질 실천 마스터</b>예요.':a.msg}</div></div>`;
+ const LUCK=["오늘은 초물부터 완벽! 첫 단추가 술술 풀리는 날이에요.","측정값이 공차 한가운데로 쏙! 오늘 하루도 정중앙이에요.","기본을 지킨 덕분에 뜻밖의 칭찬이 찾아올 예정이에요.","오늘 발견한 작은 이상 하나가 큰 불량을 막아요. 눈썰미 최고!","불량 제로, 야근 제로! 퇴근길이 가벼운 하루예요.","동료에게 건넨 한마디가 오늘의 행운을 두 배로 만들어요.","점심 메뉴 선택 성공률 100%! 오후 컨디션도 합격이에요.","5Why의 다섯 번째 '왜'에서 정답을 찾는 날이에요.","설비도 기분 좋은 날! 오늘은 알람 없이 순항해요.","체크시트 한 칸 한 칸이 행운을 쌓고 있어요.","오늘의 당신은 걸어 다니는 표준서! 모두가 믿고 따라요.","안전모를 쓰는 순간 행운 버프가 적용됩니다.","고객의 '감사합니다' 한마디가 기다리고 있어요.","작은 개선 아이디어가 큰 박수로 돌아와요.","산포 없이 안정적인 하루! 오늘의 Cpk는 최고예요.","보고서가 한 번에 결재되는 기적이 일어날지도?","커피 한 잔의 여유가 품질을 지켜요. 잠깐 쉬어 가세요.","오늘 정리정돈한 공구가 내일의 나를 구해 줘요."];
+ const ITEMS=["📏 버니어 캘리퍼스","🔩 마이크로미터","🔧 토크렌치","📋 체크시트","🖍️ 형광펜","⛑️ 안전모","🔍 돋보기","📐 하이트 게이지","📌 핀 게이지","🏷️ 식별 라벨","☕ 믹스커피","🧤 면장갑"];
+ const pick=a=>a[Math.floor(Math.random()*a.length)];
+ const modal=document.createElement('div');modal.id='luckModal';modal.setAttribute('role','dialog');modal.setAttribute('aria-modal','true');document.body.appendChild(modal);
+ const closeModal=()=>modal.classList.remove('open');
+ modal.addEventListener('click',e=>{if(e.target===modal||e.target.closest('[data-x]'))closeModal();if(e.target.closest('[data-again]')){closeModal();setTimeout(()=>btn.click(),250)}});
+ function openModal(i,f){const a=ACTS[i],full=stamps.length===N;
+  modal.innerHTML=`<div class="lk-card" style="--c:${a.c}"><button type="button" class="lk-x" data-x aria-label="닫기">✕</button>
+   <div class="lk-top"><img src="${btn.querySelector('img').src}" alt=""><div><small>🍀 오늘의 행운 카드</small><b>${new Date().toLocaleDateString('ko-KR',{month:'long',day:'numeric'})} · 두리가 뽑았어요</b></div></div>
+   <div class="lk-act"><span class="lk-e">${a.e}</span><div><small>오늘의 실천 ${a.n}</small><b>${a.t}</b><p>${a.msg}</p></div></div>
+   <div class="lk-msg"><small>행운 메시지</small><p>${f.m}</p></div>
+   <div class="lk-row"><div class="lk-meter"><small>품질 행운지수</small><div class="lk-bar"><i style="width:${f.p}%"></i></div><b>${f.p}%</b></div><div class="lk-item"><small>행운의 아이템</small><b>${f.it}</b></div></div>
+   ${full?'<div class="lk-full">🎉 실천 도장 7개 완성! 오늘부터 <b>품질 실천 마스터</b></div>':`<div class="lk-stamp">실천 도장 <b>${stamps.length}</b> / 7 · 다 모으면 <b>품질 실천 마스터</b>!</div>`}
+   <div class="lk-btns"><button type="button" data-again>한 번 더 돌리기</button><button type="button" class="ok" data-x>좋아요!</button></div>
+   <div class="lk-tip">📸 캡처해서 동료에게 자랑해 보세요</div></div>`;
+  modal.classList.add('open')}
+ let lastFortune=null;
+ function show(i,fresh,f){const a=ACTS[i];lastFortune={i,f};
+  out.innerHTML=`<button type="button" class="roul-pick roul-mini${fresh?' fresh':''}" style="--c:${a.c}"><span class="roul-pick-e">${a.e}</span><span class="roul-pick-txt"><span class="roul-pick-no">오늘의 실천 ${a.n}</span><span class="roul-pick-title">${a.t}</span></span><span class="roul-luck">🍀 행운 카드<br>보기 ›</span></button>`;
+  out.querySelector('.roul-mini').onclick=()=>f&&openModal(i,f);
   wheel.querySelectorAll('.rw-seg').forEach(el=>el.classList.toggle('win',Number(el.dataset.i)===i));wheel.classList.add('done');stage.style.setProperty('--win',a.c)}
- try{const d=JSON.parse(localStorage.getItem(DK)||'null');if(d&&d.date===new Date().toDateString()&&ACTS[d.i]){setRot(-(d.i*SEG+SEG/2));show(d.i,false)}}catch(e){}
+ try{const d=JSON.parse(localStorage.getItem(DK)||'null');if(d&&d.date===new Date().toDateString()&&ACTS[d.i]){setRot(-(d.i*SEG+SEG/2));show(d.i,false,d.f||null)}}catch(e){}
  // 꽃가루
  function confetti(color){if(RM||!cv)return;const card=cv.parentElement,r=card.getBoundingClientRect(),sr=stage.getBoundingClientRect(),dpr=Math.min(2,window.devicePixelRatio||1);
   cv.width=r.width*dpr;cv.height=r.height*dpr;const c=cv.getContext('2d');c.scale(dpr,dpr);
@@ -1473,8 +1557,9 @@ const DURI_ACTS=[
    if(k<1)return requestAnimationFrame(f);
    stage.classList.remove('spinning');
    const had=stamps.includes(i);if(!had){stamps.push(i);try{localStorage.setItem(SK,JSON.stringify(stamps))}catch(e){}}
-   drawStamps(had?null:i);show(i,true);confetti(ACTS[i].c);buzz([25,40,60]);
-   try{localStorage.setItem(DK,JSON.stringify({date:new Date().toDateString(),i}))}catch(e){}
+   drawStamps(had?null:i);const fo={m:pick(LUCK),it:pick(ITEMS),p:72+Math.floor(Math.random()*29)};show(i,true,fo);confetti(ACTS[i].c);buzz([25,40,60]);
+   setTimeout(()=>openModal(i,fo),650);
+   try{localStorage.setItem(DK,JSON.stringify({date:new Date().toDateString(),i,f:fo}))}catch(e){}
    busy=false;btn.disabled=false})(t0);
  });
 })();
@@ -1497,7 +1582,7 @@ const DURI_ACTS=[
  if(!cards.length)return;
  const upd=()=>{const n=cards.filter(c=>c.classList.contains('flip')).length;cnt.textContent=`${n} / 4`;const all=n===4;done.classList.toggle('show',all);
   if(all&&!done.dataset.said&&bub&&duri){done.dataset.said='1';bub.innerHTML='<small>DURI 완성!</small><b>Data · Unity · Responsibility · Improvement — 이제 우리 모두 두리예요!</b>';bub.classList.remove('pop');duri.classList.remove('boing');void duri.offsetWidth;bub.classList.add('pop');duri.classList.add('boing')}};
- cards.forEach(c=>c.addEventListener('click',()=>{c.classList.toggle('flip');c.setAttribute('aria-pressed',c.classList.contains('flip'));upd()}));
+ cards.forEach(c=>c.addEventListener('click',()=>{c.parentElement.classList.add('touched');c.classList.toggle('flip');c.setAttribute('aria-pressed',c.classList.contains('flip'));upd()}));
  upd();
 })();
 
