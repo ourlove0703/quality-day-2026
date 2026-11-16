@@ -894,7 +894,7 @@ html:has(#homeView:not(.hidden)),body:has(#homeView:not(.hidden)){background:#07
 .dg-score{display:flex;align-items:baseline;gap:6px;color:#fff}.dg-score b{font-size:14px}.dg-score small{font-size:10.5px;color:#a9bfdb}.dg-score em{font-style:normal;font-weight:900;color:#f5c451}
 .dg-over{position:absolute;inset:22px 0 0 0;display:flex;align-items:center;justify-content:center;gap:10px;padding:0 10px;background:rgba(7,19,39,.55);backdrop-filter:blur(1.5px)}
 .dg-over.hide{display:none}
-.dg-msg{flex:1;min-width:0;font-size:11.5px;line-height:1.35;color:#d7e4f5;font-weight:700}.dg-msg b{color:#f5c451;font-size:13px}
+.dg-msg{flex:1;min-width:0;font-size:11.5px;line-height:1.35;color:#d7e4f5;font-weight:700;word-break:keep-all}.dg-msg b{color:#f5c451;font-size:13px}
 #dgStart{flex:none;border:0;border-radius:10px;padding:9px 14px;font-weight:900;font-size:13px;color:#fff;background:#2f69e8;box-shadow:0 4px 12px rgba(47,105,232,.4);cursor:pointer}
 @media (max-height:820px){
  .duri-banner img{height:clamp(62px,12.5vh,104px)!important}
@@ -989,10 +989,10 @@ html.game-lock,html.game-lock body{overflow:hidden!important;overscroll-behavior
 .dr-prog i{display:block;height:100%;width:0;background:linear-gradient(90deg,#f5c451,#ffdf7a);border-radius:6px}
 .dr-prog span{position:absolute;right:0;top:12px;font-size:11px;font-weight:900;color:#1d3f73}
 .duri-game.full .dg-over{inset:0!important;flex-direction:column;justify-content:center;gap:14px;padding:0 28px;text-align:center}
-.duri-game.full .dg-msg{flex:none;font-size:15px;line-height:1.6}.duri-game.full .dg-msg b{font-size:17px}
+.duri-game.full .dg-msg{flex:none;font-size:15px;line-height:1.6;word-break:keep-all;overflow-wrap:anywhere}.duri-game.full .dg-msg b{font-size:17px}
 .duri-game.full .dg-over button{font-size:16px;padding:12px 28px}
 .duri-game.full.won::after{top:40%;font-size:19px}
-.dr-title{display:none}
+.dr-title{display:none;word-break:keep-all}
 .dr-prog .dr-tk{position:absolute;top:-2px;width:2px;height:13px;background:rgba(255,255,255,.9)}
 .dr-prog em{position:absolute;top:12px;transform:translateX(-50%);font-style:normal;font-size:10.5px;font-weight:900;color:rgba(29,63,115,.55)}.dr-prog em.on{color:#fff;background:#e8202e;border-radius:8px;padding:0 6px}.dr-prog em.done{color:#1f8a4c}
 .dr-grade{display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;border-radius:8px;font-size:22px;font-weight:900;color:#fff;vertical-align:middle;box-shadow:0 3px 0 rgba(0,0,0,.25)}
@@ -1934,7 +1934,7 @@ showTab(mode,{noUrl:true});
  hud.addEventListener('pointerdown',e=>e.stopPropagation());
  let W=0,H=0,dpr=1,S=1,GY=0,run=false,raf=0,last=0,t=0,dist=0,speed=0,nextGap=0,obs=[],items=[],pops=[],py=0,vy=0,buffer=0,frame=0,scroll=0;
  let hearts=3,coins=0,inv=0,hurtT=0,shieldT=0,warnT=0,warned=false,tape=null,phase='idle';
- let gagT=0,fallT=0;const GAGD=1.0,FALLD=.7;
+ let gagT=0,fallT=0,tkT=0,ldT=0;const GAGD=1.0,FALLD=.7;
  let stage=0,stageF=0,banT=0,banTxt='',combo=0,feverT=0,shakeT=0,freezeT=0,fx=[],nice=0;
  const STG=['초물 검사','중물 검사','종물 검사'];
  const SKY=[['#7fbfff','#ffe3c4'],['#5fb0ff','#d6edff'],['#ff8a5c','#ffd38a']];
@@ -1999,7 +1999,7 @@ showTab(mode,{noUrl:true});
     const hp=Math.min(1,g/.6);if(g<.82)spr('helmet',X0+24-hp*28,CHH+hp*40-hp*hp*30,16,null);}
    else if(fallT>0){const g=FALLD-fallT;k=g<.15?'hit0':g<.33?'fall0':g<.5?'down':'up';cy=0}
    else if(t<.28)k='idle3';
-   else k=py>0.5?(vy>180?'jump0':vy>-180?'jump1':'jump2'):'run'+(Math.floor(frame*14)%8);
+   else if(tkT>0){k='jump0';h=CHH*1.04}else if(py>0.5){k='jump1';h=CHH*1.1}else if(ldT>0){k='jump2';h=CHH*1.04}else k='run'+(Math.floor(frame*14)%8);
    if(inv>0&&fallT<=0&&gagT<=0&&feverT<=0&&Math.floor(t*16)%2)a=.4}
   else if(phase==='die'){k=dieT<.18?'hit0':dieT<.4?'fall0':'down';cy=0}
   else if(phase==='win'){k=Math.floor(winT*3)%2?'win1':'win0'}
@@ -2026,7 +2026,7 @@ showTab(mode,{noUrl:true});
  function grab(it){const c=cbox();return c.x<it.x+9&&c.x+c.w>it.x-9&&c.y<it.y+17&&c.y+c.h>it.y}
  function hearts$(){hEl.innerHTML='<i class="on"></i>'.repeat(hearts)+'<i></i>'.repeat(3-hearts)}
  function reset(){t=0;dist=0;scroll=0;speed=spd(0)*VS;obs=[];items=[];pops=[];py=0;vy=0;buffer=0;nextGap=WX()*.75;warned=false;warnT=0;hearts=3;coins=0;inv=0;hurtT=0;shieldT=0;tape=null;cEl.textContent='0';bar.style.width='0%';hearts$();sc.textContent='0m';gagT=0;fallT=0;stage=0;stg$();stageF=0;banT=0;combo=0;feverT=0;shakeT=0;freezeT=0;fx=[];nice=0}
- function doJump(){vy=Math.sqrt(2*GRAV*JH)}
+ function doJump(){vy=Math.sqrt(2*GRAV*JH);tkT=.07}
  function jump(){if(!run||fallT>0||gagT>0)return;if(py<=0.5)doJump();else buffer=0.14}
  function coinRow(x0,n,y){for(let i=0;i<n;i++)items.push({k:'coin',x:x0+i*20,y,v:1})}
  function coinArc(xc){const air=2*Math.sqrt(2*JH/GRAV),vx=speed;for(let i=-2;i<=2;i++){const tt=air/2+i*air*.13,x=xc+i*vx*air*.13,y=Math.max(8,Math.sqrt(2*GRAV*JH)*tt-GRAV*tt*tt/2+6);items.push({k:'coin',x,y,v:1})}}
@@ -2050,9 +2050,9 @@ showTab(mode,{noUrl:true});
   if(!run)return;
   for(const f of fx){f.x+=f.vx*dt;f.y+=f.vy*dt;f.vy-=120*dt;f.life-=dt*1.5}fx=fx.filter(f=>f.life>0);if(shakeT>0)shakeT-=dt;
   if(freezeT>0){freezeT-=dt;draw();raf=requestAnimationFrame(loop);return}
-  if(fallT>0)fallT-=dt;if(gagT>0)gagT-=dt;
+  if(fallT>0)fallT-=dt;if(gagT>0)gagT-=dt;if(tkT>0)tkT-=dt;if(ldT>0)ldT-=dt;
   speed=spd(dist)*VS*((fallT>0||gagT>0)?.45:1);const dx=speed*dt;dist+=dx/(40*VS);scroll+=dx;
-  const air0=py>0;if(fallT>0||gagT>0){py=Math.max(0,py-260*dt);vy=0}else vy-=GRAV*dt;py=Math.max(0,py+vy*dt);if(py===0&&vy<0){vy=0;if(air0&&full())for(let i=0;i<5;i++)fx.push({x:X0+16+i*4,y:2,vx:-20-Math.random()*40,vy:10+Math.random()*25,c:'rgba(220,226,236,.9)',s:3+Math.random()*3,life:.5});if(buffer>0){doJump();buffer=0}}if(buffer>0)buffer-=dt;
+  const air0=py>0;if(fallT>0||gagT>0){py=Math.max(0,py-260*dt);vy=0}else vy-=GRAV*dt;py=Math.max(0,py+vy*dt);if(py===0&&vy<0){vy=0;if(air0)ldT=.09;if(air0&&full())for(let i=0;i<5;i++)fx.push({x:X0+16+i*4,y:2,vx:-20-Math.random()*40,vy:10+Math.random()*25,c:'rgba(220,226,236,.9)',s:3+Math.random()*3,life:.5});if(buffer>0){doJump();buffer=0}}if(buffer>0)buffer-=dt;
   if(warnT>0)warnT-=dt;if(inv>0)inv-=dt;if(hurtT>0)hurtT-=dt;if(shieldT>0)shieldT-=dt;if(feverT>0)feverT-=dt;if(banT>0)banT-=dt;
   const m=dist*SHOW;const ns=m<333?0:m<666?1:2;if(ns!==stage){banTxt=ns===1?'✅ 초물 검사 통과! → 중물 검사':'✅ 중물 검사 통과! → 종물 검사';banT=2.4;stage=ns;stg$();burst(X0+24,40,'#7fe0a0',16,70)}if(stageF<stage)stageF=Math.min(stage,stageF+dt*.6);
   if(m<940){nextGap-=dx;if(nextGap<=0)spawn()}else if(!tape)tape={x:WX()+40};
@@ -2071,7 +2071,7 @@ showTab(mode,{noUrl:true});
  function win(){run=false;phase='win';stage=3;stg$();stage=2;winT=0;tape&&(tape.cut=true);sc.textContent='1000m';bar.style.width='100%';saveBest(1000);best=1000;bestEl.textContent='1000m';box.classList.add('won');try{navigator.vibrate&&navigator.vibrate([80,60,80,60,200])}catch(e){}
   const cols=['#f5c451','#ff4d4f','#2ea8ff','#2fd47a','#a259ff','#fff'];parts=Array.from({length:140},()=>({x:W/2,y:H*.5,vx:(Math.random()-.5)*10,vy:-Math.random()*8-3,s:2+Math.random()*3.5,c:cols[Math.floor(Math.random()*cols.length)],r:Math.random()*6}));raf=requestAnimationFrame(loop)}
  function confetti(){for(const p of parts){p.vy+=.18;p.x+=p.vx;p.y+=p.vy;p.r+=.2;ctx.save();ctx.translate(p.x,p.y);ctx.rotate(p.r);ctx.fillStyle=p.c;ctx.fillRect(-p.s/2,-p.s/2,p.s,p.s*1.6);ctx.restore()}}
- function winDone(){phase='idle';const g=grade(1000,true);msg.innerHTML=`<span class="dr-grade g-${g[0]}">${g[0]}</span> <span class="dg-win">🏆 1KM 무결점 완주!</span><br>초물·중물·종물 검사 모두 통과! 당신은 <b>${g[1]}</b> 🎉<br>합격 마크 <b>${coins}개</b>${g[0]==='A'?` · S등급까지 합격 마크 ${GS-coins}개!`:''}`;btn.textContent='▶ 다시 도전';over.classList.remove('hide');box.classList.remove('won','playing')}
+ function winDone(){phase='idle';const g=grade(1000,true);msg.innerHTML=`<span class="dr-grade g-${g[0]}">${g[0]}</span> <span class="dg-win">🏆 1KM 무결점 완주!</span><br>초물·중물·종물 검사 모두 통과!<br>당신은 <b>${g[1]}</b> 🎉<br>합격 마크 <b>${coins}개</b>${g[0]==='A'?` · S등급까지 합격 마크 ${GS-coins}개!`:''}`;btn.textContent='▶ 다시 도전';over.classList.remove('hide');box.classList.remove('won','playing')}
  // ── 확장 모드: 룰렛 칸까지 게임 화면으로 넓힘 (배너·접수 안내·탭바는 그대로)
  const roul=document.getElementById('duriRoulette'),tabBar=document.getElementById('tabBar');
  function enterFull(){if(full())return;if(roul)roul.classList.add('dr-hide');box.classList.add('full');box.style.removeProperty('height');
