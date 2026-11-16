@@ -983,7 +983,7 @@ html.game-lock,html.game-lock body{overflow:hidden!important;overscroll-behavior
 .duri-game.full .dr-hud{display:flex;position:absolute;left:12px;right:12px;top:32px;align-items:center;gap:12px;pointer-events:none}
 .dr-hearts{display:flex;gap:3px}.dr-hearts i{font-style:normal;font-size:20px;line-height:1;color:rgba(255,255,255,.4);text-shadow:0 1px 2px rgba(0,0,0,.35)}.dr-hearts i::before{content:"♥"}.dr-hearts i.on{color:#ff4d6d}
 .dr-coin{display:flex;align-items:center;gap:5px;background:rgba(10,28,56,.55);border-radius:20px;padding:3px 10px 3px 4px;color:#fff;font-weight:900;font-size:15px}
-.dr-coin i{width:18px;height:18px;border-radius:50%;background:#f5c451;border:2px solid #c88d10;display:inline-flex;align-items:center;justify-content:center;font-style:normal;font-size:10px;font-weight:900;color:#e8202e}.dr-coin i::before{content:"D"}
+.dr-coin i{width:18px;height:18px;border-radius:50%;background:#2fbf63;border:2px solid #137a3c;display:inline-flex;align-items:center;justify-content:center;font-style:normal;font-size:11px;font-weight:900;color:#fff}.dr-coin i::before{content:"✓"}
 .dr-close{position:absolute;top:-28px;right:-4px;width:34px;height:34px;border-radius:50%;border:0;background:rgba(10,28,56,.6);color:#fff;font-size:18px;font-weight:900;pointer-events:auto;z-index:2}
 .duri-game.full .dr-prog{display:block;position:absolute;left:12px;right:12px;top:60px;height:9px;background:rgba(10,28,56,.35);border-radius:6px;pointer-events:none}
 .dr-prog i{display:block;height:100%;width:0;background:linear-gradient(90deg,#f5c451,#ffdf7a);border-radius:6px}
@@ -1045,7 +1045,7 @@ html.game-lock,html.game-lock body{overflow:hidden!important;overscroll-behavior
   <section class="card duri-game" id="duriGame" aria-label="두리 런 미니게임">
     <canvas id="dgCanvas" aria-hidden="true"></canvas>
     <div class="dg-hud"><span class="dg-title">🎮 두리 런 · 1KM 완주 도전</span><span class="dg-score"><b id="dgScore">0m</b><small>최고 <em id="dgBest">0m</em></small></span></div>
-    <div class="dg-over" id="dgOver"><div class="dg-msg" id="dgMsg"><b>불량을 피하고, 품질을 지켜라!</b><br><span class="dg-legend">🔩 버·변형·미성형·흑점·파손 점프 · 🪨 공중 이물질은 점프 금지 · 🪙 D코인</span></div><button type="button" id="dgStart">▶ 시작</button></div>
+    <div class="dg-over" id="dgOver"><div class="dg-msg" id="dgMsg"><b>불량을 피하고, 품질을 지켜라!</b><br><span class="dg-legend">🔩 버·변형·미성형·흑점·파손 점프 · 🪨 공중 이물질은 점프 금지 · ✅ 합격 마크 모으기</span></div><button type="button" id="dgStart">▶ 시작</button></div>
   </section>
 </div></div>
 
@@ -1907,7 +1907,7 @@ showTab(mode,{noUrl:true});
 </script>
 <script>
 /* V40: 두리 런 — 품질 공장 달리기 (회사 자체 캐릭터 두리 · 블록/파이프/깃대 등 타 게임 요소 없음)
-   홈 카드: 미리보기 / [시작] → 전체화면 플레이 · 하트 3개 · D코인 · 1KM 완주 테이프 */
+   홈 카드: 미리보기 / [시작] → 전체화면 플레이 · 하트 3개 · 합격 마크 · 1KM 완주 테이프 */
 (function(){
  const box=document.getElementById('duriGame'),cv=document.getElementById('dgCanvas'),over=document.getElementById('dgOver'),btn=document.getElementById('dgStart'),msg=document.getElementById('dgMsg'),sc=document.getElementById('dgScore'),bestEl=document.getElementById('dgBest');
  if(!cv)return;const ctx=cv.getContext('2d');
@@ -1927,7 +1927,7 @@ showTab(mode,{noUrl:true});
  // ── HUD (전체화면용) 주입
  const hud=document.createElement('div');hud.className='dr-hud';hud.innerHTML='<span class="dr-hearts" id="drHearts"></span><span class="dr-coin"><i></i><b id="drCoins">0</b></span><button type="button" class="dr-close" id="drClose" aria-label="닫기">✕</button>';box.appendChild(hud);
  const prog=document.createElement('div');prog.className='dr-prog';prog.innerHTML='<i id="drBar"></i><b class="dr-tk" style="left:33.3%"></b><b class="dr-tk" style="left:66.6%"></b><em style="left:16.6%">초물</em><em style="left:50%">중물</em><em style="left:83.3%">종물</em><span>1KM</span>';box.appendChild(prog);
- const ttl=document.createElement('div');ttl.className='dr-title';ttl.innerHTML='<div class="dr-t1">2026 DURING 품질공감데이</div><div class="dr-t2">🎮 두리 런 · 1KM 완주 도전</div><div class="dr-t3">불량을 피하고, 품질을 지켜라!</div><ul class="dr-rule"><li>🔩 사출 버 · 변형 · 미성형 · 흑점 · 파손 → <b>점프로 피하기</b></li><li>🪨 공중에 뜬 이물질 → <b class="no">점프 금지!</b> (헬멧 조심 ⛑)</li><li>🪙 D코인 모으기 · 🛡 QA 방패 = 하트 회복</li><li>🔥 코인 <b>10연속</b> = 품질 FEVER! · 초물→중물→종물 통과</li></ul><div class="dr-tap">👆 화면을 톡! 누르면 시작</div>';box.appendChild(ttl);
+ const ttl=document.createElement('div');ttl.className='dr-title';ttl.innerHTML='<div class="dr-t1">2026 DURING 품질공감데이</div><div class="dr-t2">🎮 두리 런 · 1KM 완주 도전</div><div class="dr-t3">불량을 피하고, 품질을 지켜라!</div><ul class="dr-rule"><li>🔩 사출 버 · 변형 · 미성형 · 흑점 · 파손 → <b>점프로 피하기</b></li><li>🪨 공중에 뜬 이물질 → <b class="no">점프 금지!</b> (헬멧 조심 ⛑)</li><li>✅ 합격 마크 모으기(⭐우수 = +5) · 🛡 QA 방패 = 하트 회복</li><li>🔥 합격 마크 <b>10연속</b> = 품질 FEVER! · 초물→중물→종물 통과</li></ul><div class="dr-tap">👆 화면을 톡! 누르면 시작</div>';box.appendChild(ttl);
  const stEm=prog.querySelectorAll('em');const stg$=()=>stEm.forEach((e,i)=>{e.className=i<stage?'done':i===stage?'on':'';e.textContent=(i<stage?'✓ ':'')+['초물','중물','종물'][i]});
  const hEl=hud.querySelector('#drHearts'),cEl=hud.querySelector('#drCoins'),bar=prog.querySelector('#drBar');
  hud.querySelector('#drClose').addEventListener('click',e=>{e.stopPropagation();if(run)saveBest(Math.min(999,Math.floor(dist*SHOW)));exitFull()});
@@ -1947,6 +1947,13 @@ showTab(mode,{noUrl:true});
  const sx=x=>x*S, sy=y=>GY-y*S;
  function spr(k,cx,y,h,alpha,flip){if(!imgOk)return;const f=SP[k];if(!f)return;const hh=(h==null?f[3]*PF:h)*S,ww=hh*f[2]/f[3];ctx.save();if(alpha!=null)ctx.globalAlpha=alpha;
   if(flip){ctx.translate(sx(cx),0);ctx.scale(-1,1);ctx.drawImage(IMG,f[0],f[1],f[2],f[3],-ww/2,sy(y)-hh,ww,hh)}else ctx.drawImage(IMG,f[0],f[1],f[2],f[3],sx(cx)-ww/2,sy(y)-hh,ww,hh);ctx.restore()}
+ function mark(x,y,big){const r=(big?9.5:7.5)*S,cx=sx(x),cy=sy(y)-r;ctx.save();ctx.translate(cx,cy);
+  if(big){ctx.fillStyle='#e8202e';ctx.beginPath();ctx.moveTo(-r*.55,r*.5);ctx.lineTo(-r*.8,r*1.5);ctx.lineTo(-r*.25,r*1.2);ctx.lineTo(0,r*.6);ctx.fill();ctx.beginPath();ctx.moveTo(r*.55,r*.5);ctx.lineTo(r*.8,r*1.5);ctx.lineTo(r*.25,r*1.2);ctx.lineTo(0,r*.6);ctx.fill()}
+  ctx.fillStyle=big?'#b8860b':'#137a3c';ctx.beginPath();ctx.arc(0,0,r,0,7);ctx.fill();ctx.fillStyle=big?'#ffd23f':'#2fbf63';ctx.beginPath();ctx.arc(0,0,r*.82,0,7);ctx.fill();
+  ctx.fillStyle='rgba(255,255,255,.35)';ctx.beginPath();ctx.arc(-r*.3,-r*.3,r*.3,0,7);ctx.fill();
+  if(big){ctx.fillStyle='#fff';ctx.beginPath();for(let i=0;i<10;i++){const a=-Math.PI/2+i*Math.PI/5,rr=i%2?r*.24:r*.56;ctx.lineTo(Math.cos(a)*rr,Math.sin(a)*rr)}ctx.fill()}
+  else{ctx.strokeStyle='#fff';ctx.lineWidth=r*.28;ctx.lineCap='round';ctx.lineJoin='round';ctx.beginPath();ctx.moveTo(-r*.42,0);ctx.lineTo(-r*.08,r*.34);ctx.lineTo(r*.45,-r*.32);ctx.stroke()}
+  ctx.restore()}
  function pix(map,x,y,px,col){ctx.fillStyle=col;for(let r=0;r<map.length;r++){const row=map[r];for(let c=0;c<row.length;c++){if(row[c]==='.')continue;ctx.fillRect(Math.round(sx(x+c*px)),Math.round(sy(y)+r*px*S),Math.ceil(px*S),Math.ceil(px*S))}}}
  // ── 배경: 하늘 → 구름 → 공장 단지 → 가로수 → 공장 도로(안전 노란선)
  const CLOUDS=[[30,.62],[150,.78],[260,.55],[380,.72],[470,.6]];
@@ -1982,7 +1989,7 @@ showTab(mode,{noUrl:true});
   if(tape){const x=tape.x;ctx.fillStyle='#fff';ctx.fillRect(sx(x),sy(70),3*S,70*S);ctx.fillRect(sx(x+46),sy(70),3*S,70*S);
    ctx.fillStyle='#1d3f73';ctx.fillRect(sx(x-8),sy(76),66*S,12*S);ctx.fillStyle='#f5c451';ctx.font=`900 ${8*S}px system-ui,sans-serif`;ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText('1KM 완주',sx(x+23),sy(70));
    if(!tape.cut){ctx.fillStyle='#e8202e';ctx.fillRect(sx(x),sy(30),49*S,3*S)}}
-  for(const it of items){if(it.got)continue;const bob=Math.sin((t+it.x*.05)*5)*2;spr(it.k,it.x,it.y+bob,it.k==='shield'?20:17)}
+  for(const it of items){if(it.got)continue;const bob=Math.sin((t+it.x*.05)*5)*2;if(it.k==='shield')spr(it.k,it.x,it.y+bob,20);else mark(it.x,it.y+bob,it.k==='crown')}
   for(const o of obs){if(o.t.air){spr(o.t.k,o.x+AW/2,o.lift+Math.sin(t*4+o.x)*1.5,AW*SP[o.t.k][3]/SP[o.t.k][2])}else{const h1=oh1(o);ctx.fillStyle='rgba(232,32,46,.22)';ctx.beginPath();ctx.ellipse(sx(o.x+OW/2),sy(0)+1,OW*.55*S,3*S,0,0,7);ctx.fill();spr(o.t.k,o.x+OW/2,0,h1);if((o.st||1)>1)spr(OB[(OB.indexOf(o.t)+2)%OB.length].k,o.x+OW/2,h1*.8,h1)}
    if(full()&&o.x>X0+30){const ty=oTop(o)+6,tx=o.n||o.t.n;ctx.font='900 10px system-ui,sans-serif';const tw=ctx.measureText(tx).width+8;ctx.fillStyle=o.t.air?'rgba(255,190,40,.95)':'rgba(232,32,46,.92)';ctx.fillRect(sx(o.x+(o.t.air?AW:OW)/2)-tw/2,sy(ty)-13,tw,13);ctx.fillStyle='#fff';ctx.textAlign='center';ctx.textBaseline='bottom';ctx.fillText(tx,sx(o.x+(o.t.air?AW:OW)/2),sy(ty)-1)}}
   // 두리
@@ -2032,7 +2039,7 @@ showTab(mode,{noUrl:true});
   const air=2*Math.sqrt(2*GRAV*JH)/GRAV;nextGap=speed*(air+(hard?0.22:0.3))+extra+Math.random()*speed*(dist<10?1.2:hard?.5:.75)+(dist<10?60:15);
   if(Math.random()<.4&&nextGap>speed*1.1)coinRow(x+speed*air+30,3+Math.floor(Math.random()*2),10)}
  function burst(x,y,c,n,sp){for(let i=0;i<n;i++){const a=Math.random()*6.28,v=(sp||40)*(.4+Math.random());fx.push({x,y,vx:Math.cos(a)*v,vy:Math.sin(a)*v+20,c,s:2+Math.random()*3,life:.6+Math.random()*.3})}}
- function addCoin(v,x,y,big){const g=v*(feverT>0?2:1);coins+=g;cEl.textContent=coins;pops.push({x,y:y+16,s:'+'+g,c:big?'#e0a400':'#f5c451',life:1});burst(x,y+8,big?'#ffd23f':'#fff3b0',big?14:7,50);
+ function addCoin(v,x,y,big){const g=v*(feverT>0?2:1);coins+=g;cEl.textContent=coins;pops.push({x,y:y+16,s:'+'+g,c:big?'#e0a400':'#2fbf63',life:1});burst(x,y+8,big?'#ffd23f':'#b9f5cf',big?14:7,50);
   if(feverT<=0){combo++;if(combo>=10){combo=0;feverT=3.2;inv=Math.max(inv,3.2);pops.push({x:X0+24,y:py+CHH+14,s:'🔥 FEVER!',c:'#e8202e',life:1.2});try{navigator.vibrate&&navigator.vibrate([30,40,30])}catch(e){}}}}
  function grade(m,done){return done&&coins>=GS?['S','품질 명장']:done?['A','품질 마스터']:m>=500?['B','품질 우수']:['C','품질 새싹']}
  const GS=200;
@@ -2053,18 +2060,18 @@ showTab(mode,{noUrl:true});
   for(const p of pops){p.y+=30*dt;p.life-=dt*1.4}pops=pops.filter(p=>p.life>0);
   for(const i of items){if(!i.got&&grab(i)){i.got=true;i.gone=true;if(i.k==='shield'){shieldT=3.5;inv=Math.max(inv,3.5);if(hearts<3){hearts++;hearts$()}pops.push({x:i.x,y:i.y+18,s:'🛡 QA 보호!',c:'#1f55c8',life:1})}else addCoin(i.v,i.x,i.y,i.v>1)}}
   {const c=cbox();for(const o of obs){if(o.passed||o.hitDone||o.t===AIR)continue;const bb=obox(o),ox=bb.x,ow=bb.w;if(c.x<ox+ow&&c.x+c.w>ox){const top=bb.h;o.minG=Math.min(o.minG??99,c.y-top)}else if(ox+ow<c.x){o.passed=true;if(o.minG!=null&&o.minG<7&&o.minG>=0){nice++;addCoin(3,X0+24,py+30,true);pops.push({x:X0+24,y:py+CHH+18,s:'나이스 점프!',c:'#2fd47a',life:1.1})}}}}
-  if(inv<=0){for(const o of obs){if(!o.hitDone&&hit(o)){o.hitDone=true;hearts--;hearts$();combo=0;shakeT=.28;freezeT=.1;burst(X0+30,30,o.t.air?'#6b6f7a':'#9fb3d9',12,80);try{navigator.vibrate&&navigator.vibrate(60)}catch(e){}
+  if(inv<=0){for(const o of obs){if(!o.hitDone&&hit(o)){o.hitDone=true;hearts--;hearts$();combo=0;freezeT=.06;burst(X0+30,30,o.t.air?'#6b6f7a':'#9fb3d9',12,80);try{navigator.vibrate&&navigator.vibrate(60)}catch(e){}
     if(hearts<=0){run=false;phase='die';dieT=0;raf=requestAnimationFrame(loop);return}inv=1.7;if(o.t.air){gagT=GAGD;banTxt='⛑ 안전모는 꼭 쓰세요!';banT=2.2}else fallT=FALLD;break}}}
   if(m>=1000){return win()}
   sc.textContent=Math.floor(m)+'m';bar.style.width=Math.min(100,m/10)+'%';draw();raf=requestAnimationFrame(loop)}
  function saveBest(m){const nb=m>best;if(nb){best=m;try{localStorage.setItem(BK,best)}catch(e){};bestEl.textContent=best+'m'}if(coins>bestC){bestC=coins;try{localStorage.setItem(CK,bestC)}catch(e){}}return nb}
  function finish(){phase='idle';const m=Math.min(999,Math.floor(dist*SHOW));const nb=saveBest(m);
-  const g=grade(m,false);msg.innerHTML=`<span class="dr-grade g-${g[0]}">${g[0]}</span> <b>${g[1]}</b>${nb&&m>0?' · 🎉 최고 기록!':''}<br>`+END[Math.floor(Math.random()*END.length)]+`<br><b>${m}m</b> · ${STG[stage]} 단계 · <b>D코인 ${coins}개</b>`;btn.textContent='▶ 다시 시작';over.classList.remove('hide');box.classList.remove('playing')}
+  const g=grade(m,false);msg.innerHTML=`<span class="dr-grade g-${g[0]}">${g[0]}</span> <b>${g[1]}</b>${nb&&m>0?' · 🎉 최고 기록!':''}<br>`+END[Math.floor(Math.random()*END.length)]+`<br><b>${m}m</b> · ${STG[stage]} 단계 · <b>합격 마크 ${coins}개</b>`;btn.textContent='▶ 다시 시작';over.classList.remove('hide');box.classList.remove('playing')}
  function end(quit){cancelAnimationFrame(raf);run=false;if(quit){saveBest(Math.min(999,Math.floor(dist*SHOW)));exitFull();return}finish()}
  function win(){run=false;phase='win';stage=3;stg$();stage=2;winT=0;tape&&(tape.cut=true);sc.textContent='1000m';bar.style.width='100%';saveBest(1000);best=1000;bestEl.textContent='1000m';box.classList.add('won');try{navigator.vibrate&&navigator.vibrate([80,60,80,60,200])}catch(e){}
   const cols=['#f5c451','#ff4d4f','#2ea8ff','#2fd47a','#a259ff','#fff'];parts=Array.from({length:140},()=>({x:W/2,y:H*.5,vx:(Math.random()-.5)*10,vy:-Math.random()*8-3,s:2+Math.random()*3.5,c:cols[Math.floor(Math.random()*cols.length)],r:Math.random()*6}));raf=requestAnimationFrame(loop)}
  function confetti(){for(const p of parts){p.vy+=.18;p.x+=p.vx;p.y+=p.vy;p.r+=.2;ctx.save();ctx.translate(p.x,p.y);ctx.rotate(p.r);ctx.fillStyle=p.c;ctx.fillRect(-p.s/2,-p.s/2,p.s,p.s*1.6);ctx.restore()}}
- function winDone(){phase='idle';const g=grade(1000,true);msg.innerHTML=`<span class="dr-grade g-${g[0]}">${g[0]}</span> <span class="dg-win">🏆 1KM 무결점 완주!</span><br>초물·중물·종물 검사 모두 통과! 당신은 <b>${g[1]}</b> 🎉<br>D코인 <b>${coins}개</b>${g[0]==='A'?` · S등급까지 ${GS-coins}개!`:''}`;btn.textContent='▶ 다시 도전';over.classList.remove('hide');box.classList.remove('won','playing')}
+ function winDone(){phase='idle';const g=grade(1000,true);msg.innerHTML=`<span class="dr-grade g-${g[0]}">${g[0]}</span> <span class="dg-win">🏆 1KM 무결점 완주!</span><br>초물·중물·종물 검사 모두 통과! 당신은 <b>${g[1]}</b> 🎉<br>합격 마크 <b>${coins}개</b>${g[0]==='A'?` · S등급까지 합격 마크 ${GS-coins}개!`:''}`;btn.textContent='▶ 다시 도전';over.classList.remove('hide');box.classList.remove('won','playing')}
  // ── 확장 모드: 룰렛 칸까지 게임 화면으로 넓힘 (배너·접수 안내·탭바는 그대로)
  const roul=document.getElementById('duriRoulette'),tabBar=document.getElementById('tabBar');
  function enterFull(){if(full())return;if(roul)roul.classList.add('dr-hide');box.classList.add('full');box.style.removeProperty('height');
