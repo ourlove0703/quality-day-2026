@@ -971,27 +971,36 @@ html.game-lock,html.game-lock body{overflow:hidden!important;overscroll-behavior
 
 #homeView .home-order.tight li{padding:1px 0!important}#homeView .home-order.tight li b{font-size:11.5px!important}#homeView .home-order.tight .home-order-label{font-size:10px}
 
-/* V40 두리 런 전체화면 */
-html.dr-full,html.dr-full body{overflow:hidden!important;overscroll-behavior:none!important}
-.duri-game.full{position:fixed!important;inset:0!important;z-index:9999;margin:0!important;border-radius:0!important;height:100%!important;width:100%!important;max-width:none!important;background:#0a1c38!important;border:0!important;box-shadow:none!important}
-.duri-game.full canvas{inset:0!important;height:100%!important;image-rendering:auto}
+/* V41 두리 런 확장 모드 (룰렛 칸까지) */
+#duriRoulette.dr-hide{display:none!important}
+.duri-game.full{margin-top:8px!important}
+.duri-game.full canvas{inset:0!important;height:100%!important}
 .duri-game canvas{image-rendering:auto!important}
-.duri-game.full .dg-hud{top:calc(env(safe-area-inset-top,0px) + 12px);left:14px;right:58px}
-.duri-game.full .dg-title{font-size:14px;color:#fff;text-shadow:0 1px 3px rgba(0,0,0,.45)}
-.duri-game.full .dg-score b{font-size:18px;text-shadow:0 1px 3px rgba(0,0,0,.45)}.duri-game.full .dg-score small{color:#fff;text-shadow:0 1px 3px rgba(0,0,0,.45)}
+.duri-game.full .dg-hud{top:8px;left:12px;right:52px}
+.duri-game.full .dg-title{font-size:12.5px;color:#fff;text-shadow:0 1px 3px rgba(0,0,0,.45)}
+.duri-game.full .dg-score b{font-size:16px;text-shadow:0 1px 3px rgba(0,0,0,.45)}.duri-game.full .dg-score small{color:#fff;text-shadow:0 1px 3px rgba(0,0,0,.45)}
 .dr-hud,.dr-prog{display:none}
-.duri-game.full .dr-hud{display:flex;position:absolute;left:14px;right:14px;top:calc(env(safe-area-inset-top,0px) + 40px);align-items:center;gap:12px;pointer-events:none}
+.duri-game.full .dr-hud{display:flex;position:absolute;left:12px;right:12px;top:32px;align-items:center;gap:12px;pointer-events:none}
 .dr-hearts{display:flex;gap:3px}.dr-hearts i{font-style:normal;font-size:20px;line-height:1;color:rgba(255,255,255,.4);text-shadow:0 1px 2px rgba(0,0,0,.35)}.dr-hearts i::before{content:"♥"}.dr-hearts i.on{color:#ff4d6d}
 .dr-coin{display:flex;align-items:center;gap:5px;background:rgba(10,28,56,.55);border-radius:20px;padding:3px 10px 3px 4px;color:#fff;font-weight:900;font-size:15px}
 .dr-coin i{width:18px;height:18px;border-radius:50%;background:#f5c451;border:2px solid #c88d10;display:inline-flex;align-items:center;justify-content:center;font-style:normal;font-size:10px;font-weight:900;color:#e8202e}.dr-coin i::before{content:"D"}
-.dr-close{position:fixed;top:calc(env(safe-area-inset-top,0px) + 8px);right:10px;width:38px;height:38px;border-radius:50%;border:0;background:rgba(10,28,56,.6);color:#fff;font-size:18px;font-weight:900;pointer-events:auto;z-index:2}
-.duri-game.full .dr-prog{display:block;position:absolute;left:14px;right:14px;top:calc(env(safe-area-inset-top,0px) + 70px);height:9px;background:rgba(10,28,56,.35);border-radius:6px;pointer-events:none}
+.dr-close{position:absolute;top:-28px;right:-4px;width:34px;height:34px;border-radius:50%;border:0;background:rgba(10,28,56,.6);color:#fff;font-size:18px;font-weight:900;pointer-events:auto;z-index:2}
+.duri-game.full .dr-prog{display:block;position:absolute;left:12px;right:12px;top:60px;height:9px;background:rgba(10,28,56,.35);border-radius:6px;pointer-events:none}
 .dr-prog i{display:block;height:100%;width:0;background:linear-gradient(90deg,#f5c451,#ffdf7a);border-radius:6px}
 .dr-prog span{position:absolute;right:0;top:12px;font-size:11px;font-weight:900;color:#1d3f73}
 .duri-game.full .dg-over{inset:0!important;flex-direction:column;justify-content:center;gap:14px;padding:0 28px;text-align:center}
 .duri-game.full .dg-msg{flex:none;font-size:15px;line-height:1.6}.duri-game.full .dg-msg b{font-size:17px}
 .duri-game.full .dg-over button{font-size:16px;padding:12px 28px}
-.duri-game.full.won::after{top:42%;font-size:20px}
+.duri-game.full.won::after{top:40%;font-size:19px}
+.dr-title{display:none}
+.duri-game.full .dr-title.on{display:flex;position:absolute;inset:0;z-index:3;flex-direction:column;align-items:center;justify-content:center;gap:6px;padding:0 16px 22%;text-align:center;background:linear-gradient(180deg,rgba(7,19,39,.78),rgba(7,19,39,.45) 70%,rgba(7,19,39,0));cursor:pointer}
+.dr-t1{font-size:13px;font-weight:900;color:#f5c451;letter-spacing:.3px}
+.dr-t2{font-size:19px;font-weight:900;color:#fff}
+.dr-t3{font-size:17px;font-weight:900;color:#fff;background:#e8202e;border-radius:8px;padding:3px 12px;margin:2px 0 4px;box-shadow:0 3px 0 #a3121c}
+.dr-rule{list-style:none;margin:0;padding:0;font-size:12px;line-height:1.7;color:#e3edf9;font-weight:700}.dr-rule b{color:#7fe0a0}.dr-rule b.no{color:#ff8a8a}
+.dr-rule i{display:inline-block;width:9px;height:9px;border-radius:2px;margin:0 2px 0 4px}
+.dr-tap{margin-top:6px;font-size:14px;font-weight:900;color:#f5c451;animation:drTap 1s ease-in-out infinite}
+@keyframes drTap{50%{opacity:.35;transform:scale(.96)}}
 </style></head><body>
 
 <div id="homeView" class="hidden"><div class="wrap">
@@ -1499,7 +1508,7 @@ function renderHome(s){
   else if(ok&&cq>=1&&cq<=QUESTIONS.length){step=3;label="퀴즈 진행 중 · LIVE";title=`지금 Q${cq} 풀 수 있어요`;desc="QUIZ 탭에서 바로 응답하세요. 한국어 / English";btn=`Q${cq} 풀러 가기 ▶`}
   else if(ok&&cq===QUALITY_STAGE){step=4;label="품질 한마디 접수 중";title="내가 생각하는 품질은?";desc="한두 문장으로 적어 보내주세요. 우수작은 시상합니다.";btn="품질 한마디 쓰러 가기 ▶"}
   else if(!ok&&cq>1){step=3;label="접수 마감 · 잠시 대기";title=`Q${Math.min(cq,QUESTIONS.length)} 정답 확인 중`;desc="다음 문제가 열리면 자동으로 표시됩니다.";btn="QUIZ 탭으로 이동 ▶"}
-  homeNowLabel.textContent=label;homeNowTitle.textContent=title;homeNowDesc.textContent=desc;homeNowBtn.textContent=btn;
+  homeNowLabel.textContent=label;homeNowTitle.textContent=title;homeNowDesc.textContent=desc;homeNowBtn.textContent=btn;{const live=step===3||step===4;if(window.__quizLive!==live){window.__quizLive=live;dispatchEvent(new CustomEvent('duri-quiz',{detail:live}))}}
   homeNow.classList.toggle("live",ok);
   const q=document.querySelector('#tabBar .tab[data-tab="participant"]');if(q)q.classList.toggle("live",ok);
 }
@@ -1909,21 +1918,22 @@ showTab(mode,{noUrl:true});
   {n:'미성형',c:'#a259ff',m:["XXXXXXXX","XXXXXXXX","XXXX....","XXXX....","XXXXXX..","XXXXXX..","XXXXXXXX","XXXXXXXX"]}];
  const AIR={n:'공중 이물',c:'#ffe14d',m:["..XXXX..",".XXXXXX.","XX.XX.XX","XXXXXXXX","XXXXXXXX",".X.XX.X.","X..XX..X","........"]};
  // ── 월드 단위(u): 땅 y=0, 위쪽 +
- const SHOW=1000/600, GRAV=1000, JH=72, OPX=3.4, X0=26, CHH=52, VS=0.7;
+ const SHOW=1000/600, GRAV=1000, JH=72, OPX=3.4, X0=26, CHH=52;let VS=0.7;
  const spd=d=>d<10?140:Math.min(660,165+(d-10)*1.12+Math.max(0,d-230)*1.0);
  const BK='duri_jump_best_m_v1',CK='duri_run_coin_best_v1';let best=0,bestC=0;try{best=Number(localStorage.getItem(BK))||0;bestC=Number(localStorage.getItem(CK))||0}catch(e){}bestEl.textContent=best+'m';
- const END=['불량 발생! 다시 도전 💪','앗, 불량에 걸렸어요! 한 번 더?','초물 확인처럼 집중! 다시 가볼까요?','아깝다! 조금만 더 가면 신기록?'];
+ const END=['불량 발생! 다시 품질을 지켜볼까요? 💪','앗, 불량에 걸렸어요! 한 번 더 품질을 지켜요','초물 확인처럼 집중! 다시 가볼까요?','아깝다! 조금만 더 가면 무결점 완주!'];
  // ── HUD (전체화면용) 주입
  const hud=document.createElement('div');hud.className='dr-hud';hud.innerHTML='<span class="dr-hearts" id="drHearts"></span><span class="dr-coin"><i></i><b id="drCoins">0</b></span><button type="button" class="dr-close" id="drClose" aria-label="닫기">✕</button>';box.appendChild(hud);
  const prog=document.createElement('div');prog.className='dr-prog';prog.innerHTML='<i id="drBar"></i><span>1KM</span>';box.appendChild(prog);
+ const ttl=document.createElement('div');ttl.className='dr-title';ttl.innerHTML='<div class="dr-t1">2026 DURING 품질공감데이</div><div class="dr-t2">🎮 두리 런 · 1KM 완주 도전</div><div class="dr-t3">불량을 피하고, 품질을 지켜라!</div><ul class="dr-rule"><li><i style="background:#ff4d4f"></i>버 <i style="background:#2ea8ff"></i>기포 <i style="background:#ffb020"></i>크랙 <i style="background:#a259ff"></i>미성형 → <b>점프로 피하기</b></li><li><i style="background:#ffe14d"></i>공중 이물 → <b class="no">점프 금지!</b></li><li>🪙 D코인 모으기 · 🛡 QA 방패 = 하트 회복</li></ul><div class="dr-tap">👆 화면을 톡! 누르면 시작</div>';box.appendChild(ttl);
  const hEl=hud.querySelector('#drHearts'),cEl=hud.querySelector('#drCoins'),bar=prog.querySelector('#drBar');
- hud.querySelector('#drClose').addEventListener('click',e=>{e.stopPropagation();if(run)end(true);else exitFull()});
+ hud.querySelector('#drClose').addEventListener('click',e=>{e.stopPropagation();if(run)saveBest(Math.min(999,Math.floor(dist*SHOW)));exitFull()});
  hud.addEventListener('pointerdown',e=>e.stopPropagation());
  let W=0,H=0,dpr=1,S=1,GY=0,run=false,raf=0,last=0,t=0,dist=0,speed=0,nextGap=0,obs=[],items=[],pops=[],py=0,vy=0,buffer=0,frame=0,scroll=0;
  let hearts=3,coins=0,inv=0,hurtT=0,shieldT=0,warnT=0,warned=false,tape=null,phase='idle';
  const full=()=>box.classList.contains('full');
  function size(){const r=cv.getBoundingClientRect();if(!r.width)return;dpr=Math.min(2,devicePixelRatio||1);W=r.width;H=r.height;cv.width=W*dpr;cv.height=H*dpr;ctx.setTransform(dpr,0,0,dpr,0,0);
-  if(full()){S=Math.max(1,Math.min(2.4,W/230));GY=Math.round(H*0.66)}else{S=Math.max(.6,(H-6)/80);GY=H-6}draw()}
+  if(full()){GY=Math.round(H-Math.max(30,H*.14));S=Math.max(1,Math.min(2.4,W/230,(GY-78)/96))}else{S=Math.max(.6,(H-6)/80);GY=H-6}VS=Math.max(.45,Math.min(1,W/S/330));draw()}
  const WX=()=>W/S;                         // 화면 폭(월드 단위)
  const sx=x=>x*S, sy=y=>GY-y*S;
  function spr(k,cx,y,h,alpha,flip){if(!imgOk)return;const f=SP[k];const hh=h*S,ww=hh*f[2]/f[3];ctx.save();if(alpha!=null)ctx.globalAlpha=alpha;
@@ -1955,7 +1965,7 @@ showTab(mode,{noUrl:true});
   // 도로: 연석(노랑/검정 안전 줄무늬) + 아스팔트 + 차선
   ctx.fillStyle='#4a5466';ctx.fillRect(0,GY,W,H-GY);
   const cs=12;let co=((-scroll)%(cs*2)+cs*2)%(cs*2)-cs*2;for(let x=co;sx(x)<W;x+=cs){ctx.fillStyle=(Math.round((x-co)/cs)%2)?'#1c2230':'#f5c451';ctx.fillRect(sx(x),GY,cs*S+1,4*S)}
-  if(H-GY>14*S){ctx.fillStyle='rgba(255,255,255,.75)';const ls=40;let lo=((-scroll)%ls+ls)%ls-ls;const ly=GY+Math.min((H-GY)*.3,22*S);for(let x=lo;sx(x)<W;x+=ls)ctx.fillRect(sx(x),ly,20*S,2.5*S);if(full()){const fy=GY+(H-GY)*.55;ctx.fillStyle='#3d4657';ctx.fillRect(0,fy,W,H-fy);ctx.fillStyle='rgba(245,196,81,.9)';for(let x=lo;sx(x)<W;x+=ls)ctx.fillRect(sx(x),fy,24*S,3*S);if(phase==='run'){ctx.fillStyle='rgba(255,255,255,'+(t<4?.95:.45)+')';ctx.font='800 15px system-ui,sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText('👆 화면 아무 곳이나 톡! → 점프',W/2,fy+(H-fy)*.45)}}}
+  if(H-GY>14*S){ctx.fillStyle='rgba(255,255,255,.75)';const ls=40;let lo=((-scroll)%ls+ls)%ls-ls;const ly=GY+Math.min((H-GY)*.3,22*S);for(let x=lo;sx(x)<W;x+=ls)ctx.fillRect(sx(x),ly,20*S,2.5*S);}
  }
  function draw(){if(!W)return;ctx.clearRect(0,0,W,H);bg();
   // 1KM 완주 테이프
@@ -1969,13 +1979,14 @@ showTab(mode,{noUrl:true});
   if(phase==='run'){k=py>0.5?(vy>180?'jump1':vy>-150?'jump2':'jump0'):['run1','run2','run3','run4','run5'][Math.floor(frame*12)%5];if(hurtT>0)k='hurt0';if(inv>0&&hurtT<=0&&Math.floor(t*16)%2)a=.35}
   else if(phase==='die'){k=dieT<.45?'hurt1':'dead';h=k==='dead'?22:CHH}
   else if(phase==='win'){k=Math.floor(winT*3)%2?'goal':'cheer';h=k==='goal'?60:CHH+2}
-  else if(phase==='idle'){h=CHH;}
-  const bob=phase==='idle'?Math.abs(Math.sin(performance.now()/380))*2:0;
+  else if(phase==='idle'||phase==='title'){h=CHH;if(phase==='title')k='cheer'}
+  const bob=(phase==='idle'||phase==='title')?Math.abs(Math.sin(performance.now()/380))*2:0;
   if(shieldT>0&&phase==='run'){ctx.fillStyle='rgba(80,170,255,.25)';ctx.beginPath();ctx.arc(sx(X0+24),sy(py+26),30*S,0,7);ctx.fill()}
   spr(k,X0+24,(phase==='die'?0:py)+bob,h,a);
   if(phase==='die'&&dieT>.45)spr('ghost',X0+30,10+(dieT-.45)*40,20,Math.max(0,1-(dieT-.45)));
   for(const p of pops){ctx.globalAlpha=Math.max(0,p.life);ctx.fillStyle=p.c;ctx.font=`900 ${10*S}px system-ui,sans-serif`;ctx.textAlign='center';ctx.fillText(p.s,sx(p.x),sy(p.y));ctx.globalAlpha=1}
-  if(warnT>0){ctx.fillStyle='rgba(255,77,79,.95)';ctx.font=`900 ${Math.min(14,9*S)}px system-ui`;ctx.textAlign='center';ctx.textBaseline='top';ctx.fillText('⚠ 노란 공중 이물은 점프 금지!',W/2,full()?70:4)}
+  if(warnT>0){ctx.fillStyle='rgba(255,77,79,.95)';ctx.font=`900 ${Math.min(14,9*S)}px system-ui`;ctx.textAlign='center';ctx.textBaseline='top';ctx.fillText('⚠ 노란 공중 이물은 점프 금지!',W/2,full()?96:4)}
+  else if(phase==='run'&&full()&&t<3.5){ctx.fillStyle='rgba(29,63,115,'+(t<3?.9:(3.5-t)*1.8)+')';ctx.font='900 14px system-ui,sans-serif';ctx.textAlign='center';ctx.textBaseline='top';ctx.fillText('👆 화면을 톡! → 점프로 불량 피하기',W/2,96)}
   if(phase==='win')confetti();
  }
  // ── 판정
@@ -2016,25 +2027,31 @@ showTab(mode,{noUrl:true});
  function saveBest(m){const nb=m>best;if(nb){best=m;try{localStorage.setItem(BK,best)}catch(e){};bestEl.textContent=best+'m'}if(coins>bestC){bestC=coins;try{localStorage.setItem(CK,bestC)}catch(e){}}return nb}
  function finish(){phase='idle';const m=Math.min(999,Math.floor(dist*SHOW));const nb=saveBest(m);
   msg.innerHTML=(nb&&m>0?'🎉 최고 기록! ':'')+END[Math.floor(Math.random()*END.length)]+`<br><b>${m}m</b> 달리고 <b>D코인 ${coins}개</b> 모았어요`;btn.textContent='▶ 다시 시작';over.classList.remove('hide');box.classList.remove('playing')}
- function end(quit){cancelAnimationFrame(raf);run=false;if(quit){phase='idle';saveBest(Math.min(999,Math.floor(dist*SHOW)));exitFull();over.classList.remove('hide');box.classList.remove('playing');draw();return}finish()}
+ function end(quit){cancelAnimationFrame(raf);run=false;if(quit){saveBest(Math.min(999,Math.floor(dist*SHOW)));exitFull();return}finish()}
  function win(){run=false;phase='win';winT=0;tape&&(tape.cut=true);sc.textContent='1000m';bar.style.width='100%';saveBest(1000);best=1000;bestEl.textContent='1000m';box.classList.add('won');try{navigator.vibrate&&navigator.vibrate([80,60,80,60,200])}catch(e){}
   const cols=['#f5c451','#ff4d4f','#2ea8ff','#2fd47a','#a259ff','#fff'];parts=Array.from({length:140},()=>({x:W/2,y:H*.5,vx:(Math.random()-.5)*10,vy:-Math.random()*8-3,s:2+Math.random()*3.5,c:cols[Math.floor(Math.random()*cols.length)],r:Math.random()*6}));raf=requestAnimationFrame(loop)}
  function confetti(){for(const p of parts){p.vy+=.18;p.x+=p.vx;p.y+=p.vy;p.r+=.2;ctx.save();ctx.translate(p.x,p.y);ctx.rotate(p.r);ctx.fillStyle=p.c;ctx.fillRect(-p.s/2,-p.s/2,p.s,p.s*1.6);ctx.restore()}}
- function winDone(){phase='idle';msg.innerHTML=`<span class="dg-win">🏆 1KM 완주! 축하합니다!</span><br>당신은 진정한 <b>우수 품질 마스터</b> 🎉 · D코인 <b>${coins}개</b>`;btn.textContent='▶ 다시 도전';over.classList.remove('hide');box.classList.remove('won','playing')}
- // ── 전체화면 전환 (body로 옮겨서 부모 레이아웃 영향 없이)
- const ph=document.createComment('duriGame');let savedH='';
- function enterFull(){if(full())return;box.parentNode.insertBefore(ph,box);document.body.appendChild(box);savedH=box.style.getPropertyValue('height');box.style.removeProperty('height');box.classList.add('full');document.documentElement.classList.add('dr-full');size()}
- function exitFull(){if(!full())return;box.classList.remove('full');document.documentElement.classList.remove('dr-full');if(ph.parentNode){ph.parentNode.insertBefore(box,ph);ph.remove()}if(savedH)box.style.setProperty('height',savedH,'important');phase='idle';parts=[];obs=[];items=[];tape=null;py=0;requestAnimationFrame(size)}
- function start(){enterFull();reset();phase='run';box.classList.remove('won');run=true;over.classList.add('hide');box.classList.add('playing');last=performance.now();cancelAnimationFrame(raf);raf=requestAnimationFrame(loop)}
+ function winDone(){phase='idle';msg.innerHTML=`<span class="dg-win">🏆 1KM 무결점 완주!</span><br>당신은 진정한 <b>우수 품질 마스터</b> 🎉<br>D코인 <b>${coins}개</b>`;btn.textContent='▶ 다시 도전';over.classList.remove('hide');box.classList.remove('won','playing')}
+ // ── 확장 모드: 룰렛 칸까지 게임 화면으로 넓힘 (배너·접수 안내·탭바는 그대로)
+ const roul=document.getElementById('duriRoulette'),tabBar=document.getElementById('tabBar');
+ function enterFull(){if(full())return;if(roul)roul.classList.add('dr-hide');box.classList.add('full');box.style.removeProperty('height');
+  const top=box.getBoundingClientRect().top,tb=tabBar?tabBar.getBoundingClientRect().top:innerHeight;box.style.setProperty('height',Math.max(240,Math.floor(tb-8-top))+'px','important');size()}
+ function exitFull(){if(!full())return;cancelAnimationFrame(raf);run=false;box.classList.remove('full','playing','won');ttl.classList.remove('on');if(roul)roul.classList.remove('dr-hide');box.style.removeProperty('height');
+  phase='idle';parts=[];obs=[];items=[];tape=null;py=0;dist=0;sc.textContent=best+'m';msg.innerHTML=MSG0;btn.textContent='▶ 시작';over.classList.remove('hide');requestAnimationFrame(()=>{window.__homeFit&&window.__homeFit();size()})}
+ const MSG0=msg.innerHTML;
+ function showTitle(){if(window.__quizLive){msg.innerHTML='📝 <b>퀴즈 진행 중!</b><br>QUIZ 탭에서 문제를 먼저 풀어 주세요';return}
+  enterFull();reset();phase='title';over.classList.add('hide');ttl.classList.add('on');box.classList.add('playing');draw()}
+ function start(){ttl.classList.remove('on');reset();phase='run';box.classList.remove('won');run=true;over.classList.add('hide');box.classList.add('playing');last=performance.now();cancelAnimationFrame(raf);raf=requestAnimationFrame(loop)}
+ ttl.addEventListener('pointerdown',e=>{e.preventDefault();e.stopPropagation();start()});
+ addEventListener('duri-quiz',e=>{if(e.detail&&full())exitFull()});
  if(window.__MOCK)window.__dg={st:()=>({obs:obs.map(o=>({x:o.x,l:o.lift||0,s:o.st||1})),items:items.length,py,run,W,H,S,speed,t,dist,hearts,coins,phase}),jump,setD:v=>{dist=v},hurt:()=>{hearts=1;hearts$()}};
- btn.addEventListener('click',e=>{e.stopPropagation();start()});
+ btn.addEventListener('click',e=>{e.stopPropagation();full()?start():showTitle()});
  box.addEventListener('pointerdown',e=>{if(run){e.preventDefault();jump()}});
- over.addEventListener('pointerdown',e=>{if(full()&&!run&&e.target===over){e.stopPropagation();exitFull()}});
  document.addEventListener('keydown',e=>{if(!full())return;if(e.key===' '||e.key==='ArrowUp'){e.preventDefault();jump()}else if(e.key==='Escape'){run?end(true):exitFull()}});
  document.addEventListener('visibilitychange',()=>{if(document.hidden&&run)end(true)});
  new MutationObserver(()=>{if(document.getElementById('homeView').classList.contains('hidden')){if(run)end(true);else exitFull()}else requestAnimationFrame(size)}).observe(document.getElementById('homeView'),{attributes:true,attributeFilter:['class']});
  addEventListener('resize',size);requestAnimationFrame(size);
- (function idle(){if(phase==='idle'&&!run&&!document.hidden&&W)draw();setTimeout(()=>requestAnimationFrame(idle),120)})();
+ (function idle(){if((phase==='idle'||phase==='title')&&!run&&!document.hidden&&W)draw();setTimeout(()=>requestAnimationFrame(idle),120)})();
 })();
 </script>
 <script>
@@ -2061,7 +2078,7 @@ showTab(mode,{noUrl:true});
   busy=false;dispatchEvent(new Event('resize'))}
  new MutationObserver(()=>requestAnimationFrame(fit)).observe(hv,{attributes:true,attributeFilter:['class']});
  const rr=document.getElementById('roulResult');if(rr)new MutationObserver(()=>requestAnimationFrame(fit)).observe(rr,{childList:true,subtree:true});
- let lastWH='';addEventListener('resize',()=>{const k=innerWidth+'x'+innerHeight;if(k===lastWH)return;lastWH=k;setTimeout(fit,60)});addEventListener('load',fit);setTimeout(fit,200);setTimeout(fit,900);
+ window.__homeFit=fit;let lastWH='';addEventListener('resize',()=>{const k=innerWidth+'x'+innerHeight;if(k===lastWH)return;lastWH=k;setTimeout(fit,60)});addEventListener('load',fit);setTimeout(fit,200);setTimeout(fit,900);
 })();
 </script>
 </body></html>
