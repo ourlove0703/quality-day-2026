@@ -1016,7 +1016,7 @@ html.game-lock,html.game-lock body{overflow:hidden!important;overscroll-behavior
 
   <!-- 두리 룰렛 + 진행 순서 -->
   <section class="card duri-roulette" id="duriRoulette" aria-label="두리 룰렛과 행사 진행 순서">
-    <div class="roul-head"><div><div class="roul-kicker">DURI ROULETTE · 🍀 행운 뽑기</div></div><div class="rw-left" id="rwLeft">남은 뽑기 <b>3</b>/3</div><div class="rw-stamps" id="rwStamps" title="실천 도장"><small>실천 도장</small><span id="rwStampDots"></span></div></div>
+    <div class="roul-head"><div><div class="roul-kicker">DURI ROULETTE · 🍀 행운 뽑기</div></div><div class="rw-left" id="rwLeft">남은 뽑기 <b>1</b>/1</div><div class="rw-stamps" id="rwStamps" title="실천 도장"><small>실천 도장</small><span id="rwStampDots"></span></div></div>
     <div class="roul-body">
       <div class="rw-stage" id="rwStage">
         <div class="rw-bulbs" id="rwBulbs" aria-hidden="true"></div>
@@ -1744,7 +1744,7 @@ const DURI_ACTS=[
  // 실천 도장
  const SK='duri_roulette_stamps_v1',DK='duri_roulette_v1';
  let stamps=[];try{stamps=JSON.parse(localStorage.getItem(SK)||'[]').filter(i=>ACTS[i])}catch(e){}
- const MAXS=3,CK='duri_roulette_count_v1';let spins=0;try{spins=Math.min(MAXS,Number(localStorage.getItem(CK))||0)}catch(e){}
+ const MAXS=1,CK='duri_roulette_count_v1';let spins=0;try{spins=Math.min(MAXS,Number(localStorage.getItem(CK))||0)}catch(e){}
  const leftEl=document.getElementById('rwLeft');const syncLeft=()=>{const n=MAXS-spins;if(leftEl)leftEl.innerHTML=n>0?`남은 뽑기 <b>${n}</b>/${MAXS}`:'🎉 뽑기 완료';const hs=btn.querySelector('span');if(hs)hs.textContent=n>0?'SPIN':'CARD';btn.classList.toggle('done',n<=0)};
  const drawStamps=(pop)=>{dots.innerHTML=ACTS.map((a,i)=>`<i class="${stamps.includes(i)?'on':''}${pop===i?' pop':''}" style="--c:${a.c}"></i>`).join('');stampBox.classList.toggle('full',stamps.length===N)};
  drawStamps();
@@ -1766,11 +1766,11 @@ const DURI_ACTS=[
  let tsx=null;modal.addEventListener('touchstart',e=>{tsx=e.touches[0].clientX},{passive:true});modal.addEventListener('touchend',e=>{if(tsx===null)return;const dx=e.changedTouches[0].clientX-tsx;tsx=null;if(Math.abs(dx)>50&&cards.length>1)openCard(cardIdx+(dx<0?1:-1))},{passive:true});
  function openModal(i,f){const a=ACTS[i],full=stamps.length===N;
   modal.innerHTML=`<div class="lk-card" style="--c:${a.c}"><button type="button" class="lk-x" data-x aria-label="닫기">✕</button>
-   <div class="lk-top"><img src="${btn.querySelector('img').src}" alt=""><div><small>🍀 오늘의 행운 카드</small><b>${cards.length?cardIdx+1:1}번째 행운 카드 · 두리가 뽑았어요</b></div></div>
+   <div class="lk-top"><img src="${btn.querySelector('img').src}" alt=""><div><small>🍀 오늘의 행운 카드</small><b>두리가 뽑아 준 나만의 카드</b></div></div>
    <div class="lk-act"><span class="lk-e">${a.e}</span><div><small>오늘의 실천 ${a.n}</small><b>${a.t}</b><p>${a.msg}</p></div></div>
    <div class="lk-msg"><small>행운 메시지</small><p>${f.m}</p></div>
    <div class="lk-row"><div class="lk-meter"><small>품질 행운지수</small><div class="lk-bar"><i style="width:${f.p}%"></i></div><b>${f.p}%</b></div><div class="lk-item"><small>행운의 아이템</small><b>${f.it}</b></div></div>
-   <div class="lk-stamp">${spins>=MAXS?"🎉 행운 뽑기 3번 완성! 마지막 카드를 간직하세요":`행운 뽑기 ${spins} / ${MAXS} · 남은 기회 ${MAXS-spins}번`}</div>
+   <div class="lk-stamp">${spins>=MAXS?"🍀 오늘의 행운 카드! 간직하세요":`행운 뽑기 ${spins} / ${MAXS} · 남은 기회 ${MAXS-spins}번`}</div>
    ${cards.length>1?`<div class="lk-nav"><button type="button" data-nav="-1" ${cardIdx===0?"disabled":""}>‹</button><span>${cards.map((_,k)=>`<i class="${k===cardIdx?"on":""}"></i>`).join("")}<b>${cardIdx+1} / ${cards.length}번째 카드</b></span><button type="button" data-nav="1" ${cardIdx===cards.length-1?"disabled":""}>›</button></div>`:""}<div class="lk-btns one"><button type="button" class="ok" data-x>좋아요!</button></div>
    <div class="lk-tip">📸 캡처해서 동료에게 자랑해 보세요</div></div>`;
   modal.classList.add('open')}
