@@ -1007,8 +1007,8 @@ html.game-lock,html.game-lock body{overflow:hidden!important;overscroll-behavior
 @keyframes drTap{50%{opacity:.35;transform:scale(.96)}}
 
 /* V50 명예의 전당 */
-.hof-seg{display:grid;grid-template-columns:1fr 1fr;gap:4px;background:#e4ecf7;border-radius:12px;padding:4px;margin-bottom:10px}
-.hof-seg button{border:0;border-radius:9px;padding:9px 0;font-size:14px;font-weight:900;color:#5a7290;background:transparent}
+.hof-seg{display:grid;grid-template-columns:1fr 1fr;gap:4px;background:#e4ecf7;border-radius:12px;padding:3px;margin-bottom:8px}
+.hof-seg button{border:0;border-radius:9px;padding:7px 0;font-size:14px;font-weight:900;color:#5a7290;background:transparent}
 .hof-seg button.on{background:#10233f;color:#ffd166;box-shadow:0 3px 8px rgba(16,35,63,.25)}
 .hof{background:radial-gradient(120% 60% at 50% 0%,#1f3d6e 0%,#0c1c36 60%,#081428 100%);border-radius:18px;padding:16px 14px 14px;color:#fff;position:relative;overflow:hidden;word-break:keep-all}
 .hof::before{content:"";position:absolute;inset:0;background-image:radial-gradient(#ffffff22 1px,transparent 1.5px);background-size:22px 22px;pointer-events:none}
@@ -2204,7 +2204,13 @@ showTab(mode,{noUrl:true});
  show(NOW);
  // 상단 전환: 명예의 전당 / 두리 이야기
  const seg=document.querySelector('.hof-seg'),story=document.getElementById('duriStory');
- seg.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;seg.querySelectorAll('button').forEach(x=>x.classList.toggle('on',x===b));const h=b.dataset.seg==='hof';pane.classList.toggle('hidden',!h);story.classList.toggle('hidden',h);window.scrollTo(0,0)});
+ // 두리 이야기: 화면 높이에 맞춰 포스터 높이 자동 축소 (DURI 카드 안 잘리게)
+ const pImg=document.getElementById('posterImg'),tabBar=document.getElementById('tabBar');
+ function fitStory(){if(!pImg||story.classList.contains('hidden')||document.getElementById('mascotView').classList.contains('hidden'))return;pImg.style.removeProperty('max-height');
+  requestAnimationFrame(()=>{const last=story.lastElementChild;if(!last||!tabBar)return;const over=last.getBoundingClientRect().bottom-(tabBar.getBoundingClientRect().top-8);if(over>0){const h=pImg.getBoundingClientRect().height;pImg.style.setProperty('max-height',Math.max(120,h-over)+'px','important');pImg.style.objectFit='contain'}})}
+ seg.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;seg.querySelectorAll('button').forEach(x=>x.classList.toggle('on',x===b));const h=b.dataset.seg==='hof';pane.classList.toggle('hidden',!h);story.classList.toggle('hidden',h);window.scrollTo(0,0);fitStory()});
+ addEventListener('resize',fitStory);if(pImg)pImg.addEventListener('load',fitStory);
+ new MutationObserver(fitStory).observe(document.getElementById('mascotView'),{attributes:true,attributeFilter:['class']});
 })();
 </script>
 </body></html>
