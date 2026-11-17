@@ -1049,6 +1049,14 @@ html.game-lock,html.game-lock body{overflow:hidden!important;overscroll-behavior
 .hof-mys p{margin:0;font-size:13px;line-height:1.55;color:#cfe0f5}
 .hof-mys .cta{display:inline-block;margin-top:12px;background:#f5c451;color:#10233f;font-weight:900;font-size:13px;border-radius:999px;padding:6px 14px}
 .hof-sample{margin-top:12px;text-align:center;font-size:10.5px;color:#7f97b8;position:relative}
+
+/* V51 살아 움직이는 두리 + DURI 완성 보상 */
+.talk-spr{position:absolute;inset:0;border-radius:50%;overflow:hidden;background:radial-gradient(circle at 50% 40%,#ffffff,#e6f0ff)}
+.talk-spr i{position:absolute;left:50%;bottom:2px;background:url(assets/duri/duri_sprites2.png) no-repeat;transition:transform .12s}
+.dn-conf{position:absolute;left:50%;top:50%;width:7px;height:10px;border-radius:2px;pointer-events:none;z-index:5;animation:dnConf 1.2s cubic-bezier(.2,.7,.3,1) forwards}
+@keyframes dnConf{0%{transform:translate(-50%,-50%) scale(.4);opacity:1}100%{transform:translate(calc(-50% + var(--dx)),calc(-50% + var(--dy) + 60px)) rotate(540deg);opacity:0}}
+.dn-done.show{background:linear-gradient(135deg,#ffe08a,#f5c451)!important;color:#10233f!important;box-shadow:0 0 0 2px #fff,0 6px 16px rgba(245,196,81,.55);animation:dnPop .5s cubic-bezier(.3,1.6,.5,1)}
+@keyframes dnPop{0%{transform:scale(.6)}100%{transform:scale(1)}}
 </style></head><body>
 
 <div id="homeView" class="hidden"><div class="wrap">
@@ -1874,15 +1882,37 @@ const DURI_ACTS=[
    "데이터로 문제를 찾고, 개선하여 더 좋은 품질을 만들어요!","내 공정은 내가 지키고, 기본은 반드시 준수하며, 함께 공감하여 최고의 품질로!",
    "오늘도 무불량, 가즈아!","초물 확인 했나요? 두리는 했어요!"];
   let last=-1,taps=0;
-  duri.addEventListener('click',()=>{let i;do{i=Math.floor(Math.random()*LINES.length)}while(i===last&&LINES.length>1);last=i;taps++;
-   bub.innerHTML=`<small>두리 한마디 · ${taps}번째</small><b>${LINES[i]}</b>`;
+  /* V51: 살아 움직이는 두리 — 게임 모션 스프라이트 재활용 */
+  const SPF={"idle0":[0,0,70,101],"idle1":[72,0,71,97],"idle2":[145,0,73,97],"idle3":[220,0,83,96],"run0":[305,0,81,103],"run1":[388,0,82,104],"run2":[472,0,79,105],"run3":[553,0,77,100],"run4":[632,0,80,105],"run5":[714,0,80,103],"run6":[796,0,80,105],"run7":[878,0,80,110],"jump0":[0,112,98,115],"jump1":[100,112,103,126],"jump2":[205,112,100,116],"hit0":[307,112,114,112],"fall0":[423,112,142,88],"down":[567,112,137,52],"up":[706,112,104,96],"gag0":[812,112,111,128],"gag2":[0,242,141,128],"gag3":[143,242,124,137],"gag4":[269,242,101,130],"win0":[372,242,118,131],"win1":[492,242,116,131]};
+  const ACT={wave:{f:['idle0','idle1','idle2','idle3'],ms:170,n:2,t:'안녕하세요! 우리의 품질을 두루 살피는 친구, 두리예요.'},
+   run:{f:['run0','run1','run2','run3','run4','run5','run6','run7'],ms:80,n:2,t:'오늘도 무불량을 향해 달려요! 🏃'},
+   jump:{f:['jump0','jump1','jump1','jump1','jump2'],ms:120,n:1,y:[0,-14,-20,-14,0],t:'불량은 점프로 피하고, 품질은 지켜요! 🦘'},
+   win:{f:['win0','win1'],ms:220,n:3,t:'초물·중물·종물 모두 통과! 품질 마스터 🎉'},
+   gag:{f:['gag0','gag2','gag2','gag3','gag4'],ms:230,n:1,t:'앗, 헬멧이! ⛑ 안전모는 꼭 쓰세요!'},
+   fall:{f:['hit0','fall0','down','down','up'],ms:200,n:1,t:'넘어져도 다시 일어나요! 개선은 계속됩니다 💪'}};
+  const ACTK=['wave','run','jump','win','gag','fall'];
+  const box=document.createElement('span');box.className='talk-spr';const sp=document.createElement('i');box.appendChild(sp);
+  const im0=duri.querySelector('img');if(im0)im0.style.display='none';duri.insertBefore(box,duri.firstChild);
+  let animT=0,cur=null;
+  function frame(k,dy){const f=SPF[k];if(!f)return;const B=box.clientWidth||62,sc=Math.min(B*.92/f[3],B*1.1/f[2]);sp.style.width=f[2]*sc+'px';sp.style.height=f[3]*sc+'px';sp.style.backgroundSize=1024*sc+'px auto';sp.style.backgroundPosition=(-f[0]*sc)+'px '+(-f[1]*sc)+'px';sp.style.transform='translate(-50%,'+(dy||0)+'px)'}
+  function play(name,loop){clearTimeout(animT);const a=ACT[name];cur=name;let i=0,total=a.f.length*(loop?1e9:a.n);
+   (function step(){frame(a.f[i%a.f.length],a.y?a.y[i%a.f.length]:0);i++;if(i<total)animT=setTimeout(step,a.ms);else{animT=setTimeout(()=>play('wave',true),500)}})()}
+  window.__duriPlay=play;
+  play('wave',true);addEventListener('resize',()=>play(cur||'wave',cur==='wave'));
+  let lastA='wave';
+  duri.addEventListener('click',()=>{let i,a;do{a=ACTK[1+Math.floor(Math.random()*(ACTK.length-1))]}while(a===lastA);lastA=a;taps++;
+   const useAct=Math.random()<.5;do{i=Math.floor(Math.random()*LINES.length)}while(i===last&&LINES.length>1);last=i;
+   play(a,false);
+   bub.innerHTML=`<small>두리 한마디 · ${taps}번째</small><b>${useAct?ACT[a].t:LINES[i]}</b>`;
    bub.classList.remove('pop');duri.classList.remove('boing');void duri.offsetWidth;bub.classList.add('pop');duri.classList.add('boing');
    try{navigator.vibrate&&navigator.vibrate(12)}catch(e){}});
  }
+ function duriBurst(){const host=document.querySelector('.duri-name');if(!host)return;host.style.position='relative';const cols=['#f5c451','#e8202e','#2f7cf6','#2fbf63','#a259ff'];
+  for(let k=0;k<36;k++){const p=document.createElement('i');p.className='dn-conf';const a=Math.random()*6.28,d=60+Math.random()*120;p.style.background=cols[k%5];p.style.setProperty('--dx',Math.cos(a)*d+'px');p.style.setProperty('--dy',(Math.sin(a)*d-40)+'px');p.style.animationDelay=(Math.random()*.15)+'s';host.appendChild(p);setTimeout(()=>p.remove(),1400)}}
  const cards=[...document.querySelectorAll('.dn-card')],cnt=document.getElementById('dnCount'),done=document.getElementById('dnDone');
  if(!cards.length)return;
  const upd=()=>{const n=cards.filter(c=>c.classList.contains('flip')).length;cnt.textContent=`${n} / 4`;const all=n===4;done.classList.toggle('show',all);
-  if(all&&!done.dataset.said&&bub&&duri){done.dataset.said='1';bub.innerHTML='<small>DURI 완성!</small><b>Data · Unity · Responsibility · Improvement — 이제 우리 모두 두리예요!</b>';bub.classList.remove('pop');duri.classList.remove('boing');void duri.offsetWidth;bub.classList.add('pop');duri.classList.add('boing')}};
+  if(all&&!done.dataset.said&&bub&&duri){done.dataset.said='1';window.__duriPlay&&window.__duriPlay('win',false);duriBurst();try{navigator.vibrate&&navigator.vibrate([30,50,30,50,120])}catch(e){}bub.innerHTML='<small>DURI 완성!</small><b>Data · Unity · Responsibility · Improvement — 이제 우리 모두 두리예요!</b>';bub.classList.remove('pop');duri.classList.remove('boing');void duri.offsetWidth;bub.classList.add('pop');duri.classList.add('boing')}};
  cards.forEach(c=>c.addEventListener('click',()=>{c.parentElement.classList.add('touched');c.classList.toggle('flip');c.setAttribute('aria-pressed',c.classList.contains('flip'));upd()}));
  upd();
 })();
