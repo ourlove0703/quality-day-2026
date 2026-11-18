@@ -1057,6 +1057,30 @@ html.game-lock,html.game-lock body{overflow:hidden!important;overscroll-behavior
 @keyframes dnConf{0%{transform:translate(-50%,-50%) scale(.4);opacity:1}100%{transform:translate(calc(-50% + var(--dx)),calc(-50% + var(--dy) + 60px)) rotate(540deg);opacity:0}}
 .dn-done.show{background:linear-gradient(135deg,#ffe08a,#f5c451)!important;color:#10233f!important;box-shadow:0 0 0 2px #fff,0 6px 16px rgba(245,196,81,.55);animation:dnPop .5s cubic-bezier(.3,1.6,.5,1)}
 @keyframes dnPop{0%{transform:scale(.6)}100%{transform:scale(1)}}
+
+/* V52 명예의 전당 실데이터 */
+.hof-tick{position:relative;margin:12px -14px 0;overflow:hidden;background:rgba(245,196,81,.1);border-top:1px solid rgba(245,196,81,.35);border-bottom:1px solid rgba(245,196,81,.35);padding:7px 0;-webkit-mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent);mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent)}
+.hof-tick-in{display:flex;width:max-content;animation:hofTick 170s linear infinite}
+.hof-tick-in span{display:inline-flex;align-items:center;gap:6px;margin-right:22px;font-size:12px;color:#d7e4f5;white-space:nowrap}
+.hof-tick-in b{color:#fff;font-weight:900}.hof-tick-in em{font-style:normal;color:#ffd166;font-size:11px;font-weight:800}
+@keyframes hofTick{to{transform:translateX(-50%)}}
+.hof-av{display:inline-flex;align-items:center;justify-content:center;flex:none;width:22px;height:22px;border-radius:50%;color:#fff;font-style:normal;font-size:11px;font-weight:900;border:1.5px solid rgba(255,255,255,.7)}
+.hof-card .hof-av{width:34px;height:34px;font-size:15px}
+.hof-card.guard{--c:#5aa7ff}
+.hof-row{display:flex;align-items:center;gap:9px}
+.hof-who{flex:1;min-width:0}
+.hof-who .hof-dp{display:block;margin:1px 0 0}
+.hof-rep{flex:none;font-size:10.5px;font-weight:900;color:#10233f;background:#7fe0a0;border-radius:999px;padding:2px 7px}
+.hof-pd{margin-top:7px;font-size:11px;color:#9fb6d6;font-weight:700}
+.hof-card .hof-ct{margin-top:3px;font-size:12.5px;color:#fff;font-weight:700}
+.hof-card.gold .hof-ct{color:#ffe9a8}
+.hof-mys{margin-top:14px;border-top:1px dashed rgba(245,196,81,.4);padding-top:12px}
+.hof-top{margin-top:12px;background:rgba(255,255,255,.06);border-radius:12px;padding:11px 12px;position:relative}
+.hof-top h3{margin:0 0 8px;font-size:13px;font-weight:900;color:#ffd166}
+.hof-tr{display:grid;grid-template-columns:96px 1fr 34px;align-items:center;gap:8px;margin:5px 0;font-size:12px}
+.hof-tr b{color:#fff}.hof-tr span{height:8px;background:rgba(255,255,255,.12);border-radius:6px;overflow:hidden}.hof-tr span i{display:block;height:100%;background:linear-gradient(90deg,#f5c451,#ff9f43);border-radius:6px}
+.hof-tr em{font-style:normal;color:#ffd166;font-weight:900;text-align:right}
+.hof-top p{margin:8px 0 0;font-size:11.5px;color:#9fb6d6;line-height:1.5}
 </style></head><body>
 
 <div id="homeView" class="hidden"><div class="wrap">
@@ -1154,10 +1178,12 @@ html.game-lock,html.game-lock body{overflow:hidden!important;overscroll-behavior
 <div id="mascotView" class="hidden"><div class="wrap">
   <div class="hof-seg" role="tablist"><button type="button" class="on" data-seg="hof">🏆 명예의 전당</button><button type="button" data-seg="story">🦦 두리 이야기</button></div>
   <section class="hof" id="hofPane" aria-label="품질 명예의 전당">
-    <div class="hof-head"><div class="hof-duri" aria-hidden="true"></div><div><div class="hof-k">★ HALL OF FAME ★</div><h2>품질 명예의 전당</h2><p>품질을 지켜 온 우리 동료들</p></div></div>
+    <div class="hof-head"><div class="hof-duri" aria-hidden="true"></div><div><div class="hof-k">★ HALL OF FAME ★</div><h2>품질 명예의 전당</h2><p id="hofLead">작은 이상을 놓치지 않은 사람들</p></div></div>
+    <div class="hof-tick" aria-hidden="true"><div class="hof-tick-in" id="hofTick"></div></div>
+    <div class="hof-top" id="hofTop"></div>
     <div class="hof-years" id="hofYears"></div>
     <div id="hofBody"></div>
-    <div class="hof-sample" id="hofSample">※ 예시 데이터입니다 · 명단 확정 후 교체</div>
+    <div class="hof-sample" id="hofSample">자료: 품질경영팀 · 2026.11.18 기준 · 품질지킴이(2023~2025) · 품질공감데이(2026)</div>
   </section>
   <div id="duriStory" class="hidden">
   <section class="card duri-home-poster" aria-label="DURI 품질공감데이 마스코트 및 실천행동 자료">
@@ -2205,33 +2231,36 @@ showTab(mode,{noUrl:true});
 })();
 </script>
 <script>
-/* V50 명예의 전당 — 명단은 아래 HOF 데이터만 교체(서버 통신 없음) */
+/* V52 명예의 전당 — 실제 포상 이력(사진·금액 제외). 서버 통신 없음 */
 (function(){
- const HOF_SAMPLE=true;               // 실제 명단 넣으면 false
- const HOF_MASK=false;                // true: 홍*동 처럼 가운데 이름 가림
- const TIER={'품질대상':'gold','최우수상':'silver','우수상':'bronze','개선제안상':'blue'};
- const ORDER=['품질대상','최우수상','우수상','개선제안상'];
- const HOF={
-  2025:[['품질대상','김품질','품질경영팀','사출 버 불량 70% 감소 · 금형 관리 표준화'],['최우수상','이정밀','정밀측정파트','CMM 측정 리드타임 30% 단축'],['최우수상','박개선','사출1팀','미성형 불량 원인 분석·조건 최적화'],['우수상','최현장','전장공정','O-ring 이중조립 방지 인터록'],['우수상','정검사','품질보증팀','초물 검사 체크리스트 개선'],['우수상','한공정','권선공정','솔더 온도 편차 관리'],['개선제안상','오제안','생산기술팀','지그 고정 개선 제안'],['개선제안상','윤아이','사출2팀','취출 잔존품 감지 센서 제안']],
-  2024:[['품질대상','강명장','사출1팀','고객 클레임 ZERO 달성'],['최우수상','서측정','정밀측정파트','Gauge R&R 개선'],['우수상','남조립','전장공정','바코드 마킹 고정 지그 개선'],['우수상','문검사','품질보증팀','최종검사 기준서 보완'],['개선제안상','배아이디어','생산기술팀','이물 혼입 방지 커버 제안']],
-  2023:[['품질대상','조신뢰','품질경영팀','신뢰성 시험 체계 구축'],['최우수상','임정확','정밀측정파트','측정 표준서 정비'],['우수상','장성실','사출2팀','금형 온도 관리 개선'],['개선제안상','유창의','권선공정','권선 와이어 가이드 개선 제안']]
- };
- const YEARS=[2023,2024,2025],NOW=2026;
+ const HOF_MASK=false;  // true: 홍*동 처럼 가운데 이름 가림
+ // [연도, 시기, 이름, 부서, 대상품목, 주요 공적, 품질공감데이 여부]
+ const REC=[[2023,"2023.04","한춘미","전장생산팀","PCSV KEV3","링 필터 누락",0],[2023,"2023.04","조경희","사출생산팀","TAS GEN2.0 COVER","Burr(Core 파손) 발견",0],[2023,"2023.04","신미영","전장생산팀","iMEB2 Housing Ass`y","OV 코일 / IV 코일 마킹 이종품",0],[2023,"2023.05","김종화","사출생산팀","TAS GEN2.0 HOUSING","Hole 막힘 불량 검출",0],[2023,"2023.05","김나영","전장생산팀","VIS Actuator","Filter Cap 사출 불량",0],[2023,"2023.06","신윤희","사출생산팀","Link Over Mold","마그넷 크랙",0],[2023,"2023.06","윤진희","권선생산팀","iMEB2 WSV Coil Ass`y","Coil 탄화에 따른 용접 미흡",0],[2023,"2023.06","이선직","전장생산팀","MEB5 Housing Ass`y","Coil 납땜용접 불량 / 잔여선 불량",0],[2023,"2023.08","문선옥","전장생산팀","IDB HOUSING ASS`Y","살빼기 코어 파손(Cav #1), 천공 3EA / 코어박힘 1EA",0],[2023,"2023.08","박미경","사출생산팀","SRR30/LRR30","7월 916ppm / 8월 2,281ppm 불량 검출",0],[2023,"2023.09","정윤희","사출생산팀","MEB5 ESC HOUSING","MOTOR PIN ASS`Y(핀 데미지) 발견",0],[2023,"2023.10","문미화","전장생산팀","VIS Solbody","VIS 필터캡 미성형불량 관련 고객사 유출 재발 불량 방지",0],[2023,"2023.11","이양수","영업관리팀","ECU IMEB2 HOUSING ASS'Y","박스 적재방향 미일치 검출",0],[2023,"2023.11","이효식","영업관리팀","ECU IMEB2 HOUSING ASS'Y","박스 적재방향 미일치 검출",0],[2024,"2024.01","신미영","전장생산팀","VIS SPRING (업체 귀책 : 삼원정공)","SPRING 미연마 및 절단불량 발견",0],[2024,"2024.01","라이언","생산관리팀","(업체 귀책 : BGF 에코 머티리얼즈_구 코프라)","BGF 수지 포대 이종품 혼입 발견",0],[2024,"2024.01","임규석","전장생산팀","CVVL 포지션 센서","마그넷휠 누락품 발견",0],[2024,"2024.02","메리조이","사출생산팀","MEB5 ESC HOUSING 2차금형","Cav #6번 Bush 슬라이드 코어 크랙으로 인한 형상 이상 발견",0],[2024,"2024.03","장윤정","전장생산팀","IDB HOUSING","IDB COIL 조립부 미성형 불량 검출 (미성형 발생부위 외관검사 항목 미 지정 부위로 (가스켓/Busbar 조립 작업자)",0],[2024,"2024.03","제네","전장생산팀","MEB5 ESC HOUSING ASS`Y","MEB5 COIL 내경부 찍힘 검출 (OV Coil Ass`y)",0],[2024,"2024.04","서혜진","전장생산팀","PCSV KEV ASS`Y","댐퍼 미성형 불량 발견 (업체명 : 디엠알)",0],[2024,"2024.04","김대성","생산관리팀","TB120G30 BK","수지 혼입 방지 (업체명 : 현대첨단소재)",0],[2024,"2024.04","염종임","전장생산팀","VIS Filter Cap (미성형 불량 발견)","VIS Filter Cap 미성형 불량 발견 (업체명 : BCMK)",0],[2024,"2024.05","최지순","사출생산팀","600H Magnetic Core Ass`y","역조립 발생 관련 설비 미검출 되었으나, 검사원 자체적으로 확인 과정 F/proof 오류 인지",0],[2024,"2024.06","김다랑","사출생산팀","MEB5 ESC HOUSING","커넥터 핀 누락 발생품 외관 검사 시 발견",0],[2024,"2024.08","이송화","전장생산팀","VIS Kappa Rod 미성형(눌림)","VIS DIAPREAGM / Spring / rod 조립 과정 해당불량 발견",0],[2024,"2024.09","최정은","사출생산팀","MEB5 ESCI HOUSING","ESCI HOUSING 화살촉 파손,크랙 현상 발견",0],[2024,"2024.09","조경서","사출생산팀","TAS GEN2.0 ROTIR IS","SLEEVE 원자재 높이 치수 불량 검출 (원자재 치수 미달에 따른 사출 OVER FLOW 발생 및 육안 검출)",0],[2024,"2024.10","라이언","생산관리팀","(업체 귀책 : BGF 에코 머티리얼즈_구 코프라)","BGF 수지 뭉침 현상 발견",0],[2024,"2024.11","안젤로","생산관리팀","A3HG7 NAT","Resin 기존대비 색상 이상 발견",0],[2024,"2024.11","강희종","생산관리팀","GEN4 28.5 COIL","Wire 스플통 파손 발견",0],[2024,"2024.11","김민주","사출생산팀","700F 4Pin 커넥터","좌핀 용접부 형상 불량 발견",0],[2024,"2024.12","서의택","생산관리팀","Busbar Module(바이백)","고객 납기 문제 사전 파악 (결품 예방 및 불량 유출 방지)",0],[2024,"2024.12","지혜란","권선생산팀","MEB5 COIL ASS`Y OV","OV Wire 연속 뭉침 불량 발생 발견",0],[2025,"2025년 1분기","문선옥","전장생산팀","IDB HOUSING ASS`Y","IDB 바코드 불량 검출 (작업표준 준수_동기부여)",0],[2025,"2025년 1분기","신윤희","전장생산팀","Magnet_Link Overmold","마그넷(착자제품) 혼입불량",0],[2025,"2025년 1분기","지선주","전장생산팀","601D M/C Cover Ass`y","L.V magnetic Core 원자재 적층 벌어짐 / 적층 높이 불량",0],[2025,"2025년 1분기","이선직","전장생산팀","MEB5 ESC HSG ASS`Y","완제품 검사 과정 돌기부 파손불량 발견",0],[2025,"2025.04","신미영","사출생산팀","IMEB2 HSG ASS`Y","베어링 탭 형상이상",0],[2025,"2025.04","한춘미","전장생산팀","KEV3 3.5 QC 0도","KEV3 D/unit 커넥터부 미성형",0],[2025,"2025.04","김정미","전장생산팀","Gen4 Intake LH","Gen4 O-ring 원자재 혼입",0],[2025,"2025.04","주은희","사출생산팀","ROTOR IS SLEEVE","Sleeve 원자재 가공 단차 (사출 OverFlow)",0],[2025,"2025.06","정민경","전장생산팀","TAS Gen2.0 HOUSING","스프링 삽입부 변형(휨) 발견",0],[2025,"2025.06","살베","사출생산팀","IDB HOUSING ASS`Y","Connector 배면부 윤활유 도포 확인",0],[2025,"2025.08","문채영","사출생산팀","IMEB2 HSG","Bush 긁힘 품질문제 개선",0],[2025,"2025.08","이우경","권선생산팀","IMEB2 COIL OV ASS`Y","용접 용융상태 미흡품 검출",0],[2025,"2025.08","김혜은","전장생산팀","IMEB2 HSG ASS`Y","베어링 단차 불량 유출 방지",0],[2025,"2025.08","박정미","사출생산팀","SRR30 HSG MASTER TYPE","파손 불량",0],[2025,"2025.09","김다랑","사출생산팀","MEB5 ESCI Housing","Power pin 630 휨 발견",0],[2025,"2025.09","김대성","생산관리팀","KBG1030 BK Resin","Resin 포대 내 이물 발견",0],[2025,"2025.09","한춘미","전장생산팀","KEV3 5.0 QC Ass`y (KEV3 5.0 QC LN Cover)","KEV3 Cover 하단부 가스몰림 발견",0],[2025,"2025.09","라이언","생산관리팀","F10G30LM BK Resin","Resin 포대 광택 차이 (Glass Fiber 함량미달)",0],[2026,"2026 상반기","오순미","전장생산팀","IDB Gen2.0","IDB Gen2.0 NC 터미널 용접부 데미지 발견 · 고객 불량 유출 방지",1],[2026,"2026 상반기","김도연","전장생산팀","8속 스피드 센서","8속 스피드 센서 Hall IC 레이저 용접 미흡 · 고객 불량 유출 방지",1],[2026,"2026 상반기","조영웅","권선생산팀","IMEB2","매듭봉 좌우 치우침 개선 · IMEB2 2라인 연간 코일 스크랩 36kg / 약 70만원 절감",1]];
+ const DC={'전장생산팀':'#2f7cf6','사출생산팀':'#22a85a','권선생산팀':'#f08c2e','생산관리팀':'#9b5cf0','영업관리팀':'#e8455a'};
+ const CAT=[['미성형',/미성형|미충진|가스몰림|눌림|over ?flow/i],['혼입·이종품',/혼입|이종|이물|색상|광택|함량/],['파손·크랙',/파손|크랙|데미지|찍힘|긁힘|손상/],['용접·납땜',/용접|납땜|용융|탄화/],['누락',/누락/],['변형·치수',/치수|형상|변형|휨|단차|높이|벌어짐|치우침|뭉침/]];
+ const YEARS=[2023,2024,2025,2026];
  const pane=document.getElementById('hofPane');if(!pane)return;
- const yb=document.getElementById('hofYears'),body=document.getElementById('hofBody');
- document.getElementById('hofSample').style.display=HOF_SAMPLE?'':'none';
+ const yb=document.getElementById('hofYears'),body=document.getElementById('hofBody'),tick=document.getElementById('hofTick'),top=document.getElementById('hofTop');
  const esc=t=>String(t).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
  const mask=n=>!HOF_MASK||n.length<2?n:n.length===2?n[0]+'*':n[0]+'*'.repeat(n.length-2)+n[n.length-1];
- yb.innerHTML=YEARS.map(y=>`<button type="button" data-y="${y}">${y}</button>`).join('')+`<button type="button" class="mys" data-y="${NOW}">${NOW} ???</button>`;
+ const cnt={};REC.forEach(r=>{cnt[r[2]+'|'+r[3]]=(cnt[r[2]+'|'+r[3]]||0)+1});
+ const av=r=>`<i class="hof-av" style="background:${DC[r[3]]||'#5a7290'}">${esc(mask(r[2])[0])}</i>`;
+ document.getElementById('hofLead').textContent=`${YEARS.length}년간 ${REC.length}번, 작은 이상을 놓치지 않은 사람들`;
+ // 흐르는 역대 수상자
+ const tk=REC.map(r=>`<span>${av(r)}<b>${esc(mask(r[2]))}</b><em>${esc(r[3])}</em>${esc(r[5].split(/[(/]/)[0].trim())}</span>`).join('');
+ tick.innerHTML=tk+tk;tick.style.animationDuration=Math.round(REC.length*3.2)+'s';
+ // 잡아낸 불량 TOP3
+ const cc=CAT.map(([n,re])=>[n,REC.filter(r=>re.test(r[5]+' '+r[4])).length]).sort((a,b)=>b[1]-a[1]).slice(0,3),mx=cc[0][1]||1;
+ top.innerHTML=`<h3>🔍 우리가 가장 많이 잡아낸 불량 TOP3</h3>`+cc.map((c,i)=>`<div class="hof-tr"><b>${['🥇','🥈','🥉'][i]} ${c[0]}</b><span><i style="width:${Math.round(c[1]/mx*100)}%"></i></span><em>${c[1]}건</em></div>`).join('')+`<p>두리 런에서 피한 그 불량들, 현장에서는 이분들이 잡아냈어요!</p>`;
+ yb.innerHTML=YEARS.map(y=>`<button type="button" data-y="${y}"${y===2026?' class="mys"':''}>${y}</button>`).join('');
+ const card=(r,i)=>{const n=cnt[r[2]+'|'+r[3]];return `<div class="hof-card ${r[6]?'gold':'guard'}" style="animation-delay:${Math.min(i,12)*.04}s"><div class="hof-row">${av(r)}<div class="hof-who"><span class="hof-nm">${esc(mask(r[2]))}</span><span class="hof-dp">${esc(r[3])}</span></div>${n>1?`<span class="hof-rep">🔁 ${n}회</span>`:''}</div><div class="hof-pd">${esc(r[1])} · ${esc(r[4])}</div><div class="hof-ct">🔍 ${esc(r[5])}</div></div>`};
  function show(y){yb.querySelectorAll('button').forEach(b=>b.classList.toggle('on',+b.dataset.y===y));
-  if(y===NOW){body.innerHTML=`<div class="hof-mys"><div class="q"><i>?</i><i>?</i><i>?</i></div><b>${NOW} 올해의 주인공은 누구일까요?</b><p>오늘 시상식에서 공개됩니다 🏆<br>다음 명예의 전당 주인공은 바로 여러분!</p><span class="cta">✨ 품질을 지키는 모든 분을 응원합니다</span></div>`;return}
-  const list=HOF[y]||[];let h='',d=0;
-  for(const aw of ORDER){const g=list.filter(r=>r[0]===aw);if(!g.length)continue;
-   h+=`<div class="hof-grp"><h3>${aw==='품질대상'?'👑':aw==='최우수상'?'🥈':aw==='우수상'?'🥉':'💡'} ${esc(aw)} <span>${g.length}명</span></h3><div class="hof-grid${aw==='품질대상'?' one':''}">`+
-    g.map(r=>`<div class="hof-card ${TIER[aw]||'blue'}" style="animation-delay:${(d++)*.05}s"><span class="hof-aw">${esc(aw)}</span><div><span class="hof-nm">${esc(mask(r[1]))}</span><span class="hof-dp">${esc(r[2])}</span></div>${r[3]?`<div class="hof-ct">${esc(r[3])}</div>`:''}</div>`).join('')+`</div></div>`}
-  body.innerHTML=h||'<p style="text-align:center;color:#9fb6d6">명단 준비 중입니다</p>'}
+  const list=REC.filter(r=>r[0]===y);
+  if(y===2026){body.innerHTML=`<div class="hof-grp"><h3>🏆 품질공감데이 · 2026 상반기 <span>${list.length}명</span></h3><div class="hof-grid one">${list.map(card).join('')}</div></div>
+   <div class="hof-mys"><div class="q"><i>?</i><i>?</i><i>?</i></div><b>2026 하반기, 다음 주인공은 누구일까요?</b><p>오늘 시상식에서 공개됩니다 🏆<br>다음 명예의 전당 주인공은 바로 여러분!</p></div>`;return}
+  body.innerHTML=`<div class="hof-grp"><h3>🛡 ${y} 품질지킴이 <span>${list.length}명</span></h3><div class="hof-grid one">${list.map(card).join('')}</div></div>`}
  yb.addEventListener('click',e=>{const b=e.target.closest('button');if(b)show(+b.dataset.y)});
- show(NOW);
+ show(2026);
  // 상단 전환: 명예의 전당 / 두리 이야기
  const seg=document.querySelector('.hof-seg'),story=document.getElementById('duriStory');
  // 두리 이야기: 화면 높이에 맞춰 포스터 높이 자동 축소 (DURI 카드 안 잘리게)
