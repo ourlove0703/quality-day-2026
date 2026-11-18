@@ -1148,6 +1148,10 @@ html.game-lock,html.game-lock body{overflow:hidden!important;overscroll-behavior
 .dr-fv i{display:block;height:100%;width:0;background:linear-gradient(90deg,#ff9f43,#e8202e);border-radius:6px;transition:width .2s}
 .dr-fv.hot{box-shadow:0 0 10px rgba(255,120,60,.8)}.dr-fv.hot i{animation:fvHot .4s ease-in-out infinite alternate}
 @keyframes fvHot{to{filter:brightness(1.5)}}
+
+/* V58 단골 품질지킴이 원형 사진 */
+.hof-ph.sm{width:30px;height:30px;border-width:1.5px}
+.hof-allv .hof-chips.two .hof-ph{grid-row:1;grid-column:1}
 </style></head><body>
 
 <div id="homeView" class="hidden"><div class="wrap">
@@ -2324,7 +2328,7 @@ showTab(mode,{noUrl:true});
  const ppl=Object.keys(cnt),reps=ppl.filter(k=>cnt[k]>1).sort((a,b)=>cnt[b]-cnt[a]),depts=new Set(REC.map(r=>r[3]));
  const MYS=`<div class="hof-mys top"><div class="q"><i>?</i><i>?</i><i>?</i></div><div><b>2026 하반기,<br>다음 주인공은 누구일까요?</b><p>오늘 시상식에서 공개됩니다 🏆</p></div></div>`;
  const ALL=`<div class="hof-allv">`+MYS+`<div class="hof-stat"><div><b>${REC.length}<small>건</small></b><span>이상 발견 기록</span></div><div><b>${ppl.length}<small>명</small></b><span>품질지킴이</span></div><div><b>${depts.size}<small>개</small></b><span>참여 부서</span></div></div>`+TOP+
-  (reps.length?`<div class="hof-top" id="hofReps"><h3>🔁 단골 품질지킴이 <small>2회 이상 수상</small></h3><div class="hof-chips two">${reps.map(k=>{const [n,d]=k.split('|');return `<span><i class="hof-tro sm">${TRO}</i><b>${esc(mask(n))}</b><em style="color:${DC[d]||'#9fb6d6'}">${esc(d)}</em><u>${cnt[k]}회</u></span>`}).join('')}</div></div>`:'')+`</div>`;
+  (reps.length?`<div class="hof-top" id="hofReps"><h3>🔁 단골 품질지킴이 <small>2회 이상 수상</small></h3><div class="hof-chips two">${reps.map(k=>{const [n,d]=k.split('|');const pi=REC.reduce((m,r,ix)=>r[2]===n&&r[3]===d&&PH[ix]?ix:m,-1);return `<span>${pi>=0?`<img class="hof-ph sm" src="${PH[pi]}" alt="" loading="lazy">`:`<i class="hof-tro sm">${TRO}</i>`}<b>${esc(mask(n))}</b><em style="color:${DC[d]||'#9fb6d6'}">${esc(d)}</em><u>${cnt[k]}회</u></span>`}).join('')}</div></div>`:'')+`</div>`;
  yb.innerHTML=`<div class="hof-main"><button type="button" data-m="all">🏆 전체</button><button type="button" data-m="hist">📜 역대 수상자</button></div><div class="hof-sub" hidden>`+YEARS.map(y=>`<button type="button" data-y="${y}"${y===2026?' class="mys"':''}>${y}</button>`).join('')+`</div>`;
  const sub=yb.querySelector('.hof-sub');let lastY=YEARS[YEARS.length-1];
  const card=(r,i)=>{const n=cnt[r[2]+'|'+r[3]];return `<div class="hof-card ${r[6]?'gold':'guard'}" style="animation-delay:${Math.min(i,12)*.04}s"><div class="hof-row">${av(r)}<div class="hof-who"><span class="hof-nm">${esc(mask(r[2]))}</span><span class="hof-dp" style="color:${DC[r[3]]?'#c9d9ef':''}"><i class="hof-dd" style="background:${DC[r[3]]||'#5a7290'}"></i>${esc(r[3])}</span></div>${PH[REC.indexOf(r)]?`<img class="hof-ph${r[6]?' g':''}" src="${PH[REC.indexOf(r)]}" alt="" loading="lazy">`:''}${n>1?`<span class="hof-rep">🔁 ${n}회</span>`:''}</div><div class="hof-pd">${esc(r[1])} · ${esc(r[4])}</div><div class="hof-ct">🔍 ${esc(r[5])}</div></div>`};
