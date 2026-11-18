@@ -754,7 +754,9 @@ body.live-reg #liveStartBtn .ls-ic{color:#17734a!important}
 /* V59 PIN 입력 화면 */
 #accessGate{background:radial-gradient(120% 80% at 50% 0%,#1f3d6e,#0c1c36 70%)!important}
 .gate-card{width:min(100%,420px)!important;padding:0 0 22px!important;overflow:hidden;color:#10233f;border-radius:24px!important;box-shadow:0 24px 70px rgba(0,0,0,.45)!important}
-.gate-top{position:relative;background:linear-gradient(160deg,#16325c,#0e2342);padding:18px 0 14px;margin-bottom:16px}
+.gate-top{position:relative;background:linear-gradient(160deg,#16325c,#0e2342);padding:22px 0 16px;margin-bottom:18px}
+.gate-lock{width:64px;height:64px;margin:0 auto 10px;border-radius:20px;background:linear-gradient(145deg,#ffd978,#f2ad2e);display:grid;place-items:center;box-shadow:0 8px 20px rgba(242,173,46,.35)}
+.gate-lock svg{width:34px;height:34px;fill:#10233f;stroke:#10233f}
 .gate-top .gate-duri{height:120px!important;margin:0 auto 8px!important;filter:drop-shadow(0 6px 10px rgba(0,0,0,.35))}
 .gate-chip{display:inline-block;font-size:12px;font-weight:900;color:#10233f;background:#f5c451;border-radius:999px;padding:4px 12px}
 .gate-card h2{color:#10233f!important;font-size:24px!important;font-weight:900;margin:0 0 4px!important}
@@ -771,6 +773,9 @@ body.live-reg #liveStartBtn .ls-ic{color:#17734a!important}
 .gate-card.bad{animation:gShake .4s}.gate-card.bad #gatePin{border-color:#e5484d;background:#fff5f5}
 @keyframes gShake{20%,60%{transform:translateX(-8px)}40%,80%{transform:translateX(8px)}}
 .gate-card.ok #gatePin{border-color:#22a85a}
+
+/* 단어 중간 줄바꿈 방지 */
+body,button,p,h1,h2,h3,span,div,td,th,li{word-break:keep-all;overflow-wrap:break-word}
 </style></head><body>
 
 <div id="homeView" class="hidden"><div class="wrap">
@@ -1070,6 +1075,9 @@ h1 em{font-style:normal;color:var(--blue2)}
 .nx-t b{display:block;font-size:19px;font-weight:900;text-shadow:0 2px 4px rgba(0,0,0,.35)}
 .nx-t em{display:block;font-style:normal;font-size:11.5px;color:#fff5d6;margin-top:2px}
 @media(max-width:1100px){.fixed{grid-template-columns:1fr 1fr}}
+
+body,button,p,h1,h2,h3,span,div,b,u,small,em,li{word-break:keep-all;overflow-wrap:break-word}
+.tier span{font-size:11px;letter-spacing:-.2px}
 </style></head><body>
 <div class="wrap">
   <header class="hero">
@@ -1183,7 +1191,7 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal()});
 renderSummary();renderFixed();renderFlow();
 <\/script></body></html>
 </script>
-<div id="accessGate"><section class="gate-card"><div class="gate-top"><img class="gate-duri" src="assets/duri/duri_trophy.png" alt="두리"><span class="gate-chip" id="gateChip">🔒 HOST ACCESS</span></div><h2 id="gateTitle">관리자 PIN 확인</h2><p id="gateDesc">LIVE 화면과 관리자 기능은 관리자 PIN 확인 후 이용할 수 있습니다.</p><div class="gate-in"><input id="gatePin" type="password" inputmode="numeric" autocomplete="off" placeholder="PIN 입력" aria-label="관리자 PIN"><button type="button" id="gateEye" class="gate-eye" aria-label="PIN 보기">👁</button></div><div id="gateError" class="gate-error" role="alert"></div><div class="gate-actions"><button id="gateCancel" class="btn gray" type="button">홈으로</button><button id="gateVerify" class="btn" type="button">PIN 확인 · 입장</button></div></section></div>
+<div id="accessGate"><section class="gate-card"><div class="gate-top"><div class="gate-lock" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="5" y="10.5" width="14" height="10" rx="2.5"/><path d="M8 10.5V8a4 4 0 0 1 8 0v2.5" fill="none" stroke-width="2.2"/><circle cx="12" cy="15.5" r="1.6" fill="#10233f" stroke="none"/></svg></div><span class="gate-chip" id="gateChip">🔒 HOST ACCESS</span></div><h2 id="gateTitle">관리자 PIN 확인</h2><p id="gateDesc">LIVE 화면과 관리자 기능은 관리자 PIN 확인 후 이용할 수 있습니다.</p><div class="gate-in"><input id="gatePin" type="password" inputmode="numeric" autocomplete="off" placeholder="PIN 입력" aria-label="관리자 PIN"><button type="button" id="gateEye" class="gate-eye" aria-label="PIN 보기">👁</button></div><div id="gateError" class="gate-error" role="alert"></div><div class="gate-actions"><button id="gateCancel" class="btn gray" type="button">홈으로</button><button id="gateVerify" class="btn" type="button">PIN 확인 · 입장</button></div></section></div>
 <div id="modeNav" class="mode-nav hidden"><a id="navHome" href="#">홈으로</a><a id="navLive" href="#">라이브</a><a id="navExhibition" href="#">제품전시관</a><a id="navAwards" href="#">역대포상</a><a id="navAdmin" href="#">관리자</a><button type="button" id="navFull" class="nav-full hidden">⛶ 전체화면</button></div>
 <script>
 /* ===== 로컬 테스트 모드(공용): 주소 끝에 ?mock=1 — 서버(Supabase) 대신 브라우저 저장공간의 가짜 데이터 사용
