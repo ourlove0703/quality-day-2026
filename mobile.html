@@ -1085,6 +1085,32 @@ html.game-lock,html.game-lock body{overflow:hidden!important;overscroll-behavior
 /* V53 명예의 전당: 전체 요약 · 트로피 아이콘 */
 .hof-years{gap:5px}.hof-years button{font-size:13px;padding:8px 0}
 .hof-years button.all{flex:1.15}
+/* V54 명예의 전당: [전체]/[역대 수상자] 2단 버튼 · 다음 주인공 최상단 · 단골 2칸 · 아래 안내 */
+.hof-years{display:block;margin:12px 0 10px}
+.hof-main{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.hof-main button{border:1.5px solid #35537f;background:#10284a;color:#9fb6d6;border-radius:11px;padding:9px 0;font-size:15px;font-weight:900;position:relative}
+.hof-main button.on{border-color:#f5c451;background:#f5c451;color:#10233f;box-shadow:0 0 14px rgba(245,196,81,.45)}
+.hof-sub{display:flex;gap:5px;margin-top:8px}
+.hof-sub[hidden]{display:none}
+.hof-sub button{flex:1;border:1.5px solid #35537f;background:transparent;color:#9fb6d6;border-radius:999px;padding:6px 0;font-size:13px;font-weight:900;position:relative}
+.hof-sub button.on{border-color:#ffd166;background:rgba(245,196,81,.18);color:#ffd166}
+.hof-years .hof-sub button.mys{border-style:dashed;border-color:#f5c451;color:#ffd166}.hof-years .hof-sub button.mys.on{color:#ffd166;background:rgba(245,196,81,.18)}
+.hof-sub button.mys::after{content:"NEW";position:absolute;top:-8px;right:-2px;background:#e8202e;color:#fff;font-size:9px;padding:1px 5px;border-radius:6px}
+.hof-mys.top{margin:0 0 10px;border:1.5px dashed rgba(245,196,81,.55);border-top-style:dashed;border-radius:14px;padding:10px 10px 11px;background:rgba(245,196,81,.07);display:grid;grid-template-columns:auto 1fr;align-items:center;gap:12px;text-align:left}
+.hof-mys.top .q{margin:0;gap:5px}
+.hof-mys.top .q i{width:30px;height:40px;font-size:18px;border-radius:8px}
+.hof-mys.top .q i:nth-child(2){width:36px;height:46px;font-size:21px}
+.hof-mys.top b{font-size:16px;line-height:1.3;margin:0 0 3px}
+.hof-mys.top p{font-size:12px;line-height:1.4}
+.hof-chips.two{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.hof-chips.two span{border-radius:10px;padding:6px 8px;display:grid;grid-template-columns:auto 1fr auto;grid-template-rows:auto auto;column-gap:6px;align-items:center}
+.hof-chips.two .hof-tro{grid-row:1/3}
+.hof-chips.two b{font-size:15px}
+.hof-chips.two em{grid-column:2/4;grid-row:2;font-size:11px}
+.hof-chips.two u{grid-column:3;grid-row:1;background:#7fe0a0;color:#10233f;border-radius:999px;padding:0 6px;font-size:11px}
+.hof-more{position:fixed;left:50%;transform:translateX(-50%);z-index:60;border:0;border-radius:999px;background:#f5c451;color:#10233f;font-weight:900;font-size:13px;padding:8px 16px 8px 14px;box-shadow:0 6px 16px rgba(0,0,0,.35);display:flex;align-items:center;gap:6px;animation:hofMore 1.3s ease-in-out infinite;transition:opacity .25s}
+.hof-more.off{opacity:0;pointer-events:none}
+@keyframes hofMore{50%{transform:translate(-50%,-5px)}}
 .hof-tro{display:inline-flex;align-items:center;justify-content:center;flex:none;width:34px;height:34px;border-radius:10px;background:linear-gradient(160deg,#2a4f86,#18355f);border:1.5px solid #6f8fbf}
 .hof-tro svg{width:21px;height:21px;fill:#d7e4f5;stroke:#d7e4f5}
 .hof-tro.g{background:linear-gradient(160deg,#6b4e0e,#3a2a06);border-color:#f5c451}.hof-tro.g svg{fill:#ffd166;stroke:#ffd166}
@@ -2267,19 +2293,32 @@ showTab(mode,{noUrl:true});
  tick.innerHTML=tk+tk;tick.style.animationDuration=Math.round(REC.length*3.2)+'s';
  // 잡아낸 불량 TOP3
  const cc=CAT.map(([n,re])=>[n,REC.filter(r=>re.test(r[5]+' '+r[4])).length]).sort((a,b)=>b[1]-a[1]).slice(0,3),mx=cc[0][1]||1;
- const TOP=`<div class="hof-top"><h3>🔍 우리가 가장 많이 잡아낸 불량 TOP3</h3>`+cc.map((c,i)=>`<div class="hof-tr"><b>${['🥇','🥈','🥉'][i]} ${c[0]}</b><span><i style="width:${Math.round(c[1]/mx*100)}%"></i></span><em>${c[1]}건</em></div>`).join('')+`<p>두리 런에서 피한 그 불량들, 현장에서는 이분들이 잡아냈어요!</p></div>`;
+ const TOP=`<div class="hof-top" id="hofTop"><h3>🔍 우리가 가장 많이 잡아낸 불량 TOP3</h3>`+cc.map((c,i)=>`<div class="hof-tr"><b>${['🥇','🥈','🥉'][i]} ${c[0]}</b><span><i style="width:${Math.round(c[1]/mx*100)}%"></i></span><em>${c[1]}건</em></div>`).join('')+`<p>두리 런에서 피한 그 불량들, 현장에서는 이분들이 잡아냈어요!</p></div>`;
  const ppl=Object.keys(cnt),reps=ppl.filter(k=>cnt[k]>1).sort((a,b)=>cnt[b]-cnt[a]),depts=new Set(REC.map(r=>r[3]));
- const ALL=`<div class="hof-stat"><div><b>${REC.length}</b><span>번의 발견</span></div><div><b>${ppl.length}</b><span>명의 품질지킴이</span></div><div><b>${depts.size}</b><span>개 부서 참여</span></div></div>`+TOP+
-  (reps.length?`<div class="hof-top"><h3>🔁 단골 품질지킴이 <small>2회 이상 수상</small></h3><div class="hof-chips">${reps.map(k=>{const [n,d]=k.split('|');return `<span><i class="hof-tro sm">${TRO}</i><b>${esc(mask(n))}</b><em style="color:${DC[d]||'#9fb6d6'}">${esc(d)}</em><u>${cnt[k]}회</u></span>`}).join('')}</div></div>`:'')+
-  `<div class="hof-mys"><div class="q"><i>?</i><i>?</i><i>?</i></div><b>2026 하반기, 다음 주인공은 누구일까요?</b><p>오늘 시상식에서 공개됩니다 🏆<br>다음 명예의 전당 주인공은 바로 여러분!</p></div>`;
- yb.innerHTML=`<button type="button" data-y="0" class="all">전체</button>`+YEARS.map(y=>`<button type="button" data-y="${y}"${y===2026?' class="mys"':''}>${y}</button>`).join('');
+ const MYS=`<div class="hof-mys top"><div class="q"><i>?</i><i>?</i><i>?</i></div><div><b>2026 하반기,<br>다음 주인공은 누구일까요?</b><p>오늘 시상식에서 공개됩니다 🏆</p></div></div>`;
+ const ALL=MYS+`<div class="hof-stat"><div><b>${REC.length}</b><span>번의 발견</span></div><div><b>${ppl.length}</b><span>명의 품질지킴이</span></div><div><b>${depts.size}</b><span>개 부서 참여</span></div></div>`+TOP+
+  (reps.length?`<div class="hof-top" id="hofReps"><h3>🔁 단골 품질지킴이 <small>2회 이상 수상</small></h3><div class="hof-chips two">${reps.map(k=>{const [n,d]=k.split('|');return `<span><i class="hof-tro sm">${TRO}</i><b>${esc(mask(n))}</b><em style="color:${DC[d]||'#9fb6d6'}">${esc(d)}</em><u>${cnt[k]}회</u></span>`}).join('')}</div></div>`:'');
+ yb.innerHTML=`<div class="hof-main"><button type="button" data-m="all">🏆 전체</button><button type="button" data-m="hist">📜 역대 수상자</button></div><div class="hof-sub" hidden>`+YEARS.map(y=>`<button type="button" data-y="${y}"${y===2026?' class="mys"':''}>${y}</button>`).join('')+`</div>`;
+ const sub=yb.querySelector('.hof-sub');let lastY=YEARS[YEARS.length-1];
  const card=(r,i)=>{const n=cnt[r[2]+'|'+r[3]];return `<div class="hof-card ${r[6]?'gold':'guard'}" style="animation-delay:${Math.min(i,12)*.04}s"><div class="hof-row">${av(r)}<div class="hof-who"><span class="hof-nm">${esc(mask(r[2]))}</span><span class="hof-dp" style="color:${DC[r[3]]?'#c9d9ef':''}"><i class="hof-dd" style="background:${DC[r[3]]||'#5a7290'}"></i>${esc(r[3])}</span></div>${n>1?`<span class="hof-rep">🔁 ${n}회</span>`:''}</div><div class="hof-pd">${esc(r[1])} · ${esc(r[4])}</div><div class="hof-ct">🔍 ${esc(r[5])}</div></div>`};
- function show(y){yb.querySelectorAll('button').forEach(b=>b.classList.toggle('on',+b.dataset.y===y));
-  if(!y){body.innerHTML=ALL;return}
+ function show(y){yb.querySelectorAll('.hof-main button').forEach(b=>b.classList.toggle('on',(b.dataset.m==='all')===!y));sub.hidden=!y;
+  sub.querySelectorAll('button').forEach(b=>b.classList.toggle('on',+b.dataset.y===y));
+  if(!y){body.innerHTML=ALL;moreChk();return}lastY=y;
   const list=REC.filter(r=>r[0]===y);
   body.innerHTML=y===2026?`<div class="hof-grp"><h3>🏆 품질공감데이 · 2026 상반기 <span>${list.length}명</span></h3><div class="hof-grid one">${list.map(card).join('')}</div></div>`
    :`<div class="hof-grp"><h3>🛡 ${y} 품질지킴이 <span>${list.length}명</span></h3><div class="hof-grid one">${list.map(card).join('')}</div></div>`}
- yb.addEventListener('click',e=>{const b=e.target.closest('button');if(b)show(+b.dataset.y)});
+ yb.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;if(b.dataset.m)show(b.dataset.m==='all'?0:lastY);else show(+b.dataset.y);moreChk()});
+ // 아래에 더 있음 안내 (전체 화면에서 TOP3·단골이 화면 밖일 때만)
+ const more=document.createElement('button');more.type='button';more.className='hof-more off';more.innerHTML='▼ 아래에 단골 품질지킴이';document.body.appendChild(more);
+ function moreChk(){const mv=document.getElementById('mascotView'),tb=document.getElementById('tabBar'),tgt=document.getElementById('hofReps')||document.getElementById('hofTop');
+  const vis=mv&&!mv.classList.contains('hidden')&&!pane.classList.contains('hidden')&&tgt;
+  if(!vis){more.classList.add('off');return}
+  const bot=tb?tb.getBoundingClientRect().top:innerHeight;more.style.bottom=(innerHeight-bot+10)+'px';
+  more.classList.toggle('off',tgt.getBoundingClientRect().top<bot-90)}
+ more.addEventListener('click',()=>{const t=document.getElementById('hofReps')||document.getElementById('hofTop');if(t)t.scrollIntoView({behavior:'smooth',block:'start'})});
+ addEventListener('scroll',moreChk,{passive:true});addEventListener('resize',moreChk);
+ new MutationObserver(moreChk).observe(document.getElementById('mascotView'),{attributes:true,attributeFilter:['class']});
+ new MutationObserver(moreChk).observe(pane,{attributes:true,attributeFilter:['class']});
  show(0);
  // 상단 전환: 명예의 전당 / 두리 이야기
  const seg=document.querySelector('.hof-seg'),story=document.getElementById('duriStory');
