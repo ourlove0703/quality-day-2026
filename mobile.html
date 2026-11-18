@@ -2324,7 +2324,7 @@ showTab(mode,{noUrl:true});
  tick.innerHTML=tk+tk;tick.style.animationDuration=Math.round(REC.length*3.2)+'s';
  // 잡아낸 불량 TOP3
  const cc=CAT.map(([n,re])=>[n,REC.filter(r=>re.test(r[5]+' '+r[4])).length]).sort((a,b)=>b[1]-a[1]).slice(0,3),mx=cc[0][1]||1;
- const TOP=`<div class="hof-top" id="hofTop"><h3>🔍 우리가 가장 많이 잡아낸 불량 TOP3 <small>공적 내용 기준 분류</small></h3>`+cc.map((c,i)=>`<div class="hof-tr"><b>${['🥇','🥈','🥉'][i]} ${c[0]}</b><span><i style="width:${Math.round(c[1]/mx*100)}%"></i></span><em>${c[1]}건</em></div>`).join('')+`<p>두리 런에서 피한 그 불량들, 현장에서는 이분들이 잡아냈어요!</p></div>`;
+ const TOP=`<div class="hof-top" id="hofTop"><h3>🔍 우리가 가장 많이 잡아낸 불량 TOP3</h3>`+cc.map((c,i)=>`<div class="hof-tr"><b>${['🥇','🥈','🥉'][i]} ${c[0]}</b><span><i style="width:${Math.round(c[1]/mx*100)}%"></i></span><em>${c[1]}건</em></div>`).join('')+`<p>두리 런에서 피한 그 불량들, 현장에서는 이분들이 잡아냈어요!</p></div>`;
  const ppl=Object.keys(cnt),reps=ppl.filter(k=>cnt[k]>1).sort((a,b)=>cnt[b]-cnt[a]),depts=new Set(REC.map(r=>r[3]));
  const MYS=`<div class="hof-mys top"><div class="q"><i>?</i><i>?</i><i>?</i></div><div><b>2026 하반기,<br>다음 주인공은 누구일까요?</b><p>오늘 시상식에서 공개됩니다 🏆</p></div></div>`;
  const ALL=`<div class="hof-allv">`+MYS+`<div class="hof-stat"><div><b>${REC.length}<small>건</small></b><span>이상 발견 기록</span></div><div><b>${ppl.length}<small>명</small></b><span>품질지킴이</span></div><div><b>${depts.size}<small>개</small></b><span>참여 부서</span></div></div>`+TOP+
