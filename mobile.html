@@ -1192,6 +1192,16 @@ html.game-lock,html.game-lock body{overflow:hidden!important;overscroll-behavior
 .rw-wheel .rw-ic{font-size:17px;filter:drop-shadow(0 1px 1px rgba(0,0,0,.3))}
 .rw-wheel .rw-w{font-size:14px!important;font-weight:900;paint-order:stroke;stroke:rgba(0,0,0,.25);stroke-width:2.4px}
 .rw-wheel .rw-n{display:none}
+
+/* V64 홈 정리: 룰렛 안내 줄 숨김(뽑기 결과는 그대로), 게임 설명 한 줄, 접수 카드 강조 */
+.roul-result:has(.roul-result-empty){display:none}
+.duri-game .dg-legend{white-space:nowrap;font-size:12.5px}
+#homeView .home-now{background:linear-gradient(135deg,#2f6fe8 0%,#4f90ff 100%)!important;border:0!important;box-shadow:0 10px 24px rgba(47,111,232,.35)!important}
+#homeView .home-now .home-now-label{color:#e8f0ff!important}
+#homeView .home-now .home-now-title{color:#fff!important}
+#homeView .home-now .home-now-desc{color:#dbe7ff!important}
+#homeView .home-now .home-now-dot{background:#fff!important;box-shadow:0 0 0 4px rgba(255,255,255,.3)!important}
+#homeView .home-now .home-now-btn{background:#fff!important;color:#1f4fbf!important;box-shadow:0 4px 0 rgba(16,35,63,.18)!important;font-weight:900}
 </style></head><body>
 
 <div id="homeView" class="hidden"><div class="wrap">
@@ -1232,7 +1242,7 @@ html.game-lock,html.game-lock body{overflow:hidden!important;overscroll-behavior
   <section class="card duri-game" id="duriGame" aria-label="두리 런 미니게임">
     <canvas id="dgCanvas" aria-hidden="true"></canvas>
     <div class="dg-hud"><span class="dg-title">🎮 두리 런 · 1KM 완주 도전</span><span class="dg-score"><b id="dgScore">0m</b><small>최고 <em id="dgBest">0m</em></small></span></div>
-    <div class="dg-over" id="dgOver"><div class="dg-msg" id="dgMsg"><b>불량을 피하고, 품질을 지켜라!</b><br><span class="dg-legend">🔩 버·변형·미성형·흑점·파손 점프 · 🪨 공중 이물질은 점프 금지 · ✅ 합격 마크 모으기</span></div><button type="button" id="dgStart">▶ 시작</button></div>
+    <div class="dg-over" id="dgOver"><div class="dg-msg" id="dgMsg"><b>불량을 피하고, 품질을 지켜라!</b><br><span class="dg-legend">불량은 점프로 피하고, ✅ 합격 마크는 쏙쏙!</span></div><button type="button" id="dgStart">▶ 시작</button></div>
   </section>
 </div></div>
 
@@ -2337,6 +2347,9 @@ showTab(mode,{noUrl:true});
   if(ov()>0&&ord){ord.classList.add('tight')}
   if(ov()>0&&ban){const h=ban.getBoundingClientRect().height;ban.style.setProperty('height',Math.max(52,h-ov())+'px','important')}
   if(ov()>0){const h=game.getBoundingClientRect().height;game.style.setProperty('height',Math.max(86,h-ov())+'px','important')}
+  // V64: 남는 공간이 있으면 룰렛을 먼저 키우고(최대 230px), 그래도 남으면 게임 칸을 늘려 빈칸 없이 채움
+  if(ov()<0){const maxS=Math.min(innerWidth*.5,230);let g2=0;while(g2++<40&&ov()<-2&&S<maxS){S=Math.min(maxS,S+Math.max(2,Math.floor(-ov()/2)));stage.style.setProperty('--S',S+'px');if(ov()>0){S-=Math.ceil(ov());stage.style.setProperty('--S',S+'px');break}}}
+  if(ov()<-2){const h=game.getBoundingClientRect().height;game.style.setProperty('height',Math.min(320,h-ov())+'px','important')}
   busy=false;dispatchEvent(new Event('resize'))}
  new MutationObserver(()=>requestAnimationFrame(fit)).observe(hv,{attributes:true,attributeFilter:['class']});
  const rr=document.getElementById('roulResult');if(rr)new MutationObserver(()=>requestAnimationFrame(fit)).observe(rr,{childList:true,subtree:true});
