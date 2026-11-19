@@ -1802,8 +1802,9 @@ function qHtml(s){
      pQuestionState.textContent="QUALITY VOICE";pStep.innerHTML='<b class="qn fin">FINAL</b><span class="qt">'+(lang==="en"?"Quality Voice":"품질 한마디")+'</span>';pProgress.style.width="100%";
      pQuestion.innerHTML='<span class="q-ask">'+esc(t.qualityQ)+'</span>';pQuestionEn.textContent=t.qualitySub;pOptions.innerHTML="";pOptions.classList.add("hidden");
      pQualityText.classList.remove("hidden");pQualityText.placeholder=t.qualityPh;pSubmit.classList.remove("hidden");pSubmit.textContent=t.qualitySubmit;
-     pSubmit.disabled=!lastState?.is_open||!!mine;pNextCheck.classList.toggle("hidden",!mine);
+     pSubmit.disabled=!lastState?.is_open||!!mine||!!qs.reveal;pNextCheck.classList.toggle("hidden",!mine);
      if(mine){pQualityText.value=mine.answer||"";pQualityText.disabled=true;note(lang==="en"?"Submitted. Please watch the LIVE ranking.":"품질 한마디가 등록되었습니다. LIVE 실시간 TOP5를 확인해 주세요.","notice ok")}
+     else if(qs.reveal){pQualityText.disabled=true;note(lang==="en"?"The TOP5 has been announced. Submissions are closed.":"TOP5가 발표되어 품질 한마디 접수가 마감되었습니다.","notice error")}
      else{pQualityText.disabled=false;if(!lastState?.is_open)note(t.closed,"notice error")}
      return
    }
@@ -1818,9 +1819,11 @@ function qHtml(s){
    const rows=quizRows(lastRaw),mine=rows.find(r=>r.meta?.pid===pid&&r.quiz.questionId===q.id);
    if(!mine&&(pMsg.textContent===t.already||pMsg.textContent===t.thanks||pMsg.textContent===t.qualityThanks)){selected=null;pMsg.textContent="";pMsg.className=""}
    pOptions.innerHTML=q.options.map(o=>`<button type="button" class="option-btn ${selected===o.v?"selected":""}" data-v="${o.v}"><div class="option-main"><span class="option-letter">${o.v}</span><span>${esc(lang==="en"?o.en:o.ko)}</span></div><div class="option-sub">${esc(lang==="en"?o.ko:o.en)}</div></button>`).join("");
-   pOptions.querySelectorAll(".option-btn").forEach(b=>b.addEventListener("click",()=>{if(mine||!lastState?.is_open)return;selected=b.dataset.v;renderCurrent()}));
-   pSubmit.classList.remove("hidden");pSubmit.textContent=t.submit;pSubmit.disabled=!lastState?.is_open||!!mine;
-   if(mine){note(t.already,"notice ok");pNextCheck.classList.remove("hidden");pOptions.querySelectorAll(".option-btn").forEach(b=>b.classList.toggle("selected",b.dataset.v===mine.quiz.choice))}
+   pOptions.querySelectorAll(".option-btn").forEach(b=>b.addEventListener("click",()=>{if(mine||!lastState?.is_open||qs.reveal)return;selected=b.dataset.v;renderCurrent()}));
+   const revealed=!!qs.reveal;
+   pSubmit.classList.remove("hidden");pSubmit.textContent=t.submit;pSubmit.disabled=!lastState?.is_open||!!mine||revealed;
+   if(revealed&&!mine){pNextCheck.classList.add("hidden");note(lang==="en"?"The answer has been revealed. Submissions for this question are closed.":"정답이 공개되어 이 문제의 응답이 마감되었습니다. 다음 문제를 기다려 주세요.","notice error");pOptions.querySelectorAll(".option-btn").forEach(b=>b.classList.toggle("selected",b.dataset.v===q.correct))}
+   else if(mine){note(t.already,"notice ok");pNextCheck.classList.remove("hidden");pOptions.querySelectorAll(".option-btn").forEach(b=>b.classList.toggle("selected",b.dataset.v===mine.quiz.choice))}
    else{pNextCheck.classList.add("hidden");if(!lastState?.is_open)note(t.closed,"notice error")}
  }
 
@@ -1837,7 +1840,8 @@ function qHtml(s){
    if(!name||!dept)return note(t.required,"notice error");
    const qs=getQuizState(lastState),cq=Number(qs.currentQuestion)||1;
    try{
-     pSubmit.disabled=true;if(!testId){localStorage.setItem("qd_individual_name",name);localStorage.setItem("qd_individual_dept",dept);}
+     pSubmit.disabled=true;
+     try{const fresh=await getState(),fq=getQuizState(fresh);if(!fresh.is_open||fq.reveal||(Number(fq.currentQuestion)||1)!==cq||fq.showAll){lastState=fresh;renderCurrent();renderHome(fresh);if(fq.reveal&&(Number(fq.currentQuestion)||1)===cq)note(lang==="en"?"The answer was just revealed. Submission closed.":"방금 정답이 공개되어 제출되지 않았습니다.","notice error");return}}catch(e){}if(!testId){localStorage.setItem("qd_individual_name",name);localStorage.setItem("qd_individual_dept",dept);}
      if(cq===QUALITY_STAGE){
        const answer=pQualityText.value.trim();
        if(answer.length<10){pSubmit.disabled=false;return note(lang==="en"?"Please write at least 10 characters.":"10자 이상 적어 주세요. (35자 이상 · 두 문장 권장)","notice error")}
@@ -1855,7 +1859,8 @@ function qHtml(s){
 
  pNextCheck.addEventListener("click",async()=>{const before=getQuizState(lastState).currentQuestion;await refresh();const after=getQuizState(lastState).currentQuestion;if(after===before)note(lang==="en"?"The host has not opened the next stage yet.":"진행자가 아직 다음 문제를 열지 않았습니다. 열리면 자동으로 전환됩니다.","notice")});
 
- async function refresh(){try{const[s,r]=await Promise.all([getState(),getMyResponses(pid)]);lastState=s;lastRaw=r;renderCurrent();renderHome(s)}catch(e){homeFail();pStateBadge.textContent="Error";pStateBadge.className="badge closed";note("Supabase: "+e.message,"notice error")}}
+ let busy=false,fails=0;
+ async function refresh(){if(busy)return;busy=true;try{const[s,r]=await Promise.all([getState(),getMyResponses(pid)]);if(fails>0&&/불안정|unstable/.test(pMsg.textContent)){pMsg.textContent="";pMsg.className=""}fails=0;lastState=s;lastRaw=r;renderCurrent();renderHome(s)}catch(e){if(++fails>=2){homeFail();pStateBadge.textContent=lang==="en"?"Reconnecting":"재연결 중";pStateBadge.className="badge closed";note(lang==="en"?"Connection is unstable. Reconnecting automatically…":"연결이 잠시 불안정해요. 자동으로 다시 연결합니다…","notice error")}}finally{busy=false}}
  applyLang();refresh();window.__pull=refresh;setInterval(()=>{if(document.hidden)return;if(mode==="participant"||mode==="home")refresh()},1200)
 }
 
