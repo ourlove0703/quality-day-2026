@@ -1202,6 +1202,22 @@ html.game-lock,html.game-lock body{overflow:hidden!important;overscroll-behavior
 #homeView .home-now .home-now-desc{color:#dbe7ff!important}
 #homeView .home-now .home-now-dot{background:#fff!important;box-shadow:0 0 0 4px rgba(255,255,255,.3)!important}
 #homeView .home-now .home-now-btn{background:#fff!important;color:#1f4fbf!important;box-shadow:0 4px 0 rgba(16,35,63,.18)!important;font-weight:900}
+
+/* V66 두리 런 시작 카드 */
+.duri-game{container-type:size}
+.duri-game:not(.full) .dg-over{inset:22px 0 0 0;flex-direction:column;justify-content:center;gap:10px;padding:8px 14px 12px;text-align:center;background:linear-gradient(180deg,rgba(7,19,39,.25) 0%,rgba(7,19,39,.72) 55%,rgba(7,19,39,.88) 100%);backdrop-filter:none}
+.duri-game:not(.full) .dg-msg{flex:none;width:100%}
+.dgx-k{display:inline-block;font-size:10px;font-weight:900;letter-spacing:2px;color:#10233f;background:#f5c451;border-radius:999px;padding:2px 10px}
+.dgx-t{display:block;margin-top:6px;font-size:22px!important;line-height:1.2;color:#fff!important;font-weight:900;text-shadow:0 2px 0 rgba(0,0,0,.35),0 0 12px rgba(0,0,0,.35)}
+.dgx-t em{font-style:normal;color:#ffd166}
+.dgx-chips{display:flex;justify-content:center;flex-wrap:wrap;gap:5px;margin-top:9px}
+.dgx-chips span{font-size:11.5px;font-weight:800;color:#e3edf9;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.22);border-radius:999px;padding:3px 9px;white-space:nowrap}
+.dgx-chips i{font-style:normal;color:#7fe0a0}.dgx-chips i.no{color:#ff9b9b}
+.duri-game:not(.full) #dgStart{font-size:16px;padding:11px 30px;border-radius:999px;background:linear-gradient(180deg,#ffd978,#f5b52e);color:#10233f;box-shadow:0 4px 0 #b8861d,0 8px 18px rgba(0,0,0,.3);animation:dgxGo 1.4s ease-in-out infinite}
+.duri-game:not(.full) #dgStart:active{transform:translateY(3px);box-shadow:0 1px 0 #b8861d}
+@keyframes dgxGo{0%,100%{transform:translateY(0)}50%{transform:translateY(-2px)}}
+@container (max-height:200px){.dgx-chips{display:none}.dgx-t{font-size:18px!important}.duri-game:not(.full) .dg-over{gap:6px}.duri-game:not(.full) #dgStart{padding:8px 24px;font-size:14px}}
+@container (max-height:150px){.dgx-k{display:none}.dgx-t br{display:none}}
 </style></head><body>
 
 <div id="homeView" class="hidden"><div class="wrap">
@@ -1242,7 +1258,7 @@ html.game-lock,html.game-lock body{overflow:hidden!important;overscroll-behavior
   <section class="card duri-game" id="duriGame" aria-label="두리 런 미니게임">
     <canvas id="dgCanvas" aria-hidden="true"></canvas>
     <div class="dg-hud"><span class="dg-title">🎮 두리 런 · 1KM 완주 도전</span><span class="dg-score"><b id="dgScore">0m</b><small>최고 <em id="dgBest">0m</em></small></span></div>
-    <div class="dg-over" id="dgOver"><div class="dg-msg" id="dgMsg"><b>불량을 피하고, 품질을 지켜라!</b><br><span class="dg-legend">불량은 점프로 피하고, ✅ 합격 마크는 쏙쏙!</span></div><button type="button" id="dgStart">▶ 시작</button></div>
+    <div class="dg-over" id="dgOver"><div class="dg-msg" id="dgMsg"><div class="dgx"><span class="dgx-k">TODAY'S MISSION</span><b class="dgx-t">불량을 피하고, <br><em>품질</em>을 지켜라!</b><div class="dgx-chips"><span>🔩 불량은 <i>점프</i></span><span>🪨 이물질은 <i class="no">점프 금지</i></span><span>✅ 합격 마크 <i>쏙쏙</i></span></div></div></div><button type="button" id="dgStart">▶ 게임 시작</button></div>
   </section>
 </div></div>
 
