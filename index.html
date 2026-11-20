@@ -776,6 +776,19 @@ body.live-reg #liveStartBtn .ls-ic{color:#17734a!important}
 
 /* 단어 중간 줄바꿈 방지 */
 body,button,p,h1,h2,h3,span,div,td,th,li{word-break:keep-all;overflow-wrap:break-word}
+
+/* V71 JOIN NOW 가운데 정렬 + 사전 접속 유도 문구 */
+.join-head{justify-content:center}
+.join-lure{text-align:center;margin-top:-6px}
+.join-lure p{margin:0 0 8px;font-size:16px;font-weight:800;color:#fff3c4;word-break:keep-all}
+.join-fun{display:flex;flex-wrap:wrap;justify-content:center;gap:8px}
+.join-fun span{padding:6px 12px;border-radius:999px;font-size:14px;font-weight:800;color:#fff;background:rgba(255,209,102,.14);border:1px solid rgba(255,209,102,.45);animation:joinFun 2.4s ease-in-out infinite}
+.join-fun span:nth-child(2){animation-delay:.3s}.join-fun span:nth-child(3){animation-delay:.6s}
+@keyframes joinFun{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
+@media (max-height:820px){.join-lure p{font-size:14px;margin-bottom:6px}.join-fun span{font-size:12.5px;padding:4px 10px}}
+@media (prefers-reduced-motion:reduce){.join-fun span{animation:none}}
+body.live-waiting .join-rule{display:none!important}
+body:not(.live-waiting) .join-lure{display:none}
 </style></head><body>
 
 <div id="homeView" class="hidden"><div class="wrap">
@@ -893,6 +906,7 @@ body,button,p,h1,h2,h3,span,div,td,th,li{word-break:keep-all;overflow-wrap:break
   <div class="live-grid">
     <section class="live-panel join-panel">
       <div class="join-head"><span class="join-kicker">JOIN NOW</span><b>지금 참여하세요</b></div>
+      <div class="join-lure"><p>📱 미리 접속하면 시작 전부터 즐길 수 있어요</p><div class="join-fun"><span>🍀 행운 룰렛</span><span>🎮 두리 런 게임</span><span>🔍 불량 사례 전시관</span></div></div>
       <div class="qr-frame">
         <div class="qr-card qr-card-main">
           <img id="qrMain" alt="품질공감데이 참여 QR">
@@ -3046,7 +3060,7 @@ if(mode==="live"){
  async function refreshLive(){
    try{
      const[s,raw]=await Promise.all([getState(),getResponses()]);liveState=s;liveRaw=raw;
-     const qr=quizRows(raw),quality=qualityRows(raw),qs=getQuizState(s);lCount.textContent=participantCount(raw);lState.textContent=s.is_open?"참여중":"마감";window.__syncToggle&&window.__syncToggle();document.body.classList.toggle("live-waiting",!s.is_open||qs.started===false);if(s.is_open&&qs.started===false){hostStatus.textContent="참가 접수 중 · 퀴즈 시작 전"}
+     const qr=quizRows(raw),quality=qualityRows(raw),qs=getQuizState(s);lCount.textContent=participantCount(raw);lState.textContent=s.is_open?"참여중":(!qs.showAll&&!qs.reveal&&(Number(qs.currentQuestion)||1)===1&&!qr.length)?"준비 중":"마감";window.__syncToggle&&window.__syncToggle();document.body.classList.toggle("live-waiting",!s.is_open||qs.started===false);if(s.is_open&&qs.started===false){hostStatus.textContent="참가 접수 중 · 퀴즈 시작 전"}
      if(qs.showAll||qs.currentQuestion===0){lSingleView.classList.add("hidden");lAllView.classList.remove("hidden");renderAll(qr,quality,qs);hostStatus.textContent="시상 · 전체 결과"}
      else{
        lAllView.classList.add("hidden");lSingleView.classList.remove("hidden");const cq=Number(qs.currentQuestion)||1;
