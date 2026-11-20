@@ -1218,6 +1218,19 @@ html.game-lock,html.game-lock body{overflow:hidden!important;overscroll-behavior
 @keyframes dgxGo{0%,100%{transform:translateY(0)}50%{transform:translateY(-2px)}}
 @container (max-height:200px){.dgx-chips{display:none}.dgx-t{font-size:18px!important}.duri-game:not(.full) .dg-over{gap:6px}.duri-game:not(.full) #dgStart{padding:8px 24px;font-size:14px}}
 @container (max-height:150px){.dgx-k{display:none}.dgx-t br{display:none}}
+
+/* V67 두리 런 오프닝(첫 판만)·완주 엔딩 컷 */
+.dg-op{position:absolute;inset:0;z-index:40;background:radial-gradient(120% 80% at 50% 40%,#1c4a8a 0%,#0b1f42 70%);display:flex;flex-direction:column;align-items:center;justify-content:center;overflow:hidden;cursor:pointer;opacity:0;transition:opacity .25s}
+.dg-op.on{opacity:1}
+.dg-op .op-fr{position:relative;width:100%;aspect-ratio:830/465;max-height:calc(100% - 44px)}
+.dg-op .op-fr img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;opacity:0;transform:scale(1.06);transition:opacity .28s ease,transform 1.3s ease-out}
+.dg-op .op-fr img.on{opacity:1;transform:scale(1)}
+.dg-op .op-skip{position:absolute;top:8px;right:8px;z-index:2;border:0;border-radius:999px;padding:6px 12px;font:800 12px/1 inherit;font-family:inherit;color:#0b1f42;background:rgba(255,255,255,.9);box-shadow:0 2px 8px rgba(0,0,0,.25)}
+.dg-op .op-dots{display:flex;gap:6px;margin-top:12px}
+.dg-op .op-dots i{width:7px;height:7px;border-radius:50%;background:rgba(255,255,255,.3);transition:all .25s}
+.dg-op .op-dots i.on{width:18px;border-radius:4px;background:#ffd23f}
+.dg-op .op-hint{margin-top:12px;font-size:12px;font-weight:700;color:rgba(255,255,255,.8)}
+@media (prefers-reduced-motion:reduce){.dg-op .op-fr img{transition:opacity .2s;transform:none}}
 </style></head><body>
 
 <div id="homeView" class="hidden"><div class="wrap">
@@ -2312,16 +2325,30 @@ showTab(mode,{noUrl:true});
  function win(){run=false;phase='win';stage=3;stg$();stage=2;winT=0;tape&&(tape.cut=true);sc.textContent='1000m';bar.style.width='100%';saveBest(1000);best=1000;bestEl.textContent='1000m';box.classList.add('won');try{navigator.vibrate&&navigator.vibrate([80,60,80,60,200])}catch(e){}
   const cols=['#f5c451','#ff4d4f','#2ea8ff','#2fd47a','#a259ff','#fff'];parts=Array.from({length:140},()=>({x:W/2,y:H*.5,vx:(Math.random()-.5)*10,vy:-Math.random()*8-3,s:2+Math.random()*3.5,c:cols[Math.floor(Math.random()*cols.length)],r:Math.random()*6}));raf=requestAnimationFrame(loop)}
  function confetti(){for(const p of parts){p.vy+=.18;p.x+=p.vx;p.y+=p.vy;p.r+=.2;ctx.save();ctx.translate(p.x,p.y);ctx.rotate(p.r);ctx.fillStyle=p.c;ctx.fillRect(-p.s/2,-p.s/2,p.s,p.s*1.6);ctx.restore()}}
- function winDone(){phase='idle';const g=grade(1000,true);msg.innerHTML=`<span class="dr-grade g-${g[0]}">${g[0]}</span> <span class="dg-win">🏆 1KM 무결점 완주!</span><br>초물·중물·종물 검사 모두 통과!<br>당신은 <b>${g[1]}</b> 🎉<br>합격 마크 <b>${coins}개</b>${g[0]==='A'?` · S등급까지 합격 마크 ${GS-coins}개!`:''}`;btn.textContent='▶ 다시 도전';over.classList.remove('hide');box.classList.remove('won','playing')}
+ function winDone(){phase='idle';const g=grade(1000,true);msg.innerHTML=`<span class="dr-grade g-${g[0]}">${g[0]}</span> <span class="dg-win">🏆 1KM 무결점 완주!</span><br>초물·중물·종물 검사 모두 통과!<br>당신은 <b>${g[1]}</b> 🎉<br>합격 마크 <b>${coins}개</b>${g[0]==='A'?` · S등급까지 합격 마크 ${GS-coins}개!`:''}`;btn.textContent='▶ 다시 도전';over.classList.remove('hide');box.classList.remove('won','playing');ending()}
  // ── 확장 모드: 룰렛 칸까지 게임 화면으로 넓힘 (배너·접수 안내·탭바는 그대로)
  const roul=document.getElementById('duriRoulette'),tabBar=document.getElementById('tabBar');
  function enterFull(){if(full())return;if(roul)roul.classList.add('dr-hide');box.classList.add('full');box.style.removeProperty('height');
   const top=box.getBoundingClientRect().top,tb=tabBar?tabBar.getBoundingClientRect().top:innerHeight;box.style.setProperty('height',Math.max(240,Math.floor(tb-8-top))+'px','important');size()}
- function exitFull(){if(!full())return;cancelAnimationFrame(raf);run=false;box.classList.remove('full','playing','won');ttl.classList.remove('on');if(roul)roul.classList.remove('dr-hide');box.style.removeProperty('height');
+ function exitFull(){opClose();if(!full())return;cancelAnimationFrame(raf);run=false;box.classList.remove('full','playing','won');ttl.classList.remove('on');if(roul)roul.classList.remove('dr-hide');box.style.removeProperty('height');
   phase='idle';parts=[];obs=[];items=[];tape=null;py=0;dist=0;sc.textContent=best+'m';msg.innerHTML=MSG0;btn.textContent='▶ 시작';over.classList.remove('hide');requestAnimationFrame(()=>{window.__homeFit&&window.__homeFit();size()})}
  const MSG0=msg.innerHTML;
+
+ // V67: 오프닝(첫 판만, 건너뛰기)·완주 엔딩 컷
+ const OPK='dg_opening_seen_v1',OPI=['op1','op2','op3'].map(k=>'assets/duri/'+k+'.jpg'),ENDI='assets/duri/end.jpg';let opEl=null,opT=[];
+ setTimeout(()=>{[...OPI,ENDI].forEach(u=>{const im=new Image();im.decoding='async';im.src=u})},4000);
+ function opClose(cb){opT.forEach(clearTimeout);opT=[];const el=opEl;opEl=null;if(!el)return;el.classList.remove('on');setTimeout(()=>el.remove(),250);if(cb)cb()}
+ function cutShow(urls,per,hint,done){opClose();const el=document.createElement('div');el.className='dg-op';
+  el.innerHTML='<button type="button" class="op-skip">'+(urls.length>1?'건너뛰기 ▶':'결과 보기 ▶')+'</button><div class="op-fr">'+urls.map(u=>'<img alt="" src="'+u+'">').join('')+'</div>'+(urls.length>1?'<div class="op-dots">'+urls.map(()=>'<i></i>').join('')+'</div>':'<div class="op-hint">'+hint+'</div>');
+  box.appendChild(el);opEl=el;const ims=[...el.querySelectorAll('.op-fr img')],dots=[...el.querySelectorAll('.op-dots i')];let fin=false;
+  const end=()=>{if(fin||opEl!==el)return;fin=true;opClose();done&&done()};
+  el.addEventListener('pointerdown',e=>{e.preventDefault();e.stopPropagation();end()});
+  const go=k=>{if(opEl!==el)return;if(k>=ims.length)return end();ims.forEach((im,i)=>im.classList.toggle('on',i===k));dots.forEach((d,i)=>d.classList.toggle('on',i===k));opT.push(setTimeout(()=>go(k+1),per))};
+  requestAnimationFrame(()=>{el.classList.add('on');go(0)})}
+ function opening(){let seen=false;try{seen=localStorage.getItem(OPK)==='1'}catch(e){}if(seen)return;try{localStorage.setItem(OPK,'1')}catch(e){}cutShow(OPI,1200,'',null)}
+ function ending(){cutShow([ENDI],2800,'터치하면 결과를 볼 수 있어요',null)}
  function showTitle(){if(window.__quizLive){msg.innerHTML='📝 <b>퀴즈 진행 중!</b><br>QUIZ 탭에서 문제를 먼저 풀어 주세요';return}
-  enterFull();reset();phase='title';over.classList.add('hide');ttl.classList.add('on');box.classList.add('playing');draw()}
+  enterFull();reset();phase='title';over.classList.add('hide');ttl.classList.add('on');box.classList.add('playing');draw();opening()}
  function start(){ttl.classList.remove('on');reset();phase='run';box.classList.remove('won');run=true;over.classList.add('hide');box.classList.add('playing');last=performance.now();cancelAnimationFrame(raf);raf=requestAnimationFrame(loop)}
  ttl.addEventListener('pointerdown',e=>{e.preventDefault();e.stopPropagation();start()});
  addEventListener('duri-quiz',e=>{if(e.detail&&full())exitFull()});
