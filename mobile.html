@@ -1229,7 +1229,11 @@ html.game-lock,html.game-lock body{overflow:hidden!important;overscroll-behavior
 .dg-op .op-dots{display:flex;gap:6px;margin-top:12px}
 .dg-op .op-dots i{width:7px;height:7px;border-radius:50%;background:rgba(255,255,255,.3);transition:all .25s}
 .dg-op .op-dots i.on{width:18px;border-radius:4px;background:#ffd23f}
-.dg-op .op-hint{margin-top:12px;font-size:12px;font-weight:700;color:rgba(255,255,255,.8)}
+.dg-op .op-hint{margin-top:12px;min-height:1.3em;font-size:12px;font-weight:700;color:rgba(255,255,255,.75)}
+.dg-op .op-hint.go{font-size:17px;font-weight:900;color:#ffd23f;animation:drTap 1s ease-in-out infinite}
+.dgx-r{display:block;margin-top:9px;font-size:14px;font-weight:900;color:#ffd23f}.dgx-r small{display:block;margin-top:2px;font-size:11px;font-weight:700;color:rgba(255,255,255,.75)}
+@container (max-height:150px){.dgx-r small{display:none}.dgx-r{margin-top:4px}}
+.dr-r1{margin:6px 0 2px;font-size:16px;font-weight:900;color:#fff}.dr-r1 small{display:block;font-size:12px;font-weight:700;color:#e3edf9;margin-top:2px}
 @media (prefers-reduced-motion:reduce){.dg-op .op-fr img{transition:opacity .2s;transform:none}}
 </style></head><body>
 
@@ -1271,7 +1275,7 @@ html.game-lock,html.game-lock body{overflow:hidden!important;overscroll-behavior
   <section class="card duri-game" id="duriGame" aria-label="두리 런 미니게임">
     <canvas id="dgCanvas" aria-hidden="true"></canvas>
     <div class="dg-hud"><span class="dg-title">🎮 두리 런 · 1KM 완주 도전</span><span class="dg-score"><b id="dgScore">0m</b><small>최고 <em id="dgBest">0m</em></small></span></div>
-    <div class="dg-over" id="dgOver"><div class="dg-msg" id="dgMsg"><div class="dgx"><span class="dgx-k">TODAY'S MISSION</span><b class="dgx-t">불량을 피하고, <br><em>품질</em>을 지켜라!</b><div class="dgx-chips"><span>🔩 불량은 <i>점프</i></span><span>🪨 이물질은 <i class="no">점프 금지</i></span><span>✅ 합격 마크 <i>쏙쏙</i></span></div></div></div><button type="button" id="dgStart">▶ 게임 시작</button></div>
+    <div class="dg-over" id="dgOver"><div class="dg-msg" id="dgMsg"><div class="dgx"><b class="dgx-t">불량을 피하고, <br><em>품질</em>을 지켜라!</b><span class="dgx-r">👆 터치하면 점프! <small>(공중 이물질만 조심)</small></span></div></div><button type="button" id="dgStart">▶ 게임 시작</button></div>
   </section>
 </div></div>
 
@@ -2193,7 +2197,7 @@ showTab(mode,{noUrl:true});
  // ── HUD (전체화면용) 주입
  const hud=document.createElement('div');hud.className='dr-hud';hud.innerHTML='<span class="dr-hearts" id="drHearts"></span><span class="dr-coin"><i></i><b id="drCoins">0</b></span><span class="dr-fv"><em>FEVER</em><span><i id="drFv"></i></span></span><button type="button" class="dr-close" id="drClose" aria-label="닫기">✕</button>';box.appendChild(hud);
  const prog=document.createElement('div');prog.className='dr-prog';prog.innerHTML='<i id="drBar"></i><b class="dr-tk" style="left:33.3%"></b><b class="dr-tk" style="left:66.6%"></b><em style="left:16.6%">초물</em><em style="left:50%">중물</em><em style="left:83.3%">종물</em><span>1KM</span>';box.appendChild(prog);
- const ttl=document.createElement('div');ttl.className='dr-title';ttl.innerHTML='<div class="dr-t1">2026 DURING 품질공감데이</div><div class="dr-t2">🎮 두리 런 · 1KM 완주 도전</div><div class="dr-t3">불량을 피하고, 품질을 지켜라!</div><ul class="dr-rule"><li>🔩 사출 버 · 변형 · 미성형 · 흑점 · 파손 → <b>점프로 피하기</b></li><li>🪨 공중에 뜬 이물질 → <b class="no">점프 금지!</b> (헬멧 조심 ⛑)</li><li>✅ 합격 마크 모으기(⭐우수 = +5) · 🛡 QA 방패 = 하트 회복</li><li>🔥 합격 마크로 <b>FEVER 게이지</b>를 채우면 품질 FEVER! · 초물→중물→종물 통과</li></ul><div class="dr-tap">👆 화면을 톡! 누르면 시작</div>';box.appendChild(ttl);
+ const ttl=document.createElement('div');ttl.className='dr-title';ttl.innerHTML='<div class="dr-t2">🎮 두리 런 · 1KM 완주 도전</div><div class="dr-r1">👆 터치하면 점프! <small>(공중 이물질만 조심)</small></div><div class="dr-tap">화면을 톡! 누르면 시작</div>';box.appendChild(ttl);
  const stEm=prog.querySelectorAll('em');const stg$=()=>stEm.forEach((e,i)=>{e.className=i<stage?'done':i===stage?'on':'';e.textContent=(i<stage?'✓ ':'')+['초물','중물','종물'][i]});
  const hEl=hud.querySelector('#drHearts'),cEl=hud.querySelector('#drCoins'),bar=prog.querySelector('#drBar');
  hud.querySelector('#drClose').addEventListener('click',e=>{e.stopPropagation();if(run)saveBest(Math.min(999,Math.floor(dist*SHOW)));exitFull()});
@@ -2338,15 +2342,18 @@ showTab(mode,{noUrl:true});
  const OPK='dg_opening_seen_v1',OPI=['op1','op2','op3'].map(k=>'assets/duri/'+k+'.jpg'),ENDI='assets/duri/end.jpg';let opEl=null,opT=[];
  setTimeout(()=>{[...OPI,ENDI].forEach(u=>{const im=new Image();im.decoding='async';im.src=u})},4000);
  function opClose(cb){opT.forEach(clearTimeout);opT=[];const el=opEl;opEl=null;if(!el)return;el.classList.remove('on');setTimeout(()=>el.remove(),250);if(cb)cb()}
- function cutShow(urls,per,hint,done){opClose();const el=document.createElement('div');el.className='dg-op';
-  el.innerHTML='<button type="button" class="op-skip">'+(urls.length>1?'건너뛰기 ▶':'결과 보기 ▶')+'</button><div class="op-fr">'+urls.map(u=>'<img alt="" src="'+u+'">').join('')+'</div>'+(urls.length>1?'<div class="op-dots">'+urls.map(()=>'<i></i>').join('')+'</div>':'<div class="op-hint">'+hint+'</div>');
-  box.appendChild(el);opEl=el;const ims=[...el.querySelectorAll('.op-fr img')],dots=[...el.querySelectorAll('.op-dots i')];let fin=false;
-  const end=()=>{if(fin||opEl!==el)return;fin=true;opClose();done&&done()};
-  el.addEventListener('pointerdown',e=>{e.preventDefault();e.stopPropagation();end()});
-  const go=k=>{if(opEl!==el)return;if(k>=ims.length)return end();ims.forEach((im,i)=>im.classList.toggle('on',i===k));dots.forEach((d,i)=>d.classList.toggle('on',i===k));opT.push(setTimeout(()=>go(k+1),per))};
+ function cutShow(urls,o){opClose();o=o||{};const hold=!!o.hold,el=document.createElement('div');el.className='dg-op';
+  el.innerHTML='<button type="button" class="op-skip">'+(o.skip||'건너뛰기 ▶')+'</button><div class="op-fr">'+urls.map(u=>'<img alt="" src="'+u+'">').join('')+'</div>'+(urls.length>1?'<div class="op-dots">'+urls.map(()=>'<i></i>').join('')+'</div>':'')+'<div class="op-hint"></div>';
+  box.appendChild(el);opEl=el;const ims=[...el.querySelectorAll('.op-fr img')],dots=[...el.querySelectorAll('.op-dots i')],hint=el.querySelector('.op-hint'),sk=el.querySelector('.op-skip');let k=-1,fin=false;
+  const end=()=>{if(fin||opEl!==el)return;fin=true;opClose();o.done&&o.done()};
+  const go=n=>{if(opEl!==el)return;opT.forEach(clearTimeout);opT=[];if(n>=ims.length)return end();k=n;ims.forEach((im,i)=>im.classList.toggle('on',i===n));dots.forEach((d,i)=>d.classList.toggle('on',i===n));
+   const last=n===ims.length-1;hint.textContent=last?(o.lastHint||''):(o.hint||'');hint.classList.toggle('go',last&&!!o.lastHint);sk.style.display=last&&hold?'none':'';
+   if(!(last&&hold))opT.push(setTimeout(()=>go(n+1),o.per||2500))};
+  el.addEventListener('pointerdown',e=>{e.preventDefault();e.stopPropagation();if(e.target===sk&&hold)return go(ims.length-1);go(k+1)});
   requestAnimationFrame(()=>{el.classList.add('on');go(0)})}
- function opening(){let seen=false;try{seen=localStorage.getItem(OPK)==='1'}catch(e){}if(seen)return;try{localStorage.setItem(OPK,'1')}catch(e){}cutShow(OPI,1200,'',null)}
- function ending(){cutShow([ENDI],2800,'터치하면 결과를 볼 수 있어요',null)}
+ function opening(){let seen=false;try{seen=localStorage.getItem(OPK)==='1'}catch(e){}if(seen)return;try{localStorage.setItem(OPK,'1')}catch(e){}
+  cutShow(OPI,{per:2500,hold:true,hint:'터치하면 다음 장면',lastHint:'👆 터치하면 출발!',done:()=>{if(phase==='title'&&full())start()}})}
+ function ending(){cutShow([ENDI],{per:4000,skip:'결과 보기 ▶',hint:'터치하면 결과를 볼 수 있어요'})}
  function showTitle(){if(window.__quizLive){msg.innerHTML='📝 <b>퀴즈 진행 중!</b><br>QUIZ 탭에서 문제를 먼저 풀어 주세요';return}
   enterFull();reset();phase='title';over.classList.add('hide');ttl.classList.add('on');box.classList.add('playing');draw();opening()}
  function start(){ttl.classList.remove('on');reset();phase='run';box.classList.remove('won');run=true;over.classList.add('hide');box.classList.add('playing');last=performance.now();cancelAnimationFrame(raf);raf=requestAnimationFrame(loop)}
