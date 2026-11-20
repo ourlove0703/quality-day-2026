@@ -1235,6 +1235,18 @@ html.game-lock,html.game-lock body{overflow:hidden!important;overscroll-behavior
 @container (max-height:150px){.dgx-r small{display:none}.dgx-r{margin-top:4px}}
 .dr-r1{margin:6px 0 2px;font-size:16px;font-weight:900;color:#fff}.dr-r1 small{display:block;font-size:12px;font-weight:700;color:#e3edf9;margin-top:2px}
 @media (prefers-reduced-motion:reduce){.dg-op .op-fr img{transition:opacity .2s;transform:none}}
+
+/* V68 단골 품질지킴이: 횟수별 줄 + 작은 칩 */
+.hof-rg{display:flex;align-items:flex-start;gap:8px;margin-top:9px}
+.hof-rn{flex:none;min-width:38px;text-align:center;margin-top:5px;padding:3px 0;border-radius:999px;font-size:11.5px;font-weight:900;color:#10233f;background:#7fe0a0}
+.hof-rn.g{background:#f5c451}
+.hof-rc{flex:1;min-width:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:5px}
+.hof-rc .rc{display:flex;align-items:center;gap:5px;background:rgba(255,255,255,.08);border-radius:999px;padding:3px 6px 3px 3px;min-width:0;overflow:hidden}
+.hof-rc .rc>i{display:flex;flex-direction:column;min-width:0;font-style:normal;line-height:1.15;text-align:left}
+.hof-rc .rc b{color:#fff;font-size:13px;white-space:nowrap}
+.hof-rc .rc em{font-style:normal;font-size:9px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hof-ph.xs{width:26px;height:26px;border-width:1.5px}
+@media (max-width:352px){.hof-rc{grid-template-columns:repeat(2,minmax(0,1fr))}.hof-rn{min-width:32px}}
 </style></head><body>
 
 <div id="homeView" class="hidden"><div class="wrap">
@@ -2426,8 +2438,8 @@ showTab(mode,{noUrl:true});
  const TOP=`<div class="hof-top" id="hofTop"><h3>🔍 우리가 가장 많이 잡아낸 불량 TOP3</h3>`+cc.map((c,i)=>`<div class="hof-tr"><b>${['🥇','🥈','🥉'][i]} ${c[0]}</b><span><i style="width:${Math.round(c[1]/mx*100)}%"></i></span><em>${c[1]}건</em></div>`).join('')+`<p>두리 런에서 피한 그 불량들, 현장에서는 이분들이 잡아냈어요!</p></div>`;
  const ppl=Object.keys(cnt),reps=ppl.filter(k=>cnt[k]>1).sort((a,b)=>cnt[b]-cnt[a]),depts=new Set(REC.map(r=>r[3]));
  const MYS=`<div class="hof-mys top"><div class="q"><i>?</i><i>?</i><i>?</i></div><div><b>2026 하반기,<br>다음 주인공은 누구일까요?</b><p>오늘 시상식에서 공개됩니다 🏆</p></div></div>`;
- const ALL=`<div class="hof-allv">`+MYS+`<div class="hof-stat"><div><b>${REC.length}<small>건</small></b><span>이상 발견 기록</span></div><div><b>${ppl.length}<small>명</small></b><span>품질지킴이</span></div><div><b>${depts.size}<small>개</small></b><span>참여 부서</span></div></div>`+TOP+
-  (reps.length?`<div class="hof-top" id="hofReps"><h3>🔁 단골 품질지킴이 <small>2회 이상 수상</small></h3><div class="hof-chips two">${reps.map(k=>{const n=k,lr=REC.reduce((m,r)=>r[2]===n?r:m,null),d=lr?lr[3]:'';const pi=REC.reduce((m,r,ix)=>r[2]===n&&PH[ix]?ix:m,-1);return `<span>${pi>=0?`<img class="hof-ph sm" src="${PH[pi]}" alt="" loading="lazy">`:`<i class="hof-tro sm">${TRO}</i>`}<b>${esc(mask(n))}</b><em style="color:${DC[d]||'#9fb6d6'}">${esc(d)}</em><u>${cnt[k]}회</u></span>`}).join('')}</div></div>`:'')+`</div>`;
+ const ALL=`<div class="hof-allv">`+MYS+`<div class="hof-stat"><div><b>${REC.length}<small>건</small></b><span>이상 발견 기록</span></div><div><b>${ppl.length}<small>명</small></b><span>품질지킴이</span></div><div><b>${depts.size}<small>개</small></b><span>참여 부서</span></div></div>`+
+  (reps.length?`<div class="hof-top" id="hofReps"><h3>🔁 단골 품질지킴이 <small>2회 이상 수상</small></h3>`+[...new Set(reps.map(k=>cnt[k]))].map(c=>`<div class="hof-rg"><span class="hof-rn${c>=3?' g':''}">${c}회</span><div class="hof-rc">`+reps.filter(k=>cnt[k]===c).map(n=>{const lr=REC.reduce((m,r)=>r[2]===n?r:m,null),d=lr?lr[3]:'';const pi=REC.reduce((m,r,ix)=>r[2]===n&&PH[ix]?ix:m,-1);return `<span class="rc">${pi>=0?`<img class="hof-ph xs${c>=3?' g':''}" src="${PH[pi]}" alt="" loading="lazy">`:`<i class="hof-tro sm">${TRO}</i>`}<i><b>${esc(mask(n))}</b><em style="color:${DC[d]||'#9fb6d6'}">${esc(d.replace(/팀$/,''))}</em></i></span>`}).join('')+`</div></div>`).join('')+`</div>`:'')+TOP+`</div>`;
  yb.innerHTML=`<div class="hof-main"><button type="button" data-m="all">🏆 전체</button><button type="button" data-m="hist">📜 역대 수상자</button></div><div class="hof-sub" hidden>`+YEARS.map(y=>`<button type="button" data-y="${y}"${y===2026?' class="mys"':''}>${y}</button>`).join('')+`</div>`;
  const sub=yb.querySelector('.hof-sub');let lastY=YEARS[YEARS.length-1];
  const card=(r,i)=>{const n=cnt[r[2]];return `<div class="hof-card ${r[6]?'gold':'guard'}" style="animation-delay:${Math.min(i,12)*.04}s"><div class="hof-row">${av(r)}<div class="hof-who"><span class="hof-nm">${esc(mask(r[2]))}</span><span class="hof-dp" style="color:${DC[r[3]]?'#c9d9ef':''}"><i class="hof-dd" style="background:${DC[r[3]]||'#5a7290'}"></i>${esc(r[3])}</span></div>${PH[REC.indexOf(r)]?`<img class="hof-ph${r[6]?' g':''}" src="${PH[REC.indexOf(r)]}" alt="" loading="lazy">`:''}${n>1?`<span class="hof-rep">🔁 ${n}회</span>`:''}</div><div class="hof-pd">${esc(r[1])} · ${esc(r[4])}</div><div class="hof-ct">🔍 ${esc(r[5])}</div></div>`};
