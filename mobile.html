@@ -1247,6 +1247,12 @@ html.game-lock,html.game-lock body{overflow:hidden!important;overscroll-behavior
 .hof-rc .rc em{font-style:normal;font-size:9px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .hof-ph.xs{width:26px;height:26px;border-width:1.5px}
 @media (max-width:352px){.hof-rc{grid-template-columns:repeat(2,minmax(0,1fr))}.hof-rn{min-width:32px}}
+
+/* V69 명예의 전당 머리: 이미지+글씨 묶음 가운데 정렬 */
+.hof-head{justify-content:center}
+.hof-head>div:last-child{text-align:center;min-width:0}
+.hof-head p{word-break:keep-all}
+@media (max-width:400px){.hof-head p span{display:block}}
 </style></head><body>
 
 <div id="homeView" class="hidden"><div class="wrap">
@@ -2429,7 +2435,7 @@ showTab(mode,{noUrl:true});
  const cnt={};REC.forEach(r=>{cnt[r[2]]=(cnt[r[2]]||0)+1});   // 수상자 수: 이름 기준(부서 이동 포함 동일인)
  const TRO='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3h10v5.5a5 5 0 0 1-10 0V3z"/><path d="M7 5H4v1.6A3.4 3.4 0 0 0 7.4 10M17 5h3v1.6A3.4 3.4 0 0 1 16.6 10" fill="none" stroke-width="1.8"/><path d="M10.5 13.5h3v3.5h-3zM8 21v-1.6c0-1 .8-1.9 1.9-1.9h4.2c1.1 0 1.9.9 1.9 1.9V21z"/></svg>';
  const av=r=>`<i class="hof-tro${r[6]?' g':''}">${TRO}</i>`;
- document.getElementById('hofLead').textContent=`${YEARS.length}년간 ${REC.length}번, 작은 이상을 놓치지 않은 사람들`;
+ document.getElementById('hofLead').innerHTML=`${YEARS.length}년간 ${REC.length}번,<span> 작은 이상을 놓치지 않은 사람들</span>`;
  // 흐르는 역대 수상자
  const tk=REC.map(r=>`<span><i class="hof-tro sm${r[6]?' g':''}">${TRO}</i><b>${esc(mask(r[2]))}</b><em style="color:${DC[r[3]]||'#ffd166'}">${esc(r[3])}</em>${esc(r[5].split(/[(/]/)[0].trim())}</span>`).join('');
  tick.innerHTML=tk+tk;tick.style.animationDuration=Math.round(REC.length*3.2)+'s';
