@@ -2351,8 +2351,8 @@ showTab(mode,{noUrl:true});
    if(!(last&&hold))opT.push(setTimeout(()=>go(n+1),o.per||2500))};
   el.addEventListener('pointerdown',e=>{e.preventDefault();e.stopPropagation();if(e.target===sk&&hold)return go(ims.length-1);go(k+1)});
   requestAnimationFrame(()=>{el.classList.add('on');go(0)})}
- function opening(){let seen=false;try{seen=localStorage.getItem(OPK)==='1'}catch(e){}if(seen)return;try{localStorage.setItem(OPK,'1')}catch(e){}
-  cutShow(OPI,{per:2500,hold:true,hint:'터치하면 다음 장면',lastHint:'👆 터치하면 출발!',done:()=>{if(phase==='title'&&full())start()}})}
+ function opening(){
+  cutShow(OPI,{per:3000,hold:true,hint:'터치하면 다음 장면',lastHint:'👆 터치하면 출발!',done:()=>{if(phase==='title'&&full())start()}})}
  function ending(){cutShow([ENDI],{per:4000,skip:'결과 보기 ▶',hint:'터치하면 결과를 볼 수 있어요'})}
  function showTitle(){if(window.__quizLive){msg.innerHTML='📝 <b>퀴즈 진행 중!</b><br>QUIZ 탭에서 문제를 먼저 풀어 주세요';return}
   enterFull();reset();phase='title';over.classList.add('hide');ttl.classList.add('on');box.classList.add('playing');draw();opening()}
