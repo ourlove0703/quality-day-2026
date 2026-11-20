@@ -1028,7 +1028,7 @@ h1 em{font-style:normal;color:var(--blue2)}
 .ychips{display:flex;gap:5px}
 .yc{border:1px solid var(--border);background:#fff;color:#4c6480;font-weight:900;border-radius:999px;padding:6px 15px}
 .yc.on{background:var(--blue2);color:#fff;border-color:var(--blue2)}
-.fixed{display:grid;grid-template-columns:repeat(3,1fr) 1.05fr;gap:12px}
+.fixed{display:grid;grid-template-columns:1.05fr repeat(3,1fr);gap:12px}
 .fixed .bc{width:auto;margin:0;border:1.5px solid #f0cf85;background:linear-gradient(180deg,#fffdf6,#fff)}
 .fixed .bc:hover{border-color:#e3a92c}
 .new{font-size:10px;font-weight:900;letter-spacing:.5px;background:#ff5a4f;color:#fff;border-radius:999px;padding:2px 8px;margin-left:2px}
@@ -1122,7 +1122,7 @@ body,button,p,h1,h2,h3,span,div,b,u,small,em,li{word-break:keep-all;overflow-wra
     <div class="sc slim"><div class="st"><span>단골 품질지킴이</span><small style="margin-left:8px">2회 이상</small></div><div class="reg" id="reg"></div></div>
   </div>
 
-  <section class="sec"><div class="sh"><h2>2026년 상반기 수상자</h2><small id="n26"></small></div><div class="fixed" id="fixed"></div></section>
+  <section class="sec"><div class="sh"><h2>2026년 수상자</h2><small id="n26"></small></div><div class="fixed" id="fixed"></div></section>
 
   <section class="sec"><div class="sh"><h2>역대 수상자</h2><small id="nflow"></small><div class="ychips sp" id="ychips"></div></div><div class="flow" id="flow"><div class="track" id="track"></div></div></section>
   <div class="foot">사내 검토용 · 수상자 사진은 승인된 범위에서만 게시해 주세요.</div>
@@ -1170,8 +1170,8 @@ function renderSummary(){
 }
 function renderFixed(){
   const l=records.filter(r=>r.year===2026);
-  $('n26').textContent=l.length+'명 · '+money(sum(l));
-  $('fixed').innerHTML=l.map(r=>cardHtml(r,false)).join('')+`<div class="nx"><div class="nx-q"><i>?</i><i>?</i><i>?</i></div><div class="nx-t"><span>2026 하반기</span><b>다음 주인공은?</b><em>오늘 시상식에서 공개됩니다 🏆</em></div></div>`;
+  $('n26').textContent='하반기 오늘 발표 · 상반기 '+l.length+'명 · '+money(sum(l));
+  $('fixed').innerHTML=`<div class="nx"><div class="nx-q"><i>?</i><i>?</i><i>?</i></div><div class="nx-t"><span>2026 하반기 · 오늘 발표</span><b>다음 주인공은?</b><em>오늘 시상식에서 공개됩니다 🏆</em></div></div>`+l.map(r=>cardHtml(r,false)).join('');
 }
 function renderFlow(){
   const ys=[...new Set(records.map(r=>r.year))].filter(y=>y<2026).sort((a,b)=>b-a);
